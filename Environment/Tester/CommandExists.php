@@ -5,14 +5,14 @@ use Environment\Tester;
 
 class CommandExists extends Tester
 {
-    public function test(){
+    public function test()
+    {
 
         $command = $this->get('command');
         $cmd = 'which ' . $command;
         $output = '';
-        exec('which ' . $command, $output, $return);
+        exec($cmd, $output, $return);
 
-//        var_dump($return);
         return $return == 0;
     }
 }
