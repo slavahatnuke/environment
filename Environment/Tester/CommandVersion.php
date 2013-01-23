@@ -6,7 +6,10 @@ use Environment\Tester;
 class CommandVersion extends Tester
 {
     protected $defaults = array(
-        'command' => 'CLI command'
+        'command' => 'CLI command',
+        'regex' => '/.*?(\d+\.\d+\.\d+).*/',
+        'version' => 'min version',
+        'max_version' => null,
     );
 
     public function test()
@@ -18,11 +21,11 @@ class CommandVersion extends Tester
 
         $output = join("", $output);
 
-//        var_dump($command);
         if ($return == 0) {
             $version = $this->extractVersion($output);
 
 //            var_dump($version);
+
             return $this->testMinVersion($version) && $this->testMaxVersion($version);
         }
 
@@ -38,8 +41,7 @@ class CommandVersion extends Tester
 
     public function testMaxVersion($version)
     {
-        if(!$this->has('max_version'))
-        {
+        if (is_null($this->get('max_version'))) {
             return true;
         }
 
@@ -51,7 +53,7 @@ class CommandVersion extends Tester
     public function extractVersion($string)
     {
         $a = array();
-        if (preg_match('/.*?(\d+\.\d+\.\d+).*/', $string, $a)) {
+        if (preg_match($this->get('regex'), $string, $a)) {
             return $a[1];
         }
     }
