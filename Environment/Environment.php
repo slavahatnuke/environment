@@ -52,6 +52,14 @@ class Environment
                 echo $definition->getName();
                 echo "\n";
 
+                if(!$passed && $doc = $options->get('doc'))
+                {
+                    echo "\n";
+                    echo $this->getDoc($doc);
+                    echo "\n";
+                    echo "\n";
+                }
+
                 if($passed && $on_pass = $options->get('test.on.pass'))
                 {
                     $this->test($on_pass);
@@ -74,6 +82,21 @@ class Environment
         }
 
         return $profile;
+    }
+
+    public function getDoc($path)
+    {
+        // TODO add doc readers
+        $doc = $this->base_path . $path;
+
+        if(file_exists($doc))
+        {
+            return file_get_contents($doc);
+        } else {
+            throw new \Exception('No file: ' . $doc);
+            // TODO Exception
+        }
+
     }
 
     public function read($path)
