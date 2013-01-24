@@ -7,7 +7,8 @@ class Environment
     protected $definition_defaults = array(
         'class' => null,
         'required' => true,
-        'test.on.pass' => null
+        'test.on.pass' => null,
+        'doc' => null
     );
 
     protected $base_path;
@@ -19,6 +20,7 @@ class Environment
 
     public function test($path)
     {
+        // TODO [extract][output] remove 'echo "\n"' and extract output to suitable class
         echo "\n";
 
         foreach ($this->getProfile($path)->getDefinitions() as $definition) {
@@ -32,6 +34,7 @@ class Environment
     public function testDefinition(Definition $definition)
     {
 
+        //TODO [extract][test][definition] extract testing definition to suitable class
         $options = $definition->getOptions();
         $options->extend($this->definition_defaults);
 
@@ -44,15 +47,19 @@ class Environment
 
                 $passed = $tester->test();
 
+                //TODO [output][test][status][state] move to definition state
+
                 $skipped = !$passed && !$options->get('required');
                 $status = $passed ? "[OK]   " : "[FAIL] ";
                 $status = $skipped ? "[SKIP] " : $status;
 
+                //TODO [output]
                 echo $status;
 
                 echo $definition->getName();
                 echo "\n";
 
+                //TODO [extract][decompose][handler][definition] decompose to definition handlers
                 if(!$passed && !$skipped)
                 {
                     echo "\n";
@@ -69,6 +76,7 @@ class Environment
 
                 }
 
+                //TODO [extract][decompose][handler][definition]
                 if(!$passed && $doc = $options->get('doc'))
                 {
                     echo "\n";
@@ -78,6 +86,7 @@ class Environment
                     echo "\n";
                 }
 
+                //TODO [extract][decompose][handler][definition]
                 if($passed && $on_pass = $options->get('test.on.pass'))
                 {
                     $this->test($on_pass);
@@ -112,7 +121,7 @@ class Environment
             return file_get_contents($doc);
         } else {
             throw new \Exception('No file: ' . $doc);
-            // TODO Exception
+            // TODO [exception] handling exceptions
         }
 
     }
@@ -124,7 +133,7 @@ class Environment
             return parse_ini_file($path, true);
         } else {
             throw new \Exception('No file: ' . $path);
-            // TODO Exception
+            // TODO [exception]
         }
 
         return array();

@@ -6,11 +6,14 @@ use Environment\Tester;
 class Os extends Tester
 {
     protected $defaults = array(
-        'name' => 'os name'
+        'name' => 'OS name'
     );
 
     public function test()
     {
-        return strpos(strtolower(php_uname()), strtolower($this->get('name'))) !== false;
+        $this_os = strtolower(php_uname());
+        $os = strtolower($this->get('name'));
+
+        return strpos($this_os, $os) !== false;
     }
 }

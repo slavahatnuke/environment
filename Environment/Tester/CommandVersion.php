@@ -15,6 +15,7 @@ class CommandVersion extends Tester
     public function test()
     {
 
+        //TODO [extract][cli][component]
         $command = $this->get('command');
         $output = array();
         exec($command, $output, $return);
