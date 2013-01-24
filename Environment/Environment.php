@@ -50,6 +50,7 @@ class Environment
                 //TODO [output][test][status][state] move to definition state
 
                 $skipped = !$passed && !$options->get('required');
+                $failed = !$passed && !$skipped;
                 $status = $passed ? "[OK]   " : "[FAIL] ";
                 $status = $skipped ? "[SKIP] " : $status;
 
@@ -60,8 +61,7 @@ class Environment
                 echo "\n";
 
                 //TODO [extract][decompose][handler][definition] decompose to definition handlers
-                if(!$passed && !$skipped)
-                {
+                if ($failed) {
                     echo "\n";
 
                     foreach ($definition->getProperties() as $name => $value) {
@@ -77,8 +77,7 @@ class Environment
                 }
 
                 //TODO [extract][decompose][handler][definition]
-                if(!$passed && $doc = $options->get('doc'))
-                {
+                if ($failed && $doc = $options->get('doc')) {
                     echo "\n";
                     echo $this->getDoc($doc);
                     echo "\n";
@@ -87,8 +86,7 @@ class Environment
                 }
 
                 //TODO [extract][decompose][handler][definition]
-                if($passed && $on_pass = $options->get('test.on.pass'))
-                {
+                if ($passed && $on_pass = $options->get('test.on.pass')) {
                     $this->test($on_pass);
                 }
 
@@ -116,8 +114,7 @@ class Environment
         // TODO add doc readers
         $doc = $this->base_path . $path;
 
-        if(file_exists($doc))
-        {
+        if (file_exists($doc)) {
             return file_get_contents($doc);
         } else {
             throw new \Exception('No file: ' . $doc);
