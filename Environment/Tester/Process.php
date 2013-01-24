@@ -6,7 +6,7 @@ use Environment\Tester;
 class Process extends Tester
 {
     protected $defaults = array(
-        'command' => 'ps aux',
+        'command' => 'ps -ef',
         'process' => 'process name'
     );
 
