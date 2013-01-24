@@ -52,6 +52,22 @@ class Environment
                 echo $definition->getName();
                 echo "\n";
 
+                if(!$passed)
+                {
+                    echo "\n";
+
+                    foreach ($definition->getProperties() as $name => $value) {
+                        echo "       ";
+                        echo $name;
+                        echo " : ";
+                        echo $value;
+                        echo "\n";
+                    }
+
+                    echo "\n";
+
+                }
+
                 if(!$passed && $doc = $options->get('doc'))
                 {
                     echo "\n";
