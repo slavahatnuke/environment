@@ -74,6 +74,7 @@ class Environment
                     echo $this->getDoc($doc);
                     echo "\n";
                     echo "\n";
+                    echo "\n";
                 }
 
                 if($passed && $on_pass = $options->get('test.on.pass'))

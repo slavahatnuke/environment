@@ -1,0 +1,2 @@
+How to setup phpunit
+http://www.phpunit.de/manual/current/en/
