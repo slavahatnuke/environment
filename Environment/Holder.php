@@ -5,22 +5,6 @@ namespace Environment;
 class Holder implements \IteratorAggregate
 {
 
-    static public function arrayMerge($a1, $a2)
-    {
-        foreach ($a2 as $k => $v) {
-
-            if (is_array($a2[$k])) {
-                $a1[$k] = self::arrayMerge($a1[$k], $a2[$k]);
-            } else {
-                $a1[$k] = $v;
-            }
-
-        }
-
-        return $a1;
-
-    }
-
     protected $data = array();
 
     public function __construct($data = array())
@@ -58,8 +42,8 @@ class Holder implements \IteratorAggregate
     public function apply($data)
     {
         if (is_array($data) || $data instanceof \Traversable) {
-            foreach ($data as $key => $value) {
-                $this->set($key, $value);
+            foreach ($data as $name => $value) {
+                $this->set($name, $value);
             }
 
         }

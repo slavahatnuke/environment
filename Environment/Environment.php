@@ -44,15 +44,16 @@ class Environment
 
                 $passed = $tester->test();
 
+                $skipped = !$passed && !$options->get('required');
                 $status = $passed ? "[OK]   " : "[FAIL] ";
-                $status = !$passed && !$options->get('required') ? "[SKIP] " : $status;
+                $status = $skipped ? "[SKIP] " : $status;
 
                 echo $status;
 
                 echo $definition->getName();
                 echo "\n";
 
-                if(!$passed)
+                if(!$passed && !$skipped)
                 {
                     echo "\n";
 

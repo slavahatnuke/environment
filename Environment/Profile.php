@@ -11,22 +11,12 @@ class Profile extends Holder
         $result = array();
 
         foreach ($this->getData() as $name => $value) {
+            $result[$name] = new Definition($name, $value);
 
-            $definition = new Definition($name, $value);
-
-            if($definition->isValid())
-            {
-                $result[$name] = $definition;
-            }
         }
 
 
         return $result;
-    }
-
-    public function extendsProfile(Profile $profile)
-    {
-
     }
 
 }

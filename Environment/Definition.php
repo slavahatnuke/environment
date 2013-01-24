@@ -24,11 +24,6 @@ class Definition extends Holder
         return $this->name;
     }
 
-    public function isValid()
-    {
-        return true;
-    }
-
     /**
      * @return Holder
      */
@@ -36,9 +31,9 @@ class Definition extends Holder
     {
         $result = array();
 
-        foreach ($this as $key => $value) {
-            if (!$this->isOption($key)) {
-                $result[$key] = $value;
+        foreach ($this as $name => $value) {
+            if (!$this->isOption($name)) {
+                $result[$name] = $value;
             }
         }
 
@@ -52,23 +47,23 @@ class Definition extends Holder
     {
         $result = array();
 
-        foreach ($this as $key => $value) {
-            if ($this->isOption($key)) {
-                $result[$this->extractOption($key)] = $value;
+        foreach ($this as $name => $value) {
+            if ($this->isOption($name)) {
+                $result[$this->extractOption($name)] = $value;
             }
         }
 
         return new Holder($result);
     }
 
-    public function isOption($property)
+    protected function isOption($name)
     {
-        return substr($property, 0, 1) == $this->option_prefix;
+        return substr($name, 0, 1) == $this->option_prefix;
     }
 
-    protected function extractOption($property)
+    protected function extractOption($name)
     {
-        return $this->isOption($property) ? substr($property, 1) : $property;
+        return $this->isOption($name) ? substr($name, 1) : $name;
     }
 
 }
