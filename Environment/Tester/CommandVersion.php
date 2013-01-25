@@ -7,9 +7,9 @@ class CommandVersion extends Tester
 {
     protected $defaults = array(
         'command' => 'CLI command',
-        'regex' => '/.*?(\d+\.\d+\.\d+).*/',
         'version' => 'min version',
         'max_version' => null,
+        'regex' => '/.*?(\d+\.\d+\.\d+).*/',
     );
 
     public function test()

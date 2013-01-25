@@ -6,8 +6,8 @@ use Environment\Tester;
 class Process extends Tester
 {
     protected $defaults = array(
+        'process' => 'process name',
         'command' => 'ps -ef',
-        'process' => 'process name'
     );
 
     public function test()

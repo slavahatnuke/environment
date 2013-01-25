@@ -6,9 +6,9 @@ use Environment\Tester;
 class ProcessListenPort extends Tester
 {
     protected $defaults = array(
-        'command' => 'sudo netstat -natp',
         'process' => 'process name',
-        'port' => null
+        'port' => null,
+        'command' => 'sudo netstat -natp',
     );
 
     public function test()

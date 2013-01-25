@@ -64,12 +64,15 @@ class Environment
                 if ($failed) {
                     echo "\n";
 
-                    foreach ($definition->getProperties() as $name => $value) {
-                        echo "       ";
-                        echo $name;
-                        echo " : ";
-                        echo $value;
-                        echo "\n";
+                    foreach ($tester as $name => $value) {
+                        if(!is_null($value))
+                        {
+                            echo "       ";
+                            echo $name;
+                            echo " : ";
+                            echo $value;
+                            echo "\n";
+                        }
                     }
 
                     echo "\n";
