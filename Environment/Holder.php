@@ -43,6 +43,11 @@ class Holder implements \IteratorAggregate
     {
         if (is_array($data) || $data instanceof \Traversable) {
             foreach ($data as $name => $value) {
+                if (is_array($this->get($name))) {
+                    $holder = new self($this->get($name));
+                    $holder->apply($value);
+                    $value = $holder->getData();
+                }
                 $this->set($name, $value);
             }
 

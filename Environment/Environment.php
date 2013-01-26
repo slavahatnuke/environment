@@ -8,7 +8,10 @@ class Environment
         'class' => null,
         'required' => true,
         'test.on.pass' => null,
-        'doc' => null
+        'doc' => null,
+        'confirm' => null,
+        'confirm.message' => 'Confirmation of test execution.',
+        'confirm.question' => 'Do you confirm this test? (y/n)',
     );
 
     protected $base_path;
@@ -45,14 +48,29 @@ class Environment
                 $tester = new $class;
                 $tester->apply($definition->getProperties());
 
-                $passed = $tester->test();
+                $passed = false;
+                $aborted = false;
+
+                if ($options->get('confirm')) {
+                    if ($this->confirm($definition, $tester)) {
+                        $passed = $tester->test();
+                    } else {
+                        $aborted = true;
+                    }
+                } else {
+                    $passed = $tester->test();
+                }
+
 
                 //TODO [output][test][status][state] move to definition state
 
                 $skipped = !$passed && !$options->get('required');
+
                 $failed = !$passed && !$skipped;
-                $status = $passed ? "[OK]   " : "[FAIL] ";
-                $status = $skipped ? "[SKIP] " : $status;
+
+                $status = $passed ? "[OK]    " : "[FAIL]  ";
+                $status = $skipped ? "[SKIP]  " : $status;
+                $status = $aborted ? "[ABORT] " : $status;
 
                 //TODO [output]
                 echo $status;
@@ -60,32 +78,20 @@ class Environment
                 echo $definition->getName();
                 echo "\n";
 
+
+                //TODO [extract][decompose][handler][definition] decompose to definition handlers
+                if ($aborted) {
+                    return;
+                }
+
                 //TODO [extract][decompose][handler][definition] decompose to definition handlers
                 if ($failed) {
-                    echo "\n";
-
-                    foreach ($tester as $name => $value) {
-                        if(!is_null($value))
-                        {
-                            echo "       ";
-                            echo $name;
-                            echo " : ";
-                            echo $value;
-                            echo "\n";
-                        }
-                    }
-
-                    echo "\n";
-
+                    $this->printHolder($tester);
                 }
 
                 //TODO [extract][decompose][handler][definition]
                 if ($failed && $doc = $options->get('doc')) {
-                    echo "\n";
-                    echo $this->getDoc($doc);
-                    echo "\n";
-                    echo "\n";
-                    echo "\n";
+                    $this->printDoc($doc);
                 }
 
                 //TODO [extract][decompose][handler][definition]
@@ -98,6 +104,32 @@ class Environment
             }
         }
 
+    }
+
+    protected function printDoc($doc)
+    {
+        echo "\n";
+        echo $this->getDoc($doc);
+        echo "\n";
+        echo "\n";
+        echo "\n";
+    }
+
+    protected function printHolder($holder)
+    {
+        echo "\n";
+
+        foreach ($holder as $name => $value) {
+            if (!is_null($value)) {
+                echo "        ";
+                echo $name;
+                echo " : ";
+                echo $value;
+                echo "\n";
+            }
+        }
+
+        echo "\n";
     }
 
     public function getProfile($path)
@@ -138,6 +170,54 @@ class Environment
 
         return array();
 
+    }
+
+    public function confirm(Definition $definition, Tester $tester)
+    {
+
+        $options = $definition->getOptions();
+        $options->extend($this->definition_defaults);
+
+        if($options->get('confirm'))
+        {
+
+            echo "[TEST]  ";
+            echo $definition->getName();
+            echo "\n";
+            echo "\n";
+            echo "        ";
+            echo $options->get('confirm.message');
+            echo "\n";
+
+            $this->printHolder($tester);
+            $this->printHolder($definition);
+
+            echo "\n";
+            echo "[ASK]  ";
+            echo $options->get('confirm.question');
+            echo " ";
+
+            $answer = strtolower(trim(fgets(STDIN)));
+
+            if(in_array($answer, array('y', 'yes')))
+            {
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
+    protected function readStdIn($prompt, $valid_inputs, $default = '') {
+        while(!isset($input) || (is_array($valid_inputs) && !in_array($input, $valid_inputs)) || ($valid_inputs == 'is_file' && !is_file($input))) {
+            echo $prompt;
+            $input = strtolower(trim(fgets(STDIN)));
+            if(empty($input) && !empty($default)) {
+                $input = $default;
+            }
+        }
+        return $input;
     }
 
 

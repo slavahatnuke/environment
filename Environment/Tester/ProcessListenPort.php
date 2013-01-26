@@ -8,7 +8,7 @@ class ProcessListenPort extends Tester
     protected $defaults = array(
         'process' => 'process name',
         'port' => null,
-        'command' => 'sudo netstat -natp',
+        'command' => 'sudo lsof -i -n',
     );
 
     public function test()
