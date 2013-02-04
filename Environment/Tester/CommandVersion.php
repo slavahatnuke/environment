@@ -9,7 +9,7 @@ class CommandVersion extends Tester
         'command' => 'CLI command',
         'version' => 'min version',
         'max_version' => null,
-        'regex' => '/.*?(\d+\.\d+\.\d+).*/',
+        'regex' => '/(\d+\.\d+\.\d+)/',
     );
 
     public function test()

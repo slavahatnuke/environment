@@ -87,6 +87,13 @@ class Environment
                 //TODO [extract][decompose][handler][definition] decompose to definition handlers
                 if ($failed) {
                     $this->printHolder($tester);
+
+                    echo "        ";
+                    echo "class : ";
+                    echo $class;
+                    echo "\n";
+                    echo "\n";
+
                 }
 
                 //TODO [extract][decompose][handler][definition]
@@ -208,17 +215,5 @@ class Environment
 
         return false;
     }
-
-    protected function readStdIn($prompt, $valid_inputs, $default = '') {
-        while(!isset($input) || (is_array($valid_inputs) && !in_array($input, $valid_inputs)) || ($valid_inputs == 'is_file' && !is_file($input))) {
-            echo $prompt;
-            $input = strtolower(trim(fgets(STDIN)));
-            if(empty($input) && !empty($default)) {
-                $input = $default;
-            }
-        }
-        return $input;
-    }
-
 
 }

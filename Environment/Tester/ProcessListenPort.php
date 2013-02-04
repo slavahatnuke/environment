@@ -22,7 +22,7 @@ class ProcessListenPort extends Tester
         if ($return == 0) {
 
             foreach ($output as $line) {
-                if ($this->containsprocess($line) && $this->containsPort($line)) {
+                if ($this->containsProcess($line) && $this->containsPort($line)) {
                     return true;
                 }
             }
@@ -33,7 +33,7 @@ class ProcessListenPort extends Tester
         return false;
     }
 
-    protected function containsprocess($line)
+    protected function containsProcess($line)
     {
         return !is_null($this->get('process')) && strpos($line, $this->get('process')) !== false;
     }
