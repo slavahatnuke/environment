@@ -21,6 +21,9 @@ class Environment
         catch (\Exception $e)
         {
             echo "\n";
+
+            echo "[FAIL]  ";
+            echo "Exception: ";
             echo $e->getMessage();
             echo "\n";
             echo $e->getFile();
