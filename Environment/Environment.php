@@ -16,7 +16,7 @@ class Environment
 
         try
         {
-            $result = $this->test($request->get('profile'));
+            $result = $this->handleRequest($request);
         }
         catch (\Exception $e)
         {
