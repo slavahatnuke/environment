@@ -2,6 +2,7 @@
 namespace Environment\Tester;
 
 use Environment\Tester;
+use Environment\TesterOutput;
 
 class CommandExists extends Tester
 {
@@ -12,6 +13,8 @@ class CommandExists extends Tester
         $cmd = 'which ' . $command;
         $output = '';
         exec($cmd, $output, $return);
+
+        $this->set('output', new TesterOutput(join('', $output)));
 
         return $return == 0;
     }

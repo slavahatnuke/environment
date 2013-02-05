@@ -161,9 +161,9 @@ class ProfileTester extends Tester
         foreach ($holder as $name => $value) {
             if (!is_null($value)) {
                 echo "        ";
-                echo $name;
+                echo (string)$name;
                 echo " : ";
-                echo $value;
+                echo (string)$value;
                 echo "\n";
             }
         }

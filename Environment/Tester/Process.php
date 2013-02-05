@@ -2,6 +2,7 @@
 namespace Environment\Tester;
 
 use Environment\Tester;
+use Environment\TesterOutput;
 
 class Process extends Tester
 {
@@ -18,6 +19,8 @@ class Process extends Tester
         $output = array();
         exec($command, $output, $return);
 
+        $this->set('output', new TesterOutput(join('', $output)));
+
         if ($return == 0) {
 
             foreach ($output as $line) {
@@ -27,7 +30,6 @@ class Process extends Tester
             }
 
         }
-
 
         return false;
     }

@@ -2,6 +2,7 @@
 namespace Environment\Tester;
 
 use Environment\Tester;
+use Environment\TesterOutput;
 
 class ProcessListenPort extends Tester
 {
@@ -18,6 +19,8 @@ class ProcessListenPort extends Tester
         $command = $this->get('command');
         $output = array();
         exec($command, $output, $return);
+
+        $this->set('output', new TesterOutput(join('', $output)));
 
         if ($return == 0) {
 

@@ -2,6 +2,8 @@
 namespace Environment\Tester;
 
 use Environment\Tester;
+use Environment\TesterOutput;
+
 
 class CommandVersion extends Tester
 {
@@ -19,6 +21,7 @@ class CommandVersion extends Tester
         $command = $this->get('command');
         $output = array();
         exec($command, $output, $return);
+        $this->set('output', new TesterOutput(join('', $output)));
 
         $output = join("", $output);
 
