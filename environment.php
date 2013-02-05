@@ -7,7 +7,7 @@ use Environment\Environment;
 
 $env = new Environment();
 
-$env(
+$env->handle(
     new CliRequest(
         array(
             'profile' => 'Profile/os.ini'

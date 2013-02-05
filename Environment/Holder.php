@@ -29,6 +29,11 @@ class Holder implements \IteratorAggregate
         return $this->data[$name] = $value;
     }
 
+    public function add($value)
+    {
+        return $this->data[] = $value;
+    }
+
     public function getData()
     {
         return $this->data;

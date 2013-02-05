@@ -82,7 +82,9 @@ class ProfileTester extends Tester
         //TODO [extract][test][definition] extract testing definition to suitable class
         $options = $definition->getOptions();
 
-        if ($class = $options->get('class')) {
+        $class = $options->get('class');
+
+        if ($class) {
 
             if (class_exists($class)) {
 
@@ -135,6 +137,8 @@ class ProfileTester extends Tester
             } else {
                 throw new \Exception('no class:' . $class);
             }
+        }  else {
+            throw new \Exception('no class for definition: ' . $definition->getName());
         }
 
         return true;
@@ -181,11 +185,24 @@ class ProfileTester extends Tester
         $profile = new Profile($path);
         $profile->setData($this->read($profile->getPath()));
 
-        if ($profile->has('@extends')) {
-            $parent = $this->load($profile->getFile($profile->get('@extends')));
-            $profile->extend($parent);
-            $profile->setParent($parent);
+        if ($profile->has('@import')) {
+
+            if(!is_array($profile->get('@import')))
+            {
+                throw new \Exception('invalid import: ' . $path);
+            }
+
+            $import_pathes = $profile->get('@import');
+
+            foreach ($import_pathes as $import_path) {
+                $parent = $this->load($profile->getFile($import_path));
+                $profile->extend($parent);
+                $profile->addParent($parent);
+                $profile->set('@import', $import_pathes);
+            }
+
         }
+
 
         return $profile;
     }

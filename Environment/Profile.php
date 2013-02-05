@@ -10,7 +10,9 @@ class Profile extends Holder
     /**
      * @var Profile
      */
-    protected $parent;
+    protected $parents = array();
+
+    protected $system_definitions = array('@import');
 
     public function __construct($path)
     {
@@ -28,22 +30,22 @@ class Profile extends Holder
     }
 
 
-    public function setParent(Profile $parent)
+    public function addParent(Profile $parent)
     {
-        $this->parent = $parent;
+        $this->parents[] = $parent;
     }
 
     /**
      * @return Profile
      */
-    public function getParent()
+    public function getParents()
     {
-        return $this->parent;
+        return $this->parents;
     }
 
-    public function hasParent()
+    public function hasParents()
     {
-        return $this->parent ? true : false;
+        return count($this->parents) ? true : false;
     }
 
     public function getBasePath()
@@ -55,8 +57,15 @@ class Profile extends Holder
     {
         $has = $this->hasOwnFile($path);
 
-        if (!$has && $this->hasParent()) {
-            return $this->getParent()->hasFile($path);
+        if (!$has && $this->hasParents()) {
+
+            foreach ($this->getParents() as $parent) {
+                if ($parent->hasFile($path)) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         return $has;
@@ -66,11 +75,18 @@ class Profile extends Holder
     {
         if ($this->hasOwnFile($path)) {
             return $this->getOwnFile($path);
-        } else if ($this->hasParent()) {
-            return $this->getParent()->getFile($path);
-        } else {
-            throw new \Exception('No file: ' . $this->getOwnFile($path));
+        } else if ($this->hasParents()) {
+
+            foreach ($this->getParents() as $parent) {
+                if ($parent->hasFile($path)) {
+                    return $parent->getFile($path);
+                }
+            }
+
         }
+
+        throw new \Exception('No file: ' . $this->getOwnFile($path));
+
     }
 
     public function getDefinitions()
@@ -78,8 +94,9 @@ class Profile extends Holder
         $result = array();
 
         foreach ($this->getData() as $name => $value) {
-            $result[$name] = new Definition($name, $value);
-
+            if (!in_array($name, $this->system_definitions)) {
+                $result[$name] = new Definition($name, $value);
+            }
         }
 
         return $result;

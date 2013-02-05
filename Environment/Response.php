@@ -2,7 +2,7 @@
 
 namespace Environment;
 
-class Request extends Context
+class Response extends Context
 {
 
 }
