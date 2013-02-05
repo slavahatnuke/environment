@@ -6,4 +6,11 @@ use Environment\Request\CliRequest;
 use Environment\Environment;
 
 $env = new Environment();
-$env(new CliRequest());
+
+$env(
+    new CliRequest(
+        array(
+            'profile' => 'Profile/os.ini'
+        )
+    )
+);

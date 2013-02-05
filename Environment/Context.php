@@ -9,10 +9,10 @@ class Context extends Holder
     public function __construct($data = array())
     {
         parent::__construct($data);
-        $this->init();
+        $this->initDefaults();
     }
 
-    public function init()
+    public function initDefaults()
     {
         $this->extend($this->defaults);
     }

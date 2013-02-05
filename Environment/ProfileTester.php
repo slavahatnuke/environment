@@ -12,6 +12,8 @@ class ProfileTester extends Tester
 
     protected $path;
 
+    protected $status;
+
     public function __construct($path)
     {
         $this->setPath($path);
@@ -41,7 +43,6 @@ class ProfileTester extends Tester
         return $this->profile;
     }
 
-
     public function testChild($path)
     {
         $tester = new ProfileTester($this->getProfile()->getFile($path));
@@ -51,15 +52,27 @@ class ProfileTester extends Tester
     public function test()
     {
 
-
         // TODO [extract][output] remove 'echo "\n"' and extract output to suitable class
         echo "\n";
+        echo "[TEST]  ";
+        echo $this->getPath();
+        echo "\n";
+        echo "\n";
 
-        foreach ($this->getProfile()->getDefinitions() as $definition) {
-            $this->testDefinition($definition);
+        $definitions = $this->getProfile()->getDefinitions();
+
+        $status = true;;
+
+        foreach ($definitions as $definition) {
+            if (!$this->testDefinition($definition) && $status) {
+                $status = false;
+            }
+
         }
 
         echo "\n";
+
+        return $status;
 
     }
 
@@ -114,13 +127,17 @@ class ProfileTester extends Tester
 
                 //TODO [extract][decompose][handler][definition]
                 if ($passed && $on_pass = $options->get('test.on.pass')) {
-                    $this->testChild($on_pass);
+                    $failed = !$this->testChild($on_pass);
                 }
+
+                return !$failed;
 
             } else {
                 throw new \Exception('no class:' . $class);
             }
         }
+
+        return true;
 
     }
 
