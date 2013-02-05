@@ -2,5 +2,13 @@
 
 require_once 'autoload.php';
 
-$env = new \Environment\Environment(__DIR__ . '/Profile/');
-$env->test('os.ini');
+use Environment\Request\CliRequest;
+use Environment\Environment;
+
+$env = new Environment();
+$env(new CliRequest()); // CliRequest=Request=InputInterface, Response=OutputInterface
+
+//setup handling context
+//create environment tester with suitable context
+//environment tester should test profile
+//

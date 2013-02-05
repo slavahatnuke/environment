@@ -4,21 +4,25 @@ namespace Environment;
 
 class Environment
 {
-    protected $definition_defaults = array(
-        'class' => null,
-        'required' => true,
-        'test.on.pass' => null,
-        'doc' => null,
-        'confirm' => null,
-        'confirm.message' => 'Confirmation of test execution.',
-        'confirm.question' => 'Do you confirm this test? (y/n)',
-    );
 
-    protected $base_path;
-
-    public function __construct($base_path = '')
+    public function __invoke(Request $request)
     {
-        $this->base_path = $base_path;
+        return $this->handle($request);
+    }
+
+    public function handle(Request $request)
+    {
+        if(!$request->has('profile'))
+        {
+            throw new \Exception('--profile option is required');
+        }
+
+        if(!file_exists($request->get('profile')))
+        {
+            throw new \Exception('no file: ' . $request->get('profile'));
+        }
+
+        $this->test($request->get('profile'));
     }
 
     public function test($path)
@@ -26,20 +30,20 @@ class Environment
         // TODO [extract][output] remove 'echo "\n"' and extract output to suitable class
         echo "\n";
 
-        foreach ($this->getProfile($path)->getDefinitions() as $definition) {
-            $this->testDefinition($definition);
+        $profile = $this->getProfile($path);
+        foreach ($profile->getDefinitions() as $definition) {
+            $this->testDefinition($profile, $definition);
         }
 
         echo "\n";
 
     }
 
-    public function testDefinition(Definition $definition)
+    public function testDefinition(Profile $profile, Definition $definition)
     {
 
         //TODO [extract][test][definition] extract testing definition to suitable class
         $options = $definition->getOptions();
-        $options->extend($this->definition_defaults);
 
         if ($class = $options->get('class')) {
 
@@ -48,19 +52,8 @@ class Environment
                 $tester = new $class;
                 $tester->apply($definition->getProperties());
 
-                $passed = false;
-                $aborted = false;
 
-                if ($options->get('confirm')) {
-                    if ($this->confirm($definition, $tester)) {
-                        $passed = $tester->test();
-                    } else {
-                        $aborted = true;
-                    }
-                } else {
-                    $passed = $tester->test();
-                }
-
+                $passed = $tester->test();
 
                 //TODO [output][test][status][state] move to definition state
 
@@ -70,7 +63,6 @@ class Environment
 
                 $status = $passed ? "[OK]    " : "[FAIL]  ";
                 $status = $skipped ? "[SKIP]  " : $status;
-                $status = $aborted ? "[ABORT] " : $status;
 
                 //TODO [output]
                 echo $status;
@@ -78,11 +70,6 @@ class Environment
                 echo $definition->getName();
                 echo "\n";
 
-
-                //TODO [extract][decompose][handler][definition] decompose to definition handlers
-                if ($aborted) {
-                    return;
-                }
 
                 //TODO [extract][decompose][handler][definition] decompose to definition handlers
                 if ($failed) {
@@ -103,7 +90,8 @@ class Environment
 
                 //TODO [extract][decompose][handler][definition]
                 if ($passed && $on_pass = $options->get('test.on.pass')) {
-                    $this->test($on_pass);
+                    var_dump($profile->getBasePath(). '/' . $on_pass);
+                    $this->test($profile->getBasePath(). '/' . $on_pass);
                 }
 
             } else {
@@ -141,11 +129,14 @@ class Environment
 
     public function getProfile($path)
     {
-        $profile = new Profile($this->read($this->base_path . $path));
+        $profile = new Profile($path);
+        $data = $this->readFile($profile->getPath());
+        $profile->setData($data);
 
         if ($profile->has('@extends')) {
-            $parent = $this->getProfile($profile->get('@extends'));
+            $parent = $this->getProfile($profile->getBasePath() . '/' . $profile->get('@extends'));
             $profile->extend($parent);
+            $profile->set('@parent', $parent);
         }
 
         return $profile;
@@ -154,7 +145,7 @@ class Environment
     public function getDoc($path)
     {
         // TODO add doc readers
-        $doc = $this->base_path . $path;
+        $doc = $path;
 
         if (file_exists($doc)) {
             return file_get_contents($doc);
@@ -165,7 +156,7 @@ class Environment
 
     }
 
-    public function read($path)
+    public function readFile($path)
     {
         // TODO add readers
         if (file_exists($path)) {
@@ -177,43 +168,6 @@ class Environment
 
         return array();
 
-    }
-
-    public function confirm(Definition $definition, Tester $tester)
-    {
-
-        $options = $definition->getOptions();
-        $options->extend($this->definition_defaults);
-
-        if($options->get('confirm'))
-        {
-
-            echo "[TEST]  ";
-            echo $definition->getName();
-            echo "\n";
-            echo "\n";
-            echo "        ";
-            echo $options->get('confirm.message');
-            echo "\n";
-
-            $this->printHolder($tester);
-            $this->printHolder($definition);
-
-            echo "\n";
-            echo "[ASK]  ";
-            echo $options->get('confirm.question');
-            echo " ";
-
-            $answer = strtolower(trim(fgets(STDIN)));
-
-            if(in_array($answer, array('y', 'yes')))
-            {
-                return true;
-            }
-
-        }
-
-        return false;
     }
 
 }

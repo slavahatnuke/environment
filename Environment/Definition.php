@@ -2,11 +2,18 @@
 
 namespace Environment;
 
-class Definition extends Holder
+class Definition extends Context
 {
     protected $name;
 
     protected $option_prefix = '@';
+
+    protected $defaults = array(
+        '@class' => null,
+        '@required' => true,
+        '@test.on.pass' => null,
+        '@doc' => null
+    );
 
     public function __construct($name, $data = array())
     {
