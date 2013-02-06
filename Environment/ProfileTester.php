@@ -182,6 +182,7 @@ class ProfileTester extends Tester
      */
     protected function load($path)
     {
+
         $profile = new Profile($path);
         $profile->setData($this->read($profile->getPath()));
 
