@@ -69,12 +69,13 @@ The lib allows to check your environment easy
     [OK]    current dir is writable
     [OK]    short_open_tag is empty
     [OK]    date.timezone is not empty
+    [OK]    os.ini contains os name darwin
+    [OK]    os.ini contains os name darwin with regex
 
     [SKIP]  ubuntu
 
 
     [FAIL]  Test(s) failed
-
 
 ```
 
