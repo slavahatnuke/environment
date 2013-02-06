@@ -1,7 +1,7 @@
 <?php
-namespace Environment\Tester;
+namespace Hat\Environment\Tester;
 
-use Environment\Tester;
+use Hat\Environment\Tester;
 
 class IsWritable extends Tester
 {

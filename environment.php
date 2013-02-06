@@ -2,8 +2,8 @@
 
 require_once 'autoload.php';
 
-use Environment\Request\CliRequest;
-use Environment\Environment;
+use Hat\Environment\Request\CliRequest;
+use Hat\Environment\Environment;
 
 $env = new Environment();
 

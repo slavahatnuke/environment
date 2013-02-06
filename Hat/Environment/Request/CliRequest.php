@@ -1,8 +1,8 @@
 <?php
 
-namespace Environment\Request;
+namespace Hat\Environment\Request;
 
-use Environment\Request;
+use Hat\Environment\Request;
 
 class CliRequest extends Request
 {

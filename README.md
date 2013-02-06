@@ -24,7 +24,7 @@ environment
             regex : /(\d+\.\d+\.\d+)/
             output : v0.8.14
 
-            class : Environment\Tester\CommandVersion
+            class : Hat\Environment\Tester\CommandVersion
 
     [OK]    mysql installed
     [OK]    mysql version
@@ -40,7 +40,7 @@ environment
             command : ps -ef
             output :   UID   PID  PPID   C STIME   TTY           TIME CMD    0     1     0   0 11:12A...
 
-            class : Environment\Tester\Process
+            class : Hat\Environment\Tester\Process
 
     [FAIL]  apache is working
 
@@ -48,7 +48,7 @@ environment
             command : ps -ef
             output :   UID   PID  PPID   C STIME   TTY           TIME CMD    0     1     0   0 11:12A...
 
-            class : Environment\Tester\Process
+            class : Hat\Environment\Tester\Process
 
     [FAIL]  mysql is working
 
@@ -56,7 +56,7 @@ environment
             command : ps -ef
             output :   UID   PID  PPID   C STIME   TTY           TIME CMD    0     1     0   0 11:12A...
 
-            class : Environment\Tester\Process
+            class : Hat\Environment\Tester\Process
 
     [FAIL]  mongodb is working
 
@@ -64,7 +64,7 @@ environment
             command : ps -ef
             output :   UID   PID  PPID   C STIME   TTY           TIME CMD    0     1     0   0 11:12A...
 
-            class : Environment\Tester\Process
+            class : Hat\Environment\Tester\Process
 
     [FAIL]  apache is working on port
 
@@ -74,7 +74,7 @@ environment
             response : apache
             output : Can not connect IP: 127.0.0.1 PORT: 80
 
-            class : Environment\Tester\Socket
+            class : Hat\Environment\Tester\Socket
 
     [OK]    PDO extension
     [OK]    MB extension

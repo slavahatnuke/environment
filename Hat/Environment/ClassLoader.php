@@ -1,5 +1,5 @@
 <?php
-namespace Environment;
+namespace Hat\Environment;
 
 class ClassLoader
 {

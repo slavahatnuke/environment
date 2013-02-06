@@ -1,8 +1,8 @@
 <?php
-namespace Environment\Tester;
+namespace Hat\Environment\Tester;
 
-use Environment\Tester;
-use Environment\TesterOutput;
+use Hat\Environment\Tester;
+use Hat\Environment\TesterOutput;
 
 class Socket extends Tester
 {

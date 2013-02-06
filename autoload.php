@@ -1,5 +1,5 @@
 <?php
 
-require_once 'Environment/ClassLoader.php';
+require_once 'Hat/Environment/ClassLoader.php';
 
-new Environment\ClassLoader(__DIR__);
+new Hat\Environment\ClassLoader(__DIR__);
