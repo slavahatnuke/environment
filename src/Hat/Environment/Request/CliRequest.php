@@ -7,9 +7,9 @@ use Hat\Environment\Request;
 class CliRequest extends Request
 {
 
-    public function __construct($data = array())
+    public function __construct($defaults = array())
     {
-        parent::__construct($data);
+        parent::__construct($defaults);
         $this->load();
     }
 

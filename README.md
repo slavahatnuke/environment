@@ -1,5 +1,6 @@
-environment
+Hat Environment
 ===========
+The lib allows to check your environment easy
 
 `php environment.php`
 
@@ -42,14 +43,6 @@ environment
 
             class : Hat\Environment\Tester\Process
 
-    [FAIL]  apache is working
-
-            process : httpd
-            command : ps -ef
-            output :   UID   PID  PPID   C STIME   TTY           TIME CMD    0     1     0   0 11:12A...
-
-            class : Hat\Environment\Tester\Process
-
     [FAIL]  mysql is working
 
             process : mysqld
@@ -66,16 +59,9 @@ environment
 
             class : Hat\Environment\Tester\Process
 
-    [FAIL]  apache is working on port
-
-            ip : 127.0.0.1
-            port : 80
-            request : GET / HTTP/1.1\r\nHost: localhost\r\nConnection: Close\r\n\r\n
-            response : apache
-            output : Can not connect IP: 127.0.0.1 PORT: 80
-
-            class : Hat\Environment\Tester\Socket
-
+    [OK]    apache is working
+    [OK]    apache is working on port
+    [OK]    apache answer on request
     [OK]    PDO extension
     [OK]    MB extension
     [OK]    current dir is writable
