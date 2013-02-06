@@ -8,7 +8,7 @@ class PhpIni extends Tester
 {
     protected $defaults = array(
         'option' => 'php ini option',
-        'expected' => 'php ini value',
+        'expected' => null,
         'regex' => null,
     );
 
