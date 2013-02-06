@@ -2,7 +2,9 @@ Hat Environment
 ===========
 The lib allows to check your environment easy
 
-`php environment.php`
+`php environment.php` or
+
+`php environment.php --profile=Profile.dev/os.ini`
 
 
 ```
