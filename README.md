@@ -98,4 +98,5 @@ Installation via Composer
 `php composer.phar install`
 
 you can test default profile
+
 `php vendor/hat/environment/environment.php --profile=vendor/hat/environment/Profile/os.ini`
