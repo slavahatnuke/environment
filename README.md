@@ -77,3 +77,25 @@ The lib allows to check your environment easy
 
 
 ```
+
+Installation via Composer
+===========
+
+`curl -s https://getcomposer.org/installer | php`
+
+`subl composer.json`
+
+```
+
+    {
+        "require": {
+            "hat/environment": "dev-master"
+        }
+    }
+
+```
+
+`php composer.phar install`
+
+you can test default profile
+`php vendor/hat/environment/environment.php --profile=vendor/hat/environment/Profile/os.ini`
