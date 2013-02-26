@@ -27,6 +27,7 @@ class CommandVersion extends Tester
 
         if ($return == 0) {
             $version = $this->extractVersion($output);
+
             return $this->testMinVersion($version) && $this->testMaxVersion($version);
         }
 
@@ -58,5 +59,4 @@ class CommandVersion extends Tester
             return $a[1];
         }
     }
-
 }

@@ -28,8 +28,10 @@ class CliRequest extends Request
 
         if (preg_match('/--(.+?)=(.+)/', $option, $a)) {
             $this->set($a[1], $a[2]);
-        } else if (preg_match('/--(.+)/', $option, $a)) {
-            $this->set($a[1], true);
+        } else {
+            if (preg_match('/--(.+)/', $option, $a)) {
+                $this->set($a[1], true);
+            }
         }
 
     }

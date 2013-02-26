@@ -19,6 +19,7 @@ class FileContains extends Tester
 
         if (!(is_readable($file) && file_exists($file))) {
             $this->set('output', new TesterOutput('can not read file: ' . $file));
+
             return false;
         }
 
@@ -32,7 +33,10 @@ class FileContains extends Tester
 
     public function testExpected($text)
     {
-        return !is_null($this->get('contains')) && strpos(strtolower($text), strtolower($this->get('contains'))) !== false;
+        return !is_null($this->get('contains')) && strpos(
+            strtolower($text),
+            strtolower($this->get('contains'))
+        ) !== false;
     }
 
     public function testRegex($text)

@@ -1,5 +1,4 @@
 <?php
-
 namespace Hat\Environment;
 
 class Environment
@@ -14,12 +13,9 @@ class Environment
     {
         $result = false;
 
-        try
-        {
+        try {
             $result = $this->handleRequest($request);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             echo "\n";
 
             echo "[FAIL]  ";
@@ -38,17 +34,14 @@ class Environment
 
         echo "\n";
 
-        echo $result ?  "[OK]    " : "[FAIL]  ";
+        echo $result ? "[OK]    " : "[FAIL]  ";
 
-        if($result)
-        {
+        if ($result) {
             echo "Test(s) passed";
             echo "\n";
             echo "\n";
             exit(0);
-        }
-        else
-        {
+        } else {
             echo "Test(s) failed";
             echo "\n";
             echo "\n";
@@ -59,13 +52,11 @@ class Environment
 
     protected function handleRequest(Request $request)
     {
-        if(!$request->has('profile'))
-        {
+        if (!$request->has('profile')) {
             throw new \Exception('--profile option is required');
         }
 
-        if(!file_exists($request->get('profile')))
-        {
+        if (!file_exists($request->get('profile'))) {
             throw new \Exception('No file: ' . $request->get('profile'));
         }
 
@@ -75,7 +66,7 @@ class Environment
     public function test($path)
     {
         $tester = new ProfileTester($path);
+
         return $tester->test();
     }
-
 }

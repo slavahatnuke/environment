@@ -1,5 +1,4 @@
 <?php
-
 namespace Hat\Environment;
 
 class Profile extends Holder
@@ -75,14 +74,16 @@ class Profile extends Holder
     {
         if ($this->hasOwnFile($path)) {
             return $this->getOwnFile($path);
-        } else if ($this->hasParents()) {
+        } else {
+            if ($this->hasParents()) {
 
-            foreach ($this->getParents() as $parent) {
-                if ($parent->hasFile($path)) {
-                    return $parent->getFile($path);
+                foreach ($this->getParents() as $parent) {
+                    if ($parent->hasFile($path)) {
+                        return $parent->getFile($path);
+                    }
                 }
-            }
 
+            }
         }
 
         throw new \Exception('No file: ' . $this->getOwnFile($path));

@@ -33,19 +33,20 @@ class Socket extends Tester
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         if (!$socket) {
             $this->set('output', 'Can not create a socket');
+
             return false;
         }
 
         if (!@socket_connect($socket, $ip, $port)) {
             $this->set('output', "Can not connect IP: {$ip} PORT: {$port}");
+
             return false;
         }
 
         $request = $this->get('request');
 
 
-        if(!is_null($request))
-        {
+        if (!is_null($request)) {
             $request = str_replace('\r', "\r", $request);
             $request = str_replace('\n', "\n", $request);
 
@@ -60,17 +61,22 @@ class Socket extends Tester
             $this->set('output', new TesterOutput($response));
 
             socket_close($socket);
+
             return $this->testResponse($response) || $this->testRegex($response);
         }
 
         socket_close($socket);
+
         return true;
 
     }
 
     public function testResponse($text)
     {
-        return !is_null($this->get('response')) && strpos(strtolower($text), strtolower($this->get('response'))) !== false;
+        return !is_null($this->get('response')) && strpos(
+            strtolower($text),
+            strtolower($this->get('response'))
+        ) !== false;
     }
 
     public function testRegex($text)

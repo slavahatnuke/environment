@@ -23,13 +23,11 @@ class ProcessListenPort extends Tester
         $this->set('output', new TesterOutput(join('', $output)));
 
         if ($return == 0) {
-
             foreach ($output as $line) {
                 if ($this->containsProcess($line) && $this->containsPort($line)) {
                     return true;
                 }
             }
-
         }
 
 
