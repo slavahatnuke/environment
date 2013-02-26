@@ -16,16 +16,12 @@ class ClassLoader
         spl_autoload_register(array($this, 'load'));
     }
 
-    protected function load($class){
-
-
+    protected function load($class)
+    {
         $class = str_replace('\\', '/', trim($class, '\/'));
         $file = $this->path . '/' . $class . '.php';
-        if(file_exists($file))
-        {
+        if (file_exists($file)) {
             require_once $file;
         }
-
-
     }
 }

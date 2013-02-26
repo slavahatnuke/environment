@@ -16,6 +16,7 @@ class PhpIni extends Tester
     {
         $value = ini_get($this->get('option'));
         $this->set('output', new TesterOutput($value));
+
         return $this->testExpected($value) || $this->testRegex($value);
     }
 
