@@ -102,14 +102,23 @@ class ProfileTester extends Tester
 
                 $failed = !$passed && !$skipped;
 
+
+
                 $status = $passed ? "[OK]    " : "[FAIL]  ";
                 $status = $skipped ? "[SKIP]  " : $status;
+
+
+
 
                 //TODO [output]
                 echo $status;
 
                 echo $definition->getDescription();
                 echo "\n";
+
+                if ($failed && $options->get('builder') && !$definition->has('@built')) {
+                    return $this->build($definition);
+                }
 
                 //TODO [extract][decompose][handler][definition]
                 if ($failed) {
@@ -142,6 +151,10 @@ class ProfileTester extends Tester
                 //TODO [extract][decompose][handler][definition]
                 if ($passed && $on_pass = $options->get('test.on.pass')) {
                     $failed = !$this->testChild($on_pass);
+                }
+                //TODO [extract][decompose][handler][definition]
+                if ($passed && $options->get('build.on.pass')) {
+                    $failed = !$this->build($definition);
                 }
 
                 return !$failed;
@@ -225,7 +238,7 @@ class ProfileTester extends Tester
         if (file_exists($path)) {
             return parse_ini_file($path, true);
         } else {
-            throw new \Exception('No file: ' . $path);
+            throw new \Exception('No file: ' . getcwd() . '/' . $path);
             // TODO [exception]
         }
 
@@ -233,5 +246,97 @@ class ProfileTester extends Tester
 
     }
 
+    protected function build(Definition $testDefinition)
+    {
+
+        if ($testDefinition->getOptions()->get('build.on.pass')) {
+            $profilePath = $testDefinition->getOptions()->get('build.on.pass');
+        } else {
+            $profilePath = $testDefinition->getOptions()->get('builder');
+        }
+
+        $profilePath = $this->getProfile()->getFile($profilePath);
+        $profile = $this->load($profilePath);
+
+
+        foreach ($profile->getDefinitions() as $definition) {
+            if (!$this->buildDefinition($definition)) {
+                return false;
+            }
+        }
+
+        $testDefinition->set('@built', true);
+
+        return $this->testDefinition($testDefinition);
+    }
+
+    protected function buildDefinition(Definition $definition)
+    {
+
+        //TODO [extract][test][definition] extract testing definition to suitable class
+        $options = $definition->getOptions();
+
+        $class = $options->get('class');
+
+        if ($class) {
+
+            if (class_exists($class)) {
+
+                $builder = new $class;
+                $builder->apply($definition->getProperties());
+
+                //TODO [output]
+                echo "[BUILD] ";
+                echo $definition->getDescription();
+
+                $passed = $builder->build();
+
+                $failed = !$passed;
+
+
+
+
+                echo "\n";
+
+                //TODO [extract][decompose][handler][definition]
+                if ($failed) {
+                    echo "\n";
+                    echo "        ";
+                    echo "definition : ";
+
+                    echo $definition->getName();
+                    echo "\n";
+                }
+
+
+                //TODO [extract][decompose][handler][definition] decompose to definition handlers
+                if ($failed) {
+                    $this->printHolder($builder);
+
+                    echo "        ";
+                    echo "class : ";
+                    echo $class;
+                    echo "\n";
+                    echo "\n";
+
+                }
+
+                //TODO [extract][decompose][handler][definition]
+                if ($failed && $doc = $options->get('doc')) {
+                    $this->printDoc($doc);
+                }
+
+                return !$failed;
+
+            } else {
+                throw new \Exception('no class:' . $class);
+            }
+        } else {
+            throw new \Exception('no class for definition: ' . $definition->getName());
+        }
+
+        return true;
+
+    }
 
 }

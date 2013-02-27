@@ -9,7 +9,7 @@ $env = new Environment();
 $env->handle(
     new CliRequest(
         array(
-            'profile' => 'Profile/os.ini'
+            'profile' => 'profiles.ini'
         )
     )
 );
