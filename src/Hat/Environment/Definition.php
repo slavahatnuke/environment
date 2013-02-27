@@ -15,6 +15,8 @@ class Definition extends Context
         '@test.on.pass' => null,
         '@doc' => null,
         '@description' => null,
+        '@built' => null,
+        '@passed' => false,
     );
 
     public function __construct($name, $data = array())

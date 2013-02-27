@@ -13,9 +13,13 @@ class ProfileTester extends Tester
 
     protected $status;
 
+    protected $definitions;
+
+
     public function __construct($path)
     {
         $this->setPath($path);
+        $this->definitions = new Holder();
     }
 
     public function setPath($path)
@@ -66,6 +70,9 @@ class ProfileTester extends Tester
         ;
 
         foreach ($definitions as $definition) {
+
+            $this->definitions->set($definition->getName(), $definition);
+
             if (!$this->testDefinition($definition) && $status) {
                 $status = false;
             }
@@ -93,16 +100,41 @@ class ProfileTester extends Tester
                 $tester = new $class;
                 $tester->apply($definition->getProperties());
 
+                // depends
 
-                $passed = $tester->test();
+                $skipped = false;
+
+                if($depends = $definition->getOptions()->get('depends'))
+                {
+                    $depends = explode(',', trim($depends));
+
+                    foreach ($depends as $depend_name) {
+                        if($this->definitions->has($depend_name))
+                        {
+                            if(!$this->definitions->get($depend_name)->get('@passed'))
+                            {
+                                $skipped = true;
+                                break;
+                            };
+                        }
+                    }
+
+                }
+
+                if($skipped)
+                {
+                    $passed = false;
+                }
+                else
+                {
+                    $passed = $tester->test();
+                }
 
                 //TODO [output][test][status][state] move to definition state
 
-                $skipped = !$passed && !$options->get('required');
+                $skipped = $skipped || ( !$passed && !$options->get('required') );
 
                 $failed = !$passed && !$skipped;
-
-
 
                 $status = $passed ? "[OK]    " : "[FAIL]  ";
                 $status = $skipped ? "[SKIP]  " : $status;
@@ -156,6 +188,8 @@ class ProfileTester extends Tester
                 if ($passed && $options->get('build.on.pass')) {
                     $failed = !$this->build($definition);
                 }
+
+                $definition->set('@passed', $passed);
 
                 return !$failed;
 
