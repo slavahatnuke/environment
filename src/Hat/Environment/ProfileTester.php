@@ -152,6 +152,10 @@ class ProfileTester extends Tester
                 if ($passed && $on_pass = $options->get('test.on.pass')) {
                     $failed = !$this->testChild($on_pass);
                 }
+                //TODO [extract][decompose][handler][definition]
+                if ($passed && $options->get('build.on.pass')) {
+                    $failed = !$this->build($definition);
+                }
 
                 return !$failed;
 
@@ -245,7 +249,12 @@ class ProfileTester extends Tester
     protected function build(Definition $testDefinition)
     {
 
-        $profilePath = $testDefinition->getOptions()->get('builder');
+        if ($testDefinition->getOptions()->get('build.on.pass')) {
+            $profilePath = $testDefinition->getOptions()->get('build.on.pass');
+        } else {
+            $profilePath = $testDefinition->getOptions()->get('builder');
+        }
+
         $profilePath = $this->getProfile()->getFile($profilePath);
         $profile = $this->load($profilePath);
 
