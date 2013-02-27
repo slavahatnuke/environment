@@ -108,8 +108,18 @@ class ProfileTester extends Tester
                 //TODO [output]
                 echo $status;
 
-                echo $definition->getName();
+                echo $definition->getDescription();
                 echo "\n";
+
+                //TODO [extract][decompose][handler][definition]
+                if ($failed) {
+                    echo "\n";
+                    echo "        ";
+                    echo "definition : ";
+
+                    echo $definition->getName();
+                    echo "\n";
+                }
 
 
                 //TODO [extract][decompose][handler][definition] decompose to definition handlers

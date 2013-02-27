@@ -52,6 +52,11 @@ class Environment
 
     protected function handleRequest(Request $request)
     {
+        if (!count($request) || $request->get('help')) {
+            echo file_get_contents(__DIR__ . '/HELP'), "\n";
+            exit(0);
+        }
+
         if (!$request->has('profile')) {
             throw new \Exception('--profile option is required');
         }

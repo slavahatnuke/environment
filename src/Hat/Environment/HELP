@@ -1,0 +1,3 @@
+Usage: php environment.php [--OPTION[=SECTION]]
+    --help              give this help list
+    --profile=<path>    path to required profile
