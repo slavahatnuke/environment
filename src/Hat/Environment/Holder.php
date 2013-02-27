@@ -1,7 +1,7 @@
 <?php
 namespace Hat\Environment;
 
-class Holder implements \IteratorAggregate
+class Holder implements \IteratorAggregate, \Countable
 {
 
     protected $data = array();
@@ -71,5 +71,8 @@ class Holder implements \IteratorAggregate
         return new \ArrayIterator($this->getData());
     }
 
-
+    public function count()
+    {
+        return $this->getIterator()->count();
+    }
 }

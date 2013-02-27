@@ -77,7 +77,7 @@ class Definition extends Context
 
     public function getDescription()
     {
-        if ($description = $this->get($this->optionPrefix . 'description')) {
+        if ($description = $this->getOptions()->get('description')) {
             $replace = array();
             foreach ($this->getData() as $key => $val) {
                 $key = strtoupper($key);
@@ -85,6 +85,6 @@ class Definition extends Context
             }
             return str_replace(array_keys($replace), array_values($replace), $description);
         }
-        return false;
+        return $this->getName();
     }
 }

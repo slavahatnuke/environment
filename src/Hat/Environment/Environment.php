@@ -52,17 +52,17 @@ class Environment
 
     protected function handleRequest(Request $request)
     {
+        if (!count($request) || $request->get('help')) {
+            echo file_get_contents(__DIR__ . '/HELP'), "\n";
+            exit(0);
+        }
+
         if (!$request->has('profile')) {
             throw new \Exception('--profile option is required');
         }
 
         if (!file_exists($request->get('profile'))) {
             throw new \Exception('No file: ' . $request->get('profile'));
-        }
-
-        if ($request->get('help')) {
-            echo file_get_contents(realpath(__DIR__ . '/../../../HELP')), "\n";
-            exit(0);
         }
 
         return $this->test($request->get('profile'));
