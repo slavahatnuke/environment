@@ -1,5 +1,4 @@
 <?php
-
 namespace Hat\Environment;
 
 class ProfileTester extends Tester
@@ -40,12 +39,14 @@ class ProfileTester extends Tester
         if (!$this->profile) {
             $this->profile = $this->load($this->path);
         }
+
         return $this->profile;
     }
 
     public function testChild($path)
     {
         $tester = new ProfileTester($this->getProfile()->getFile($path));
+
         return $tester->test();
     }
 
@@ -61,7 +62,8 @@ class ProfileTester extends Tester
 
         $definitions = $this->getProfile()->getDefinitions();
 
-        $status = true;;
+        $status = true;
+        ;
 
         foreach ($definitions as $definition) {
             if (!$this->testDefinition($definition) && $status) {
@@ -137,7 +139,7 @@ class ProfileTester extends Tester
             } else {
                 throw new \Exception('no class:' . $class);
             }
-        }  else {
+        } else {
             throw new \Exception('no class for definition: ' . $definition->getName());
         }
 
@@ -188,8 +190,7 @@ class ProfileTester extends Tester
 
         if ($profile->has('@import')) {
 
-            if(!is_array($profile->get('@import')))
-            {
+            if (!is_array($profile->get('@import'))) {
                 throw new \Exception('invalid import: ' . $path);
             }
 

@@ -1,5 +1,4 @@
 <?php
-
 require_once 'autoload.php';
 
 use Hat\Environment\Request\CliRequest;

@@ -1,5 +1,4 @@
 <?php
-
 namespace Hat\Environment;
 
 class Context extends Holder
