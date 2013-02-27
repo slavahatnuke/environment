@@ -108,7 +108,7 @@ class ProfileTester extends Tester
                 //TODO [output]
                 echo $status;
 
-                echo $definition->getName();
+                echo $definition->getDescription() ?: $definition->getName();
                 echo "\n";
 
 

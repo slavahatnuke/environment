@@ -33,7 +33,5 @@ class CliRequest extends Request
                 $this->set($a[1], true);
             }
         }
-
     }
-
 }

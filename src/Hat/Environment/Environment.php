@@ -60,6 +60,11 @@ class Environment
             throw new \Exception('No file: ' . $request->get('profile'));
         }
 
+        if ($request->get('help')) {
+            echo file_get_contents(realpath(__DIR__ . '/../../../HELP')), "\n";
+            exit(0);
+        }
+
         return $this->test($request->get('profile'));
     }
 
