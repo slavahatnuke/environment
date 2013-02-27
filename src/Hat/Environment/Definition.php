@@ -5,13 +5,16 @@ class Definition extends Context
 {
     protected $name;
 
-    protected $option_prefix = '@';
+    protected $optionPrefix = '@';
+
+    protected $placeHolderSeparator = '%%';
 
     protected $defaults = array(
         '@class' => null,
         '@required' => true,
         '@test.on.pass' => null,
-        '@doc' => null
+        '@doc' => null,
+        '@description' => null,
     );
 
     public function __construct($name, $data = array())
@@ -64,7 +67,7 @@ class Definition extends Context
 
     protected function isOption($name)
     {
-        return substr($name, 0, 1) == $this->option_prefix;
+        return substr($name, 0, 1) == $this->optionPrefix;
     }
 
     protected function extractOption($name)
@@ -72,4 +75,16 @@ class Definition extends Context
         return $this->isOption($name) ? substr($name, 1) : $name;
     }
 
+    public function getDescription()
+    {
+        if ($description = $this->getOptions()->get('description')) {
+            $replace = array();
+            foreach ($this->getData() as $key => $val) {
+                $key = strtoupper($key);
+                $replace["{$this->placeHolderSeparator}{$key}{$this->placeHolderSeparator}"] = $val;
+            }
+            return str_replace(array_keys($replace), array_values($replace), $description);
+        }
+        return $this->getName();
+    }
 }
