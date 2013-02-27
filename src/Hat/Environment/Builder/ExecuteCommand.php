@@ -13,8 +13,12 @@ class ExecuteCommand extends Builder
     public function build()
     {
         //TODO [extract][cli][component] extract to CLI component
-        $command = $this->get('command');
+        echo "\n";
+        echo "        ";
+        echo $command = $this->get('command');
+        echo "\n";
         $output = '';
+
         exec($command, $output, $return);
 
         $this->set('output', new TesterOutput(join('', $output)));

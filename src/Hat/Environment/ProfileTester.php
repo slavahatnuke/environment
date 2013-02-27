@@ -276,15 +276,17 @@ class ProfileTester extends Tester
                 $builder = new $class;
                 $builder->apply($definition->getProperties());
 
+                //TODO [output]
+                echo "[BUILD] ";
+                echo $definition->getDescription();
 
                 $passed = $builder->build();
 
                 $failed = !$passed;
-                //TODO [output]
-                echo "[BUILD] ";
 
 
-                echo $definition->getDescription();
+
+
                 echo "\n";
 
                 //TODO [extract][decompose][handler][definition]
