@@ -1,7 +1,6 @@
 Hat Environment
 ===========
-The lib allows to check your environment easy
-This lib allows to test and build your environment in on action
+The lib allows to check your environment easy and allows to test and build your environment in on action
 
 `bin/environment`
 
