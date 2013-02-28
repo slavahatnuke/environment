@@ -4,18 +4,18 @@ The lib allows to check your environment easy
 
 `php environment.php` or
 
-`php environment.php --profile=Profile.dev/os.ini`
+`php environment.php --profile=profile/dev/os.ini`
 
 
 ```
     slava$ php environment.php
 
 
-    [TEST]  Profile/os.ini
+    [TEST]  profile/default/os.ini
 
     [OK]    osx
 
-    [TEST]  Profile/os/environment_osx.ini
+    [TEST]  profile/default/os/environment_osx.ini
 
     [OK]    php installed
     [OK]    php version
@@ -100,4 +100,4 @@ Installation via Composer
 
 you can test default profile
 
-`php vendor/hat/environment/environment.php --profile=vendor/hat/environment/Profile/os.ini`
+`php vendor/hat/environment/environment.php --profile=vendor/hat/environment/profile/default/os.ini`
