@@ -9,6 +9,12 @@ class TesterOutput
 
     public function __construct($text, $max_length = 80)
     {
+
+        if(is_array($text))
+        {
+            $text = join('', $text);
+        }
+
         $this->text = $text;
         $this->max_length = $max_length;
     }

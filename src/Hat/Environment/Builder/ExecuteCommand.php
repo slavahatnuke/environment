@@ -21,7 +21,7 @@ class ExecuteCommand extends Builder
 
         exec($command, $output, $return);
 
-        $this->set('output', new TesterOutput(join('', $output)));
+        $this->set('output', new TesterOutput($output));
 
         return $return == 0;
     }

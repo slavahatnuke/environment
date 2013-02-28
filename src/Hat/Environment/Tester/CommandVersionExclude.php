@@ -21,7 +21,7 @@ class CommandVersionExclude extends Tester
         $command = $this->get('command');
         $output = array();
         exec($command, $output, $return);
-        $this->set('output', new TesterOutput(join('', $output)));
+        $this->set('output', new TesterOutput($output));
 
         $output = join('', $output);
 

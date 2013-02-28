@@ -20,7 +20,7 @@ class ProcessListenPort extends Tester
         $output = array();
         exec($command, $output, $return);
 
-        $this->set('output', new TesterOutput(join('', $output)));
+        $this->set('output', new TesterOutput($output));
 
         if ($return == 0) {
             foreach ($output as $line) {

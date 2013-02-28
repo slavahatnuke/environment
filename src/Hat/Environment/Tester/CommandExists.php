@@ -18,7 +18,7 @@ class CommandExists extends Tester
         $output = '';
         exec($cmd, $output, $return);
 
-        $this->set('output', new TesterOutput(join('', $output)));
+        $this->set('output', new TesterOutput($output));
 
         return $return == 0;
     }
