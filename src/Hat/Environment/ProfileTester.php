@@ -128,7 +128,14 @@ class ProfileTester extends Tester
                 else
                 {
                     $passed = $tester->test();
+
+                    if($options->get('negative'))
+                    {
+                      $passed = !$passed;
+                    }
+
                 }
+
 
                 //TODO [output][test][status][state] move to definition state
 

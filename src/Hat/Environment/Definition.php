@@ -11,6 +11,7 @@ class Definition extends Context
 
     protected $defaults = array(
         '@class' => null,
+        '@negative' => false,
         '@required' => true,
         '@test.on.pass' => null,
         '@doc' => null,
