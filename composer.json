@@ -13,5 +13,5 @@
             "Hat": "src/"
         }
     },
-    "bin": ["environment.php"]    
+    "bin": ["bin/environment"]
 }
