@@ -108,10 +108,10 @@ class ProfileTester extends Tester
                 {
                     $depends = explode(',', trim($depends));
 
-                    foreach ($depends as $depend_name) {
-                        if($this->definitions->has($depend_name))
+                    foreach ($depends as $depend_definition_name) {
+                        if($this->definitions->has($depend_definition_name))
                         {
-                            if(!$this->definitions->get($depend_name)->get('@passed'))
+                            if(!$this->definitions->get($depend_definition_name)->get('@passed'))
                             {
                                 $skipped = true;
                                 break;
@@ -148,7 +148,7 @@ class ProfileTester extends Tester
                 echo $definition->getDescription();
                 echo "\n";
 
-                if ($failed && $options->get('builder') && !$definition->has('@built')) {
+                if ($failed && $options->get('builder') && !$definition->get('@built')) {
                     return $this->build($definition);
                 }
 
