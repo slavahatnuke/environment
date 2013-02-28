@@ -185,7 +185,7 @@ class ProfileTester extends Tester
                     $failed = !$this->testChild($on_pass);
                 }
                 //TODO [extract][decompose][handler][definition]
-                if ($passed && $options->get('build.on.pass')) {
+                if ($passed && $options->get('build.on.pass') && !$definition->get('@built')) {
                     $failed = !$this->build($definition);
                 }
 
@@ -322,12 +322,11 @@ class ProfileTester extends Tester
                 //TODO [output]
                 echo "[BUILD] ";
                 echo $definition->getDescription();
+                echo "\n";
 
                 $passed = $builder->build();
 
                 $failed = !$passed;
-
-
 
 
                 echo "\n";
