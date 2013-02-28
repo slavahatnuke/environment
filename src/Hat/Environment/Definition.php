@@ -18,12 +18,14 @@ class Definition extends Context
         '@description' => null,
         '@built' => null,
         '@passed' => false,
+        '@recompile' => true,
     );
 
     public function __construct($name, $data = array())
     {
         $this->setName($name);
         parent::__construct($data);
+        $this->recompile();
     }
 
     public function setName($name)
@@ -78,15 +80,32 @@ class Definition extends Context
         return $this->isOption($name) ? substr($name, 1) : $name;
     }
 
+
+    protected function recompile()
+    {
+        if($this->getOptions()->get('recompile'))
+        {
+            foreach($this as $key => $value)
+            {
+                 $this->set($key, $this->compileText($value));
+            }
+        }
+    }
+    protected function compileText($text)
+    {
+        $replace = array();
+        foreach ($this as $key => $val) {
+            $key = strtoupper($key);
+            $key = "{$this->placeHolderSeparator}{$key}{$this->placeHolderSeparator}";
+            $replace[$key] = $val;
+        }
+        return strtr($text, $replace);
+    }
+
     public function getDescription()
     {
         if ($description = $this->getOptions()->get('description')) {
-            $replace = array();
-            foreach ($this->getData() as $key => $val) {
-                $key = strtoupper($key);
-                $replace["{$this->placeHolderSeparator}{$key}{$this->placeHolderSeparator}"] = $val;
-            }
-            return str_replace(array_keys($replace), array_values($replace), $description);
+            return $this->compileText($description);
         }
         return $this->getName();
     }
