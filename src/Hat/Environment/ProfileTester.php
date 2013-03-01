@@ -146,6 +146,17 @@ class ProfileTester extends Tester
                 $status = $passed ? "[OK]    " : "[FAIL]  ";
                 $status = $skipped ? "[SKIP]  " : $status;
 
+                $fixed = $passed && $definition->get('@built');
+
+                if($fixed)
+                {
+                    //TODO [output]
+                    echo "[FIXED] ";
+
+                    echo $definition->getDescription();
+                    echo "\n";
+
+                }
 
 
 
@@ -155,10 +166,46 @@ class ProfileTester extends Tester
                 echo $definition->getDescription();
                 echo "\n";
 
+                // builders
                 if ($failed && $options->get('builder') && !$definition->get('@built')) {
-                    return $this->build($definition);
+                    if(!$this->build($definition))
+                    {
+                        echo "[FAIL]  ";
+                        echo $definition->getDescription();
+                        echo "\n";
+                        echo "\n";
+                        echo "        ";
+                        echo "definition : ";
+                        echo $definition->getName();
+                        echo "\n";
+
+                        return false;
+                    }
+                    return true;
                 }
 
+                //TODO [extract][decompose][handler][definition]
+                if ($passed && $options->get('build.on.pass') && !$definition->get('@built')) {
+
+                    $failed = !$this->build($definition);
+
+                    if($failed)
+                    {
+                        echo "[FAIL]  ";
+                        echo $definition->getDescription();
+                        echo "\n";
+                        echo "\n";
+                        echo "        ";
+                        echo "definition : ";
+                        echo $definition->getName();
+                        echo "\n";
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                // info about failing
                 //TODO [extract][decompose][handler][definition]
                 if ($failed) {
                     echo "\n";
@@ -190,10 +237,6 @@ class ProfileTester extends Tester
                 //TODO [extract][decompose][handler][definition]
                 if ($passed && $on_pass = $options->get('test.on.pass')) {
                     $failed = !$this->testChild($on_pass);
-                }
-                //TODO [extract][decompose][handler][definition]
-                if ($passed && $options->get('build.on.pass') && !$definition->get('@built')) {
-                    $failed = !$this->build($definition);
                 }
 
                 $definition->set('@passed', $passed);
@@ -302,6 +345,7 @@ class ProfileTester extends Tester
 
         foreach ($profile->getDefinitions() as $definition) {
             if (!$this->buildDefinition($definition)) {
+                $testDefinition->set('@built', false);
                 return false;
             }
         }
@@ -366,7 +410,7 @@ class ProfileTester extends Tester
                     $this->printDoc($doc);
                 }
 
-                return !$failed;
+                return $passed;
 
             } else {
                 throw new \Exception('no class:' . $class);
