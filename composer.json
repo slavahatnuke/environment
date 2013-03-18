@@ -1,8 +1,8 @@
 {
     "name": "hat/environment",
     "type": "library",
-    "description": "The lib allows to check your environment easy",
-    "keywords": ["test", "environment", "os", "system"],
+    "description": "The lib allows to check your environment easy and allows to test and build your environment in one action",
+    "keywords": ["environment", "test", "build", "env", "testing", "building", "os", "system"],
     "homepage": "https://github.com/slavahatnuke/environment",
     "license": "MIT",
     "require": {
