@@ -11,7 +11,7 @@ class Profile extends Holder
      */
     protected $parents = array();
 
-    protected $system_definitions = array('@import');
+    protected $systemDefinitions = array('@import');
 
     public function __construct($path)
     {
@@ -99,7 +99,7 @@ class Profile extends Holder
         $result = array();
 
         foreach ($this->getData() as $name => $value) {
-            if (!in_array($name, $this->system_definitions)) {
+            if (!in_array($name, $this->systemDefinitions)) {
                 $result[$name] = new Definition($name, $value);
             }
         }
