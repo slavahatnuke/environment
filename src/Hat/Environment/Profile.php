@@ -58,7 +58,9 @@ class Profile extends Holder
 
         if (!$has && $this->hasParents()) {
 
-            foreach ($this->getParents() as $parent) {
+            $parents = array_reverse($this->getParents());
+
+            foreach ($parents as $parent) {
                 if ($parent->hasFile($path)) {
                     return true;
                 }
@@ -77,7 +79,9 @@ class Profile extends Holder
         } else {
             if ($this->hasParents()) {
 
-                foreach ($this->getParents() as $parent) {
+                $parents = array_reverse($this->getParents());
+
+                foreach ($parents as $parent) {
                     if ($parent->hasFile($path)) {
                         return $parent->getFile($path);
                     }
