@@ -104,15 +104,12 @@ class ProfileTester extends Tester
 
                 $skipped = false;
 
-                if($depends = $definition->getOptions()->get('depends'))
-                {
+                if ($depends = $definition->getOptions()->get('depends')) {
                     $depends = explode(',', trim($depends));
 
                     foreach ($depends as $depend_definition_name) {
-                        if($this->definitions->has($depend_definition_name))
-                        {
-                            if(!$this->definitions->get($depend_definition_name)->get('@passed'))
-                            {
+                        if($this->definitions->has($depend_definition_name)) {
+                            if(!$this->definitions->get($depend_definition_name)->get('@passed')) {
                                 $skipped = true;
                                 break;
                             };
@@ -121,19 +118,14 @@ class ProfileTester extends Tester
 
                 }
 
-                if($skipped)
-                {
+                if ($skipped) {
                     $passed = false;
-                }
-                else
-                {
+                } else {
                     $passed = $tester->test();
 
-                    if($options->get('negative'))
-                    {
+                    if ($options->get('negative')) {
                       $passed = !$passed;
                     }
-
                 }
 
 
@@ -148,8 +140,7 @@ class ProfileTester extends Tester
 
                 $fixed = $passed && $definition->get('@built');
 
-                if($fixed)
-                {
+                if($fixed) {
                     //TODO [output]
                     echo "[FIXED] ";
 
@@ -168,8 +159,7 @@ class ProfileTester extends Tester
 
                 // builders
                 if ($failed && $options->get('builder') && !$definition->get('@built')) {
-                    if(!$this->build($definition))
-                    {
+                    if(!$this->build($definition)) {
                         echo "[FAIL]  ";
                         echo $definition->getDescription();
                         echo "\n";
@@ -189,8 +179,7 @@ class ProfileTester extends Tester
 
                     $failed = !$this->build($definition);
 
-                    if($failed)
-                    {
+                    if($failed) {
                         echo "[FAIL]  ";
                         echo $definition->getDescription();
                         echo "\n";
