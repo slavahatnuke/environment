@@ -121,7 +121,7 @@ class ProfileTester extends Tester
                 if ($skipped) {
                     $passed = false;
                 } else {
-                    $passed = $tester->test();
+                    $passed = $tester->execute();
 
                     if ($options->get('negative')) {
                       $passed = !$passed;
@@ -364,7 +364,7 @@ class ProfileTester extends Tester
                 echo $definition->getDescription();
                 echo "\n";
 
-                $passed = $builder->build();
+                $passed = $builder->execute();
 
                 $failed = !$passed;
 
