@@ -1,3 +1,0 @@
-Installation and Configuration PHP
-
-http://php.net/manual/en/install.php
