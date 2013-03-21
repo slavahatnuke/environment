@@ -15,6 +15,13 @@ class EnvironmentTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
     }
 
+    protected function tearDown()
+    {
+        M::close();
+        parent::tearDown();
+    }
+
+
     /**
      * @test
      */
