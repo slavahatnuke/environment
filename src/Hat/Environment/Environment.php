@@ -14,18 +14,10 @@ class Environment
     public function __construct(Kit $kit = null)
     {
         if (!$kit) {
-            $kit = $this->loadKit();
+            $kit = $this->createKit();
         }
 
         $this->kit = $kit;
-    }
-
-    /**
-     * @return Kit
-     */
-    protected function loadKit()
-    {
-        return new Kit(require 'Environment.config.php');
     }
 
     public function __invoke(Request $request = null)
@@ -40,6 +32,14 @@ class Environment
         }
 
         return $this->kit->get('request.handler')->handle($this->kit->get('request'));
+    }
+
+    /**
+     * @return Kit
+     */
+    protected function createKit()
+    {
+        return new Kit(require 'Environment.config.php');
     }
 
 }
