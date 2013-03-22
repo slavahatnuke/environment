@@ -1,10 +1,9 @@
 <?php
 namespace Hat\Environment\Handler\Request;
 
-use Hat\Environment\Handler;
-use Hat\Environment\ProfileTester;
+use Hat\Environment\Handler\Handler;
 
-class ExecuteProfile extends Handler
+class ExecuteProfileHandler extends Handler
 {
     protected $loader;
 
@@ -23,7 +22,7 @@ class ExecuteProfile extends Handler
 
     protected function doHandle($request)
     {
-        return $this->handler->handle($this->loader->load($request->get('profile')));
+        return $this->handler->handle($this->loader->loadByPath($request->get('profile')));
     }
 
 }

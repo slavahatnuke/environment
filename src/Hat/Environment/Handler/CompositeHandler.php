@@ -1,8 +1,9 @@
 <?php
-namespace Hat\Environment;
+namespace Hat\Environment\Handler;
 
 class CompositeHandler extends Handler
 {
+
     /**
      * @var Handler[]
      */
@@ -22,7 +23,7 @@ class CompositeHandler extends Handler
             }
         }
 
-        throw new Exception('Can not find handler');
+        throw new HandlerException('Can not find handler');
 
     }
 

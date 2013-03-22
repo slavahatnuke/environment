@@ -13,10 +13,6 @@ class Environment
 
     public function __construct(Kit $kit = null)
     {
-        if (!$kit) {
-            $kit = $this->createKit();
-        }
-
         $this->kit = $kit;
     }
 
@@ -28,10 +24,22 @@ class Environment
     public function handle(Request $request = null)
     {
         if ($request) {
-             $this->kit->set('request', $request);
+            $this->getKit()->set('request', $request);
         }
 
-        return $this->kit->get('request.handler')->handle($this->kit->get('request'));
+        return $this->getKit()->get('request.handler')->handle($this->getKit()->get('request'));
+    }
+
+
+    /**
+     * @return Kit
+     */
+    public function getKit()
+    {
+        if (!$this->kit) {
+            $this->kit = $this->createKit();
+        }
+        return $this->kit;
     }
 
     /**

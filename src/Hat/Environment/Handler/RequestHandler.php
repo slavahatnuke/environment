@@ -1,5 +1,7 @@
 <?php
-namespace Hat\Environment;
+namespace Hat\Environment\Handler;
+
+use Hat\Environment\Request;
 
 class RequestHandler extends CompositeHandler
 {
@@ -13,11 +15,11 @@ class RequestHandler extends CompositeHandler
     {
         try {
             $result = parent::doHandle($request);
-        } catch (Exception $e) {
+        } catch (HandlerException $e) {
             echo "\n";
 
             echo "[FAIL]  ";
-            echo "Exception: ";
+            echo "HandlerException: ";
             echo $e->getMessage();
             echo "\n";
             echo $e->getFile();

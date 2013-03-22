@@ -11,7 +11,7 @@ class Profile extends Holder
      */
     protected $parents = array();
 
-    protected $systemDefinitions = array('@import');
+    protected $systemDefinitions = array('@import', '@extends', '@global');
 
     public function __construct($path)
     {

@@ -1,14 +1,15 @@
 <?php
-namespace Hat\Environment;
+namespace Hat\Environment\Handler;
 
 class Handler
 {
+
     public function handle($data)
     {
         if ($this->supports($data)) {
             return $this->doHandle($data);
         } else {
-            throw new Exception('Can not handle not supportable data');
+            throw new HandlerException('Can not handle not supportable data');
         }
     }
 

@@ -1,9 +1,9 @@
 <?php
 namespace Hat\Environment\Handler\Request;
 
-use Hat\Environment\Handler;
+use Hat\Environment\Handler\Handler;
 
-class Help extends Handler
+class HelpHandler extends Handler
 {
     public function supports($data)
     {

@@ -8,12 +8,12 @@ return array(
 
     'request.handler' => new Service(function (Kit $kit) {
 
-        $handler = new RequestHandler();
+        $handler = new \Hat\Environment\Handler\RequestHandler();
 
-        $handler->addHandler(new \Hat\Environment\Handler\Request\Help());
-        $handler->addHandler(new \Hat\Environment\Handler\Request\RequireProfile());
+        $handler->addHandler(new \Hat\Environment\Handler\Request\HelpHandler());
+        $handler->addHandler(new \Hat\Environment\Handler\Request\RequireProfileHandler());
 
-        $handler->addHandler(new \Hat\Environment\Handler\Request\ExecuteProfile(
+        $handler->addHandler(new \Hat\Environment\Handler\Request\ExecuteProfileHandler(
                 $kit->get('profile.loader'),
                 $kit->get('profile.handler')
         ));
@@ -23,8 +23,15 @@ return array(
 
     'profile.handler' => new Service(function (Kit $kit) {
 
-        $handler = new ProfileHandler();
-//        $handler->addHandler(new \Hat\Environment\Handler\Request\Help());
+        $handler = new \Hat\Environment\Handler\ProfileHandler($kit->get('definition.handler'));
+
+        return $handler;
+    }),
+
+    'definition.handler' => new Service(function (Kit $kit) {
+
+        $handler = new \Hat\Environment\Handler\DefinitionHandler();
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\ValidateHandler());
 
         return $handler;
     }),

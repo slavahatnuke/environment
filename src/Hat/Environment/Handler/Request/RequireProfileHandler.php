@@ -1,10 +1,10 @@
 <?php
 namespace Hat\Environment\Handler\Request;
 
-use Hat\Environment\Handler;
-use Hat\Environment\Exception;
+use Hat\Environment\Handler\Handler;
+use Hat\Environment\Handler\HandlerException;
 
-class RequireProfile extends Handler
+class RequireProfileHandler extends Handler
 {
     public function supports($data)
     {
@@ -13,7 +13,7 @@ class RequireProfile extends Handler
 
     protected function doHandle($request)
     {
-        throw new Exception('--profile option is required');
+        throw new HandlerException('--profile option is required');
     }
 
 }
