@@ -6,6 +6,14 @@ use Hat\Environment\Kit\Service;
 
 return array(
 
+
+    // options
+    'default.profile.name' => 'environment.ini',
+
+
+
+    //services
+
     'request.handler' => new Service(function (Kit $kit) {
 
         $handler = new \Hat\Environment\Handler\RequestHandler();
@@ -21,12 +29,20 @@ return array(
         return $handler;
     }),
 
+
+
+
+
     'profile.handler' => new Service(function (Kit $kit) {
 
         $handler = new \Hat\Environment\Handler\ProfileHandler($kit->get('definition.handler'));
 
         return $handler;
     }),
+
+
+
+
 
     'definition.handler' => new Service(function (Kit $kit) {
 
@@ -36,6 +52,10 @@ return array(
         return $handler;
     }),
 
+
+
+
+
     'profile.loader' => new Service(function (Kit $kit) {
 
         $loader = new ProfileLoader();
@@ -43,14 +63,22 @@ return array(
         return $loader;
     }),
 
+
+
+
+
     'request' => new Service(function (Kit $kit) {
 
         return new \Hat\Environment\Request\CliRequest(
             array(
-                'profile' => 'environment.ini'
+                'profile' => $kit->get('default.profile.name')
             )
         );
 
     }),
+
+
+    // end services
+
 
 );
