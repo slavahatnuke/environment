@@ -1,16 +1,19 @@
 <?php
 namespace Hat\Environment;
 
-class RequestHandler extends Context
+class RequestHandler extends CompositeHandler
 {
-    public function handle(Request $request)
+
+    public function supports($data)
     {
+        return $data instanceof Request;
+    }
 
-        $result = false;
-
+    protected function doHandle($request)
+    {
         try {
-            $result = $this->handleRequest($request);
-        } catch (\Exception $e) {
+            $result = parent::doHandle($request);
+        } catch (Exception $e) {
             echo "\n";
 
             echo "[FAIL]  ";
@@ -26,6 +29,7 @@ class RequestHandler extends Context
 
             exit(2);
         }
+
 
         echo "\n";
 
@@ -45,28 +49,4 @@ class RequestHandler extends Context
 
     }
 
-    protected function handleRequest(Request $request)
-    {
-        if (!count($request) || $request->get('help')) {
-            echo file_get_contents(__DIR__ . '/HELP'), "\n";
-            exit(0);
-        }
-
-        if (!$request->has('profile')) {
-            throw new \Exception('--profile option is required');
-        }
-
-        if (!file_exists($request->get('profile'))) {
-            throw new \Exception('No file: ' . $request->get('profile'));
-        }
-
-        return $this->test($request->get('profile'));
-    }
-
-    public function test($path)
-    {
-        $tester = new ProfileTester($path);
-
-        return $tester->test();
-    }
 }

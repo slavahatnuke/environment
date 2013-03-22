@@ -233,10 +233,10 @@ class ProfileTester extends Tester
                 return !$failed;
 
             } else {
-                throw new \Exception('no class:' . $class);
+                throw new Exception('no class:' . $class);
             }
         } else {
-            throw new \Exception('no class for definition: ' . $definition->getName());
+            throw new Exception('no class for definition: ' . $definition->getName());
         }
 
         return true;
@@ -287,7 +287,7 @@ class ProfileTester extends Tester
         if ($profile->has('@import')) {
 
             if (!is_array($profile->get('@import'))) {
-                throw new \Exception('invalid import: ' . $path);
+                throw new Exception('invalid import: ' . $path);
             }
 
             $import_pathes = $profile->get('@import');
@@ -311,7 +311,7 @@ class ProfileTester extends Tester
         if (file_exists($path)) {
             return parse_ini_file($path, true);
         } else {
-            throw new \Exception('No file: ' . getcwd() . '/' . $path);
+            throw new Exception('No file: ' . getcwd() . '/' . $path);
             // TODO [exception]
         }
 
@@ -402,10 +402,10 @@ class ProfileTester extends Tester
                 return $passed;
 
             } else {
-                throw new \Exception('no class:' . $class);
+                throw new Exception('no class:' . $class);
             }
         } else {
-            throw new \Exception('no class for definition: ' . $definition->getName());
+            throw new Exception('no class for definition: ' . $definition->getName());
         }
 
         return true;

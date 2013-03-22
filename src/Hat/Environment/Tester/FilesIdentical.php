@@ -3,6 +3,7 @@ namespace Hat\Environment\Tester;
 
 use Hat\Environment\Tester;
 use Hat\Environment\TesterOutput;
+use Hat\Environment\Exception;
 
 class FilesIdentical extends Tester
 {
@@ -17,7 +18,7 @@ class FilesIdentical extends Tester
         $file2 = $this->get('file2');
 
         if (!($file && $file2)) {
-            throw new \Exception('options file and file2 must be initialised');
+            throw new Exception('options file and file2 must be initialised');
         }
 
         if (!file_exists($file)) {

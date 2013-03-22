@@ -90,7 +90,7 @@ class Profile extends Holder
             }
         }
 
-        throw new \Exception('No file: ' . $this->getOwnFile($path));
+        throw new Exception('No file: ' . $this->getOwnFile($path));
 
     }
 
