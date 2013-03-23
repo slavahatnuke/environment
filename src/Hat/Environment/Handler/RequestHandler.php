@@ -2,6 +2,7 @@
 namespace Hat\Environment\Handler;
 
 use Hat\Environment\Request\Request;
+use Hat\Environment\Handler\HandlerException;
 
 class RequestHandler extends CompositeHandler
 {
