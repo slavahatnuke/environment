@@ -2,10 +2,10 @@
 
 namespace Hat\Environment\Request;
 
-use Hat\Environment\Request;
-
 class CliRequest extends Request
 {
+
+    protected $parameters = array();
 
     public function __construct($defaults = array())
     {
@@ -15,11 +15,16 @@ class CliRequest extends Request
 
     protected function load()
     {
-        $env = isset($_SERVER['argv']) ? $_SERVER['argv'] : array();
+        $options = isset($_SERVER['argv']) ? $_SERVER['argv'] : array();
 
-        foreach ($env as $option) {
+        foreach ($options as $option) {
             $this->defineOption($option);
         }
+
+        if (count($this->parameters)) {
+            $this->set('parameters', $this->parameters);
+        }
+
     }
 
     protected function defineOption($option)
@@ -27,11 +32,13 @@ class CliRequest extends Request
         $a = array();
 
         if (preg_match('/--(.+?)=(.+)/', $option, $a)) {
-            $this->set($a[1], $a[2]);
-        } else {
-            if (preg_match('/--(.+)/', $option, $a)) {
-                $this->set($a[1], true);
-            }
+            return $this->set($a[1], $a[2]);
         }
+
+        if (preg_match('/--(.+)/', $option, $a)) {
+            return $this->set($a[1], true);
+        }
+
+        $this->parameters[] = $option;
     }
 }

@@ -68,7 +68,7 @@ class Holder implements \IteratorAggregate, \Countable
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->getData());
+        return new HolderIterator($this);
     }
 
     public function count()

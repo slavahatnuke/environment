@@ -23,6 +23,7 @@ class Environment
 
     public function handle(Request $request = null)
     {
+
         if ($request) {
             $this->getKit()->set('request', $request);
         }

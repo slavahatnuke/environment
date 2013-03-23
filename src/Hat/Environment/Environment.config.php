@@ -19,9 +19,10 @@ return array(
         $handler = new \Hat\Environment\Handler\RequestHandler();
 
         $handler->addHandler(new \Hat\Environment\Handler\Request\HelpHandler());
+//        $handler->addHandler(new \Hat\Environment\Handler\Request\DefineProfileHandler());
         $handler->addHandler(new \Hat\Environment\Handler\Request\RequireProfileHandler());
 
-        $handler->addHandler(new \Hat\Environment\Handler\Request\ExecuteProfileHandler(
+        $handler->addHandler(new \Hat\Environment\Handler\Request\HandleProfileHandler(
                 $kit->get('profile.loader'),
                 $kit->get('profile.handler')
         ));
@@ -35,7 +36,10 @@ return array(
 
     'profile.handler' => new Service(function (Kit $kit) {
 
-        $handler = new \Hat\Environment\Handler\ProfileHandler($kit->get('definition.handler'));
+        $handler = new \Hat\Environment\Handler\ProfileHandler(
+            $kit->get('definition.handler'),
+            $kit->get('profile.loader')
+        );
 
         return $handler;
     }),
@@ -48,6 +52,7 @@ return array(
 
         $handler = new \Hat\Environment\Handler\DefinitionHandler();
         $handler->addHandler(new \Hat\Environment\Handler\Definition\ValidateHandler());
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\HandleCommandHandler($kit));
 
         return $handler;
     }),
@@ -58,7 +63,7 @@ return array(
 
     'profile.loader' => new Service(function (Kit $kit) {
 
-        $loader = new ProfileLoader();
+        $loader = new \Hat\Environment\Loader\ProfileLoader();
 
         return $loader;
     }),

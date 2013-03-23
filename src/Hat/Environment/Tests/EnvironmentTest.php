@@ -47,8 +47,8 @@ class EnvironmentTest extends \PHPUnit_Framework_TestCase
 
         $expected = 'result';
 
-        $handler = M::mock('Hat\Environment\RequestHandler');
-        $request = M::mock('Hat\Environment\Request');
+        $handler = M::mock('Hat\Environment\Request\Request;Handler');
+        $request = M::mock('Hat\Environment\Request\Request;');
 
         $this->kit->shouldReceive('get')->once()->with('request.handler')->andReturn($handler);
         $this->kit->shouldReceive('get')->once()->with('request')->andReturn($request);

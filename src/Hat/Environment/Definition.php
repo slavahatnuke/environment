@@ -1,6 +1,8 @@
 <?php
 namespace Hat\Environment;
 
+use Hat\Environment\State\DefinitionState;
+
 class Definition extends Context
 {
     protected $name;
@@ -21,12 +23,31 @@ class Definition extends Context
         '@recompile' => true,
     );
 
+    /**
+     * @var \Hat\Environment\State\DefinitionState
+     */
+    protected $state;
+
+
     public function __construct($name, $data = array())
     {
         $this->setName($name);
         parent::__construct($data);
         $this->recompile();
     }
+
+
+    /**
+     * @var \Hat\Environment\State\DefinitionState
+     */
+    public function getState()
+    {
+        if (!$this->state) {
+            $this->state = new DefinitionState();
+        }
+        return $this->state;
+    }
+
 
     public function setName($name)
     {

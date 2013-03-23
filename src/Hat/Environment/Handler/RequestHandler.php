@@ -1,7 +1,7 @@
 <?php
 namespace Hat\Environment\Handler;
 
-use Hat\Environment\Request;
+use Hat\Environment\Request\Request;
 
 class RequestHandler extends CompositeHandler
 {

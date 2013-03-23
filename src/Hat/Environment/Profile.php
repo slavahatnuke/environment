@@ -1,10 +1,17 @@
 <?php
 namespace Hat\Environment;
 
+use Hat\Environment\State\ProfileState;
+
 class Profile extends Holder
 {
 
     protected $path;
+
+    /**
+     * @var \Hat\Environment\State\ProfileState
+     */
+    protected $state;
 
     /**
      * @var Profile
@@ -16,6 +23,17 @@ class Profile extends Holder
     public function __construct($path)
     {
         $this->setPath($path);
+    }
+
+    /**
+     * @var \Hat\Environment\State\DefinitionState
+     */
+    public function getState()
+    {
+        if (!$this->state) {
+            $this->state = new ProfileState();
+        }
+        return $this->state;
     }
 
     public function setPath($path)
