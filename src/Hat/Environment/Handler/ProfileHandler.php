@@ -19,10 +19,16 @@ class ProfileHandler extends Handler
      */
     protected $loader;
 
-    public function __construct(DefinitionHandler $definition_handler, $loader)
+    /**
+     * @var \Hat\Environment\Register\ProfileRegister
+     */
+    protected $register;
+
+    public function __construct(DefinitionHandler $definition_handler, $loader, $register)
     {
         $this->loader = $loader;
         $this->definition_handler = $definition_handler;
+        $this->register = $register;
     }
 
 
@@ -37,9 +43,13 @@ class ProfileHandler extends Handler
     }
 
     protected function handleProfile(Profile $profile)
-    { // TODO [extract][output] remove 'echo "\n"' and extract output to suitable class
+    {
+
+        $this->register->register($profile);
+        // TODO [extract][output] remove 'echo "\n"' and extract output to suitable class
+
         echo "\n";
-        echo "[TEST]  ";
+        echo "[test]  ";
         echo $profile->getPath();
         echo "\n";
         echo "\n";
@@ -47,7 +57,13 @@ class ProfileHandler extends Handler
         $profile->getState()->setState(State::OK);
 
         foreach ($profile->getDefinitions() as $definition) {
+
             $this->definition_handler->handle($definition);
+
+            if ($definition->getState()->isState(State::FAIL)) {
+                $profile->getState()->setState(State::FAIL);
+            }
+
         }
 
         $tester = new ProfileTester($profile, $this->loader);

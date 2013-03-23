@@ -11,6 +11,8 @@ class State
 
     const FAIL = 'fail';
 
+    const SKIP = 'skip';
+
     protected $state = self::INIT;
 
     public function setState($state)

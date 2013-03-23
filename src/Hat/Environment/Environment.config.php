@@ -38,7 +38,8 @@ return array(
 
         $handler = new \Hat\Environment\Handler\ProfileHandler(
             $kit->get('definition.handler'),
-            $kit->get('profile.loader')
+            $kit->get('profile.loader'),
+            $kit->get('profile.register')
         );
 
         return $handler;
@@ -51,8 +52,31 @@ return array(
     'definition.handler' => new Service(function (Kit $kit) {
 
         $handler = new \Hat\Environment\Handler\DefinitionHandler();
+
+        // validation and checks
         $handler->addHandler(new \Hat\Environment\Handler\Definition\ValidateHandler());
-        $handler->addHandler(new \Hat\Environment\Handler\Definition\HandleCommandHandler($kit));
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\DependsHandler());
+
+        // execute command
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\ExecuteCommandHandler($kit));
+
+        // handle status
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\NegativeHandler());
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\StatusHandler());
+
+        // makes some output
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\StatusLineOutputHandler());
+
+        // handle on status
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\OnPassHandler($kit));
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\OnFailHandler($kit));
+
+//        $handler->addHandler(new \Hat\Environment\Handler\Definition\BuilderHandler());
+        // makes some docs
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\DocHandler());
+
+        // makes result output
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\ResultOutputHandler());
 
         return $handler;
     }),
@@ -68,6 +92,10 @@ return array(
         return $loader;
     }),
 
+
+    'profile.register' => new Service(function (Kit $kit) {
+        return new \Hat\Environment\Register\ProfileRegister();
+    }),
 
 
 

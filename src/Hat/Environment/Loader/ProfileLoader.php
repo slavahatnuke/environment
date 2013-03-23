@@ -5,7 +5,13 @@ use Hat\Environment\Profile;
 
 class ProfileLoader
 {
-    public function load(Profile $profile){
+    /**
+     * @param \Hat\Environment\Profile $profile
+     * @return \Hat\Environment\Profile
+     * @throws LoaderException
+     */
+    public function load(Profile $profile)
+    {
 
         $profile->setData($this->read($profile->getPath()));
 
@@ -18,9 +24,11 @@ class ProfileLoader
             $imports = $profile->get('@import');
 
             foreach ($imports as $path) {
+
                 $parent = $this->loadByPath($profile->getFile($path));
-                $profile->extend($parent);
                 $profile->addParent($parent);
+
+                $profile->extend($parent);
                 $profile->set('@import', $imports);
             }
 
@@ -29,8 +37,25 @@ class ProfileLoader
         return $profile;
     }
 
-    public function loadByPath($path){
+    /**
+     * @param $path
+     * @return \Hat\Environment\Profile
+     */
+    public function loadByPath($path)
+    {
         return $this->load(new Profile($path));
+    }
+
+    /**
+     * @param \Hat\Environment\Profile $profile
+     * @param $path
+     * @return \Hat\Environment\Profile
+     */
+    public function loadForProfile(Profile $profile, $path)
+    {
+        $child = $this->loadByPath($profile->getFile($path));
+        $child->addParent($profile);
+        return $child;
     }
 
 
