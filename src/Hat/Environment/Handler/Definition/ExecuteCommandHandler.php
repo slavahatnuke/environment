@@ -35,6 +35,7 @@ class ExecuteCommandHandler extends DefinitionHandler
         $command = new $class;
 
         if ($command instanceof Command) {
+            $definition->setCommand($command);
             $command->setupProperties($definition->getProperties());
             $command->setupServices($this->kit);
         } else {

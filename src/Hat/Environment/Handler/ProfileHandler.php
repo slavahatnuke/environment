@@ -44,10 +44,12 @@ class ProfileHandler extends Handler
 
     protected function handleProfile(Profile $profile)
     {
-
         $this->register->register($profile);
-        // TODO [extract][output] remove 'echo "\n"' and extract output to suitable class
+        $this->handleDefinitions($profile);
+    }
 
+    protected function handleDefinitions(Profile $profile)
+    {
         echo "\n";
         echo "[test]  ";
         echo $profile->getPath();

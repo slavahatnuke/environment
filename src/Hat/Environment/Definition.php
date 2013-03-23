@@ -28,6 +28,11 @@ class Definition extends Context
      */
     protected $state;
 
+    /**
+     * @var Command
+     */
+    protected $command;
+
 
     public function __construct($name, $data = array())
     {
@@ -36,6 +41,34 @@ class Definition extends Context
         $this->recompile();
     }
 
+    /**
+     * @param Command $command
+     */
+    public function setCommand(Command $command)
+    {
+        $this->command = $command;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasCommand()
+    {
+        return $this->command ? true : false;
+    }
+
+    /**
+     * @return \Hat\Environment\Handler\Handler
+     */
+    public function getCommand()
+    {
+
+        if (!$this->hasCommand()) {
+            throw new Exception('Command is not defined');
+        }
+
+        return $this->command;
+    }
 
     /**
      * @var \Hat\Environment\State\DefinitionState
@@ -104,14 +137,13 @@ class Definition extends Context
 
     protected function recompile()
     {
-        if($this->getOptions()->get('recompile'))
-        {
-            foreach($this as $key => $value)
-            {
-                 $this->set($key, $this->compileText($value));
+        if ($this->getOptions()->get('recompile')) {
+            foreach ($this as $key => $value) {
+                $this->set($key, $this->compileText($value));
             }
         }
     }
+
     protected function compileText($text)
     {
         $replace = array();

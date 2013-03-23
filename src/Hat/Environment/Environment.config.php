@@ -3,13 +3,13 @@ namespace Hat\Environment;
 
 use Hat\Environment\Kit\Kit;
 use Hat\Environment\Kit\Service;
+use Hat\Environment\Kit\Factory;
 
 return array(
 
 
     // options
     'default.profile.name' => 'environment.ini',
-
 
 
     //services
@@ -19,19 +19,15 @@ return array(
         $handler = new \Hat\Environment\Handler\RequestHandler();
 
         $handler->addHandler(new \Hat\Environment\Handler\Request\HelpHandler());
-//        $handler->addHandler(new \Hat\Environment\Handler\Request\DefineProfileHandler());
         $handler->addHandler(new \Hat\Environment\Handler\Request\RequireProfileHandler());
 
         $handler->addHandler(new \Hat\Environment\Handler\Request\HandleProfileHandler(
-                $kit->get('profile.loader'),
-                $kit->get('profile.handler')
+            $kit->get('profile.loader'),
+            $kit->get('profile.handler')
         ));
 
         return $handler;
     }),
-
-
-
 
 
     'profile.handler' => new Service(function (Kit $kit) {
@@ -44,9 +40,6 @@ return array(
 
         return $handler;
     }),
-
-
-
 
 
     'definition.handler' => new Service(function (Kit $kit) {
@@ -71,18 +64,14 @@ return array(
         $handler->addHandler(new \Hat\Environment\Handler\Definition\OnPassHandler($kit));
         $handler->addHandler(new \Hat\Environment\Handler\Definition\OnFailHandler($kit));
 
-//        $handler->addHandler(new \Hat\Environment\Handler\Definition\BuilderHandler());
         // makes some docs
-        $handler->addHandler(new \Hat\Environment\Handler\Definition\DocHandler());
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\DocHandler($kit));
 
         // makes result output
         $handler->addHandler(new \Hat\Environment\Handler\Definition\ResultOutputHandler());
 
         return $handler;
     }),
-
-
-
 
 
     'profile.loader' => new Service(function (Kit $kit) {
@@ -96,9 +85,6 @@ return array(
     'profile.register' => new Service(function (Kit $kit) {
         return new \Hat\Environment\Register\ProfileRegister();
     }),
-
-
-
 
     'request' => new Service(function (Kit $kit) {
 

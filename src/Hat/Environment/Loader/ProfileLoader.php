@@ -58,6 +58,12 @@ class ProfileLoader
         return $child;
     }
 
+    public function loadDocForProfile(Profile $profile, $path)
+    {
+        $path = $profile->getFile($path);
+        return file_get_contents($path);
+    }
+
 
     protected function read($path)
     {
