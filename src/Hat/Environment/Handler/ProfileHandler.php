@@ -66,9 +66,6 @@ class ProfileHandler extends Handler
 
         }
 
-        $tester = new ProfileTester($profile, $this->loader);
-
-        return $tester->test();
     }
 
 

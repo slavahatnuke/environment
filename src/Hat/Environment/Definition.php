@@ -15,7 +15,7 @@ class Definition extends Context
         '@class' => null,
         '@negative' => false,
         '@required' => true,
-        '@test.on.pass' => null,
+        '@on.pass' => null,
         '@doc' => null,
         '@description' => null,
         '@built' => null,
