@@ -33,6 +33,12 @@ class ProfileLoader
             }
         }
 
+
+        foreach ($profile->getSystemDefinitions() as $definition) {
+            $this->handleSystemDefinition($profile, $definition);
+        }
+
+
         return $profile;
     }
 
@@ -80,29 +86,20 @@ class ProfileLoader
             $definition->setValue($data);
         }
 
-        $definition->recompile();
-
         return $definition;
     }
 
-    protected function handleSystemDefinition(Profile $profile, $name, $data)
+    protected function handleSystemDefinition(Profile $profile, Definition $definition)
     {
-        if ($name == '@import') {
+        if ($definition->getName() == '@import') {
 
-            if (!is_array($data)) {
-                throw new LoaderException('invalid import: ' . $profile->getPath());
-            }
-
-            $imports = $data;
+            $imports = $definition->getProperties();
 
             foreach ($imports as $path) {
 
                 $parent = $this->loadForProfile($profile, $path);
-                $profile->addParent($parent);
 
-                foreach ($parent->getDefinitions() as $definition) {
-                    $profile->addDefinition($definition);
-                }
+                $profile->extend($parent);
 
             }
 

@@ -133,6 +133,12 @@ class Definition
         return $this->getName();
     }
 
+    public function apply(Definition $definition)
+    {
+        $this->getOptions()->apply($definition->getOptions());
+        $this->getProperties()->apply($definition->getProperties());
+    }
+
     protected function compileText($text, $hash = null)
     {
         $hash = $hash ? $hash : $this;

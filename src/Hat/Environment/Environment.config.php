@@ -3,7 +3,6 @@ namespace Hat\Environment;
 
 use Hat\Environment\Kit\Kit;
 use Hat\Environment\Kit\Service;
-use Hat\Environment\Kit\Factory;
 
 return array(
 

@@ -67,6 +67,7 @@ class ProfileHandler extends Handler
 
         foreach ($profile->getDefinitions() as $definition) {
 
+            $definition->recompile();
             $this->definition_handler->handle($definition);
 
             if ($definition->getState()->isFail()) {

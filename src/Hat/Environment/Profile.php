@@ -174,5 +174,32 @@ class Profile
         return file_exists($this->getOwnFile($path));
     }
 
+    public function apply(Profile $profile)
+    {
+
+        foreach ($profile->getDefinitions() as $name => $definition) {
+
+            if ($this->getDefinitions()->has($name)) {
+                $this->getDefinitions()->get($name)->apply($definition);
+            } else {
+                $this->addDefinition($definition);
+            }
+
+        }
+
+    }
+
+    public function extend(Profile $parent)
+    {
+
+        $parent = clone $parent;
+
+        $parent->apply($this);
+        $this->apply($parent);
+
+        $this->addParent($parent);
+
+    }
+
 
 }
