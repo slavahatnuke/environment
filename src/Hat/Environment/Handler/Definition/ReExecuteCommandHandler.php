@@ -12,7 +12,7 @@ class ReExecuteCommandHandler extends DefinitionHandler
         return $definition instanceof Definition
             && $definition->hasCommand()
             && $definition->getState()->isState(array(
-                DefinitionState::ON_PASS_OK,
+//                DefinitionState::ON_PASS_OK,
                 DefinitionState::ON_FAIL_OK,
             ));
     }

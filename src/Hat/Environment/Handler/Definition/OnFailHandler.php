@@ -32,7 +32,7 @@ class OnFailHandler extends DefinitionHandler
     protected function handleDefinition(Definition $definition)
     {
         $path = $definition->getOptions()->get('on.fail');
-        $parent_profile = $this->kit->get('profile.register')->getProfile();
+        $parent_profile = $this->kit->get('profile');
 
         $profile = $this->kit->get('profile.loader')->loadForProfile($parent_profile, $path);
 

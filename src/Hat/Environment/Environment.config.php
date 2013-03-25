@@ -3,6 +3,7 @@ namespace Hat\Environment;
 
 use Hat\Environment\Kit\Kit;
 use Hat\Environment\Kit\Service;
+use Hat\Environment\Kit\Factory;
 
 return array(
 
@@ -74,6 +75,9 @@ return array(
         return $handler;
     }),
 
+    'profile' => new Factory(function (Kit $kit) {
+        return $kit->get('profile.register')->getProfile();
+    }),
 
     'profile.loader' => new Service(function (Kit $kit) {
 

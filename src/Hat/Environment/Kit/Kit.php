@@ -9,6 +9,10 @@ class Kit extends Holder
     {
         $value = parent::get($name);
 
+        if ($value instanceof Factory) {
+            return $value($this);
+        }
+
         if ($value instanceof Service) {
             $service = $value($this);
             $this->set($name, $service);
