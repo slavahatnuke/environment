@@ -1,5 +1,7 @@
 <?php
-namespace Hat\Environment;
+namespace Hat\Environment\Builder;
+
+use Hat\Environment\Command;
 
 class Builder extends Command
 {

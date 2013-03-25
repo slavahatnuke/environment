@@ -1,7 +1,7 @@
 <?php
 namespace Hat\Environment\Tester;
 
-use Hat\Environment\Tester;
+
 use Hat\Environment\Request\CliRequest;
 
 class ProfileShortCut extends Tester

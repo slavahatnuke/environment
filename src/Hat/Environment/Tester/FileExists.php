@@ -1,7 +1,7 @@
 <?php
 namespace Hat\Environment\Tester;
 
-use Hat\Environment\Tester;
+
 use Hat\Environment\TesterOutput;
 
 class FileExists extends Tester

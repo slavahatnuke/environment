@@ -1,5 +1,7 @@
 <?php
-namespace Hat\Environment;
+namespace Hat\Environment\Tester;
+
+use Hat\Environment\Command;
 
 class Tester extends Command
 {

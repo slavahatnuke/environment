@@ -1,7 +1,7 @@
 <?php
 namespace Hat\Environment\Builder;
 
-use Hat\Environment\Builder;
+
 use Hat\Environment\TesterOutput;
 
 class ChangeDir extends Builder

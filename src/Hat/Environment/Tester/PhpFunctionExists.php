@@ -1,7 +1,7 @@
 <?php
 namespace Hat\Environment\Tester;
 
-use Hat\Environment\Tester;
+
 
 class PhpFunctionExists extends Tester
 {
