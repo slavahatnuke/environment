@@ -3,7 +3,7 @@ namespace Hat\Environment;
 
 use Hat\Environment\State\ProfileState;
 
-class Profile extends Holder
+class Profile
 {
 
     protected $path;
@@ -14,11 +14,19 @@ class Profile extends Holder
     protected $state;
 
     /**
-     * @var Profile
+     * @var Profile[]
      */
     protected $parents = array();
 
-    protected $systemDefinitions = array('@import', '@extends', '@global');
+    /**
+     * @var Definition[]|Holder
+     */
+    protected $definitions;
+
+    /**
+     * @var Definition[]|Holder
+     */
+    protected $system_definitions;
 
     public function __construct($path)
     {
@@ -113,19 +121,47 @@ class Profile extends Holder
     }
 
     /**
-     * @return Definition[]
+     * @param Definition $definition
+     */
+    public function addDefinition(Definition $definition)
+    {
+        $this->getDefinitions()->set($definition->getName(), $definition);
+    }
+
+    /**
+     * @return Definition[]|Holder
      */
     public function getDefinitions()
     {
-        $result = array();
 
-        foreach ($this->getData() as $name => $value) {
-            if (!in_array($name, $this->systemDefinitions)) {
-                $result[$name] = new Definition($name, $value);
-            }
+        if (!$this->definitions) {
+            $this->definitions = new Holder();
         }
 
-        return $result;
+        return $this->definitions;
+
+
+    }
+
+    /**
+     * @return Definition[]|Holder
+     */
+    public function getSystemDefinitions()
+    {
+
+        if (!$this->system_definitions) {
+            $this->system_definitions = new Holder();
+        }
+
+        return $this->system_definitions;
+    }
+
+    /**
+     * @param Definition $definition
+     */
+    public function addSystemDefinition(Definition $definition)
+    {
+        $this->getSystemDefinitions()->set($definition->getName(), $definition);
     }
 
     protected function getOwnFile($path)

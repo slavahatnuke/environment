@@ -3,25 +3,11 @@ namespace Hat\Environment;
 
 use Hat\Environment\State\DefinitionState;
 
-class Definition extends Context
+class Definition
 {
     protected $name;
 
-    protected $optionPrefix = '@';
-
     protected $placeHolderSeparator = '%%';
-
-    protected $defaults = array(
-        '@class' => null,
-        '@negative' => false,
-        '@required' => true,
-        '@on.pass' => null,
-        '@doc' => null,
-        '@description' => null,
-        '@built' => null,
-        '@passed' => false,
-        '@recompile' => true,
-    );
 
     protected $options; // system variables
 
@@ -38,11 +24,29 @@ class Definition extends Context
     protected $command;
 
 
-    public function __construct($name, $data = array())
+    public function __construct($name)
     {
         $this->setName($name);
-        parent::__construct($data);
-        $this->recompile();
+    }
+
+    public function setName($name)
+    {
+        $this->getOptions()->set('name', $name);
+    }
+
+    public function getName()
+    {
+        return $this->getOptions()->get('name');
+    }
+
+    public function setValue($value)
+    {
+        $this->getOptions()->set('value', $value);
+    }
+
+    public function getValue()
+    {
+        return $this->getOptions()->get('value');
     }
 
     /**
@@ -86,35 +90,14 @@ class Definition extends Context
         return $this->state;
     }
 
-
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
     /**
      * @return Holder
      */
     public function getProperties()
     {
         if (!$this->properties) {
-
-            $result = array();
-
-            foreach ($this as $name => $value) {
-                if (!$this->isOption($name)) {
-                    $result[$name] = $value;
-                }
-            }
-
-            $this->properties = new Holder($result);
+            $this->properties = new Holder();
         }
-
         return $this->properties;
     }
 
@@ -124,17 +107,7 @@ class Definition extends Context
     public function getOptions()
     {
         if (!$this->options) {
-
-            $result = array();
-
-            foreach ($this as $name => $value) {
-                if ($this->isOption($name)) {
-                    $result[$this->extractOption($name)] = $value;
-                }
-            }
-
-            $this->options = new Holder($result);
-
+            $this->options = new Holder();
         }
 
         return $this->options;
@@ -143,17 +116,12 @@ class Definition extends Context
 
     public function recompile()
     {
-        if ($this->getOptions()->get('recompile')) {
+        foreach ($this->getOptions() as $key => $value) {
+            $this->getOptions()->set($key, $this->compileText($value, $this->getProperties()));
+        }
 
-
-            foreach ($this->getOptions() as $key => $value) {
-                $this->getOptions()->set($key, $this->compileText($value, $this->getProperties()));
-            }
-
-            foreach ($this->getProperties() as $key => $value) {
-                $this->getProperties()->set($key, $this->compileText($value, $this->getProperties()));
-            }
-
+        foreach ($this->getProperties() as $key => $value) {
+            $this->getProperties()->set($key, $this->compileText($value, $this->getProperties()));
         }
     }
 
@@ -163,16 +131,6 @@ class Definition extends Context
             return $this->compileText($description);
         }
         return $this->getName();
-    }
-
-    protected function isOption($name)
-    {
-        return substr($name, 0, 1) == $this->optionPrefix;
-    }
-
-    protected function extractOption($name)
-    {
-        return $this->isOption($name) ? substr($name, 1) : $name;
     }
 
     protected function compileText($text, $hash = null)
