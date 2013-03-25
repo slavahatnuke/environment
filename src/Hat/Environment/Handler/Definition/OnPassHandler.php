@@ -6,6 +6,7 @@ use Hat\Environment\State\State;
 
 use Hat\Environment\Kit\Kit;
 
+
 class OnPassHandler extends DefinitionHandler
 {
 
@@ -34,6 +35,11 @@ class OnPassHandler extends DefinitionHandler
         $profile = $this->kit->get('profile.loader')->loadForProfile($parent_profile, $path);
 
         $this->kit->get('profile.handler')->handle($profile);
+
+        if ($profile->getState()->isState(State::FAIL)) {
+            $definition->getState()->setState(State::FAIL);
+        }
+
     }
 
 }
