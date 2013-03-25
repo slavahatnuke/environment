@@ -77,11 +77,20 @@ return array(
 
     'profile.loader' => new Service(function (Kit $kit) {
 
-        $loader = new \Hat\Environment\Loader\ProfileLoader();
+        $loader = new \Hat\Environment\Loader\ProfileLoader($kit->get('profile.load.handler'));
 
         return $loader;
     }),
 
+    'profile.load.handler' => new Service(function (Kit $kit) {
+
+        $handler = new \Hat\Environment\Handler\Profile\LoadHandler();
+
+        $handler->addHandler(new \Hat\Environment\Handler\Profile\ExtendHandler($kit));
+        $handler->addHandler(new \Hat\Environment\Handler\Profile\GlobalHandler());
+
+        return $handler;
+    }),
 
     'profile.register' => new Service(function (Kit $kit) {
         return new \Hat\Environment\Register\ProfileRegister();

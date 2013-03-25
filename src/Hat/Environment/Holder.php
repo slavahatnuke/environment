@@ -46,6 +46,7 @@ class Holder implements \IteratorAggregate, \Countable
     public function apply($data)
     {
         if (is_array($data) || $data instanceof \Traversable) {
+
             foreach ($data as $name => $value) {
                 if (is_array($this->get($name))) {
                     $holder = new self($this->get($name));

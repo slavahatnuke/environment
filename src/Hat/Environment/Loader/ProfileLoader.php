@@ -4,12 +4,24 @@ namespace Hat\Environment\Loader;
 use Hat\Environment\Profile;
 use Hat\Environment\Definition;
 
+use Hat\Environment\Handler\Handler;
+
 class ProfileLoader
 {
 
     protected $definitionOptionPrefix = '@';
 
     protected $systemDefinitionPrefix = '@';
+
+    /**
+     * @var \Hat\Environment\Handler\Handler
+     */
+    protected $post_load_handler;
+
+    public function __construct(Handler $post_load_handler)
+    {
+        $this->post_load_handler = $post_load_handler;
+    }
 
 
     /**
@@ -19,6 +31,8 @@ class ProfileLoader
      */
     public function load(Profile $profile)
     {
+        echo "[load] " . $profile->getPath();
+        echo "\n";
 
         $data = $this->read($profile->getPath());
 
@@ -33,11 +47,7 @@ class ProfileLoader
             }
         }
 
-
-        foreach ($profile->getSystemDefinitions() as $definition) {
-            $this->handleSystemDefinition($profile, $definition);
-        }
-
+        $this->post_load_handler->handle($profile);
 
         return $profile;
     }
@@ -58,9 +68,7 @@ class ProfileLoader
      */
     public function loadForProfile(Profile $profile, $path)
     {
-        $child = $this->loadByPath($profile->getFile($path));
-        $child->addParent($profile);
-        return $child;
+        return $this->loadByPath($profile->getFile($path));
     }
 
     public function loadDocForProfile(Profile $profile, $path)
@@ -87,24 +95,6 @@ class ProfileLoader
         }
 
         return $definition;
-    }
-
-    protected function handleSystemDefinition(Profile $profile, Definition $definition)
-    {
-        if ($definition->getName() == '@import') {
-
-            $imports = $definition->getProperties();
-
-            foreach ($imports as $path) {
-
-                $parent = $this->loadForProfile($profile, $path);
-
-                $profile->extend($parent);
-
-            }
-
-        }
-
     }
 
     protected function read($path)

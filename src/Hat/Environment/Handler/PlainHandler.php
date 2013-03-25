@@ -4,6 +4,8 @@ namespace Hat\Environment\Handler;
 class PlainHandler extends CompositeHandler
 {
 
+    protected $strict_handler = true;
+
     protected function doHandle($data)
     {
 
@@ -16,7 +18,7 @@ class PlainHandler extends CompositeHandler
             }
         }
 
-        if (!$handled) {
+        if ($this->strict_handler && !$handled) {
             throw new HandlerException('Can not be handled');
         }
 

@@ -177,12 +177,22 @@ class Profile
     public function apply(Profile $profile)
     {
 
-        foreach ($profile->getDefinitions() as $name => $definition) {
+        foreach ($profile->getDefinitions() as $definition) {
 
-            if ($this->getDefinitions()->has($name)) {
-                $this->getDefinitions()->get($name)->apply($definition);
+            if ($this->getDefinitions()->has($definition->getName())) {
+                $this->getDefinitions()->get($definition->getName())->apply($definition);
             } else {
                 $this->addDefinition($definition);
+            }
+
+        }
+
+        foreach ($profile->getSystemDefinitions() as $definition) {
+
+            if ($this->getSystemDefinitions()->has($definition->getName())) {
+                $this->getSystemDefinitions()->get($definition->getName())->apply($definition);
+            } else {
+                $this->addSystemDefinition($definition);
             }
 
         }
@@ -192,10 +202,11 @@ class Profile
     public function extend(Profile $parent)
     {
 
-        $parent = clone $parent;
+        $copy = clone $parent;
 
-        $parent->apply($this);
-        $this->apply($parent);
+        $copy->apply($this);
+
+        $this->apply($copy);
 
         $this->addParent($parent);
 

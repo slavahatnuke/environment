@@ -17,9 +17,11 @@ class ValidateHandler extends DefinitionHandler
             throw new HandlerException('Options class is not defined for definition: ' . $definition->getName());
         }
 
-        if (!class_exists($definition->getOptions()->get('class'))) {
-            throw new HandlerException('Class is not found for definition: ' . $definition->getName());
+        $class = $definition->getOptions()->get('class');
+        if (!class_exists($class)) {
+            throw new HandlerException("Class `{$class}` is not found for definition: " . $definition->getName());
         }
+
     }
 
 }

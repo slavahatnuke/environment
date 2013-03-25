@@ -19,7 +19,7 @@ class StatusHandler extends DefinitionHandler
         $state = $definition->getState();
         $options = $definition->getOptions();
 
-        if (!$options->get('required') && $state->isState(State::FAIL)) {
+        if ($options->has('required') && !$options->get('required') && $state->isState(State::FAIL)) {
             return $state->setState(DefinitionState::SKIP);
         }
 
