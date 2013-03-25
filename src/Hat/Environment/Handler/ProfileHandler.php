@@ -32,6 +32,11 @@ class ProfileHandler extends Handler
     }
 
 
+    public function handlePath($path)
+    {
+        return $this->handle($this->loader->loadByPath($path));
+    }
+
     public function supports($profile)
     {
         return $profile instanceof Profile;
@@ -51,7 +56,7 @@ class ProfileHandler extends Handler
     protected function handleDefinitions(Profile $profile)
     {
         echo "\n";
-        echo "[test]  ";
+        echo "[handle] ";
         echo $profile->getPath();
         echo "\n";
         echo "\n";
@@ -67,6 +72,10 @@ class ProfileHandler extends Handler
             }
 
         }
+        
+        echo "[{$profile->getState()->getState()}] tests";
+        echo "\n";
+        echo "\n";
 
     }
 

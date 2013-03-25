@@ -22,7 +22,9 @@ class DocHandler extends Handler
 
     public function supports($definition)
     {
-        return $definition instanceof Definition && $definition->getOptions()->has('doc');
+        return $definition instanceof Definition
+            && $definition->getOptions()->has('doc')
+            && $definition->getState()->isState(State::FAIL);
     }
 
     protected function doHandle($definition)
@@ -33,14 +35,13 @@ class DocHandler extends Handler
     protected function handleDefinition(Definition $definition)
     {
 
-        if($definition->getState()->isState(State::FAIL))
-        {
-            $path = $definition->getOptions()->get('doc');
+        $path = $definition->getOptions()->get('doc');
 
-            $profile = $this->kit->get('profile.register')->getProfile();
+        $profile = $this->kit->get('profile.register')->getProfile();
 
-            echo $this->kit->get('profile.loader')->loadDocForProfile($profile, $path);
-        }
+        echo "\n";
+        echo $this->kit->get('profile.loader')->loadDocForProfile($profile, $path);
+        echo "\n";
 
     }
 

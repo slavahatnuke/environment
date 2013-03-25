@@ -32,7 +32,7 @@ class StatusLineOutputHandler extends DefinitionHandler
 
 
         //TODO [output]
-        echo "[{$state->getState()}]";
+        echo "[{$state->getState()}] ";
 
         echo $definition->getDescription();
         echo "\n";

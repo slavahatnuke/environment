@@ -22,7 +22,6 @@ return array(
         $handler->addHandler(new \Hat\Environment\Handler\Request\RequireProfileHandler());
 
         $handler->addHandler(new \Hat\Environment\Handler\Request\HandleProfileHandler(
-            $kit->get('profile.loader'),
             $kit->get('profile.handler')
         ));
 

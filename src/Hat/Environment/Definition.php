@@ -23,6 +23,10 @@ class Definition extends Context
         '@recompile' => true,
     );
 
+    protected $options; // system variables
+
+    protected $properties; // command variables
+
     /**
      * @var \Hat\Environment\State\DefinitionState
      */
@@ -47,6 +51,7 @@ class Definition extends Context
     public function setCommand(Command $command)
     {
         $this->command = $command;
+        $this->command->setupProperties($this->getProperties());
     }
 
     /**
@@ -97,15 +102,20 @@ class Definition extends Context
      */
     public function getProperties()
     {
-        $result = array();
+        if (!$this->properties) {
 
-        foreach ($this as $name => $value) {
-            if (!$this->isOption($name)) {
-                $result[$name] = $value;
+            $result = array();
+
+            foreach ($this as $name => $value) {
+                if (!$this->isOption($name)) {
+                    $result[$name] = $value;
+                }
             }
+
+            $this->properties = new Holder($result);
         }
 
-        return new Holder($result);
+        return $this->properties;
     }
 
     /**
@@ -113,15 +123,46 @@ class Definition extends Context
      */
     public function getOptions()
     {
-        $result = array();
+        if (!$this->options) {
 
-        foreach ($this as $name => $value) {
-            if ($this->isOption($name)) {
-                $result[$this->extractOption($name)] = $value;
+            $result = array();
+
+            foreach ($this as $name => $value) {
+                if ($this->isOption($name)) {
+                    $result[$this->extractOption($name)] = $value;
+                }
             }
+
+            $this->options = new Holder($result);
+
         }
 
-        return new Holder($result);
+        return $this->options;
+
+    }
+
+    public function recompile()
+    {
+        if ($this->getOptions()->get('recompile')) {
+
+
+            foreach ($this->getOptions() as $key => $value) {
+                $this->getOptions()->set($key, $this->compileText($value, $this->getProperties()));
+            }
+
+            foreach ($this->getProperties() as $key => $value) {
+                $this->getProperties()->set($key, $this->compileText($value, $this->getProperties()));
+            }
+
+        }
+    }
+
+    public function getDescription()
+    {
+        if ($description = $this->getOptions()->get('description')) {
+            return $this->compileText($description);
+        }
+        return $this->getName();
     }
 
     protected function isOption($name)
@@ -134,32 +175,18 @@ class Definition extends Context
         return $this->isOption($name) ? substr($name, 1) : $name;
     }
 
-
-    protected function recompile()
+    protected function compileText($text, $hash = null)
     {
-        if ($this->getOptions()->get('recompile')) {
-            foreach ($this as $key => $value) {
-                $this->set($key, $this->compileText($value));
-            }
-        }
-    }
+        $hash = $hash ? $hash : $this;
 
-    protected function compileText($text)
-    {
         $replace = array();
-        foreach ($this as $key => $val) {
+
+        foreach ($hash as $key => $val) {
             $key = strtoupper($key);
             $key = "{$this->placeHolderSeparator}{$key}{$this->placeHolderSeparator}";
             $replace[$key] = $val;
         }
-        return strtr($text, $replace);
-    }
 
-    public function getDescription()
-    {
-        if ($description = $this->getOptions()->get('description')) {
-            return $this->compileText($description);
-        }
-        return $this->getName();
+        return strtr($text, $replace);
     }
 }
