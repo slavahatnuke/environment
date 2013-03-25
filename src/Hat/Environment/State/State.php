@@ -5,13 +5,9 @@ class State
 {
     const INIT = 'init';
 
-    const HANDLING = 'handling';
-
     const OK = 'ok';
 
     const FAIL = 'fail';
-
-    const SKIP = 'skip';
 
     protected $state = self::INIT;
 
@@ -27,7 +23,19 @@ class State
 
     public function isState($state)
     {
-        return $this->state == $state;
+        return in_array($this->state, (array)$state);
     }
+
+
+    public function isFail()
+    {
+        return $this->isState(self::FAIL);
+    }
+
+    public function isOk()
+    {
+        return $this->isState(self::OK);
+    }
+
 
 }

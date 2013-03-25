@@ -6,6 +6,7 @@ use Hat\Environment\State\State;
 
 use Hat\Environment\Kit\Kit;
 
+use Hat\Environment\State\DefinitionState;
 
 class OnPassHandler extends DefinitionHandler
 {
@@ -30,14 +31,19 @@ class OnPassHandler extends DefinitionHandler
     protected function handleDefinition(Definition $definition)
     {
         $path = $definition->getOptions()->get('on.pass');
+
         $parent_profile = $this->kit->get('profile.register')->getProfile();
 
         $profile = $this->kit->get('profile.loader')->loadForProfile($parent_profile, $path);
 
         $this->kit->get('profile.handler')->handle($profile);
 
-        if ($profile->getState()->isState(State::FAIL)) {
-            $definition->getState()->setState(State::FAIL);
+        if ($profile->getState()->isFail()) {
+            $definition->getState()->setState(DefinitionState::ON_PASS_FAIL);
+        }
+
+        if ($profile->getState()->isOk()) {
+            $definition->getState()->setState(DefinitionState::ON_PASS_OK);
         }
 
     }

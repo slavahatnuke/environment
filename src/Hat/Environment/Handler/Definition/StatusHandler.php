@@ -3,6 +3,7 @@ namespace Hat\Environment\Handler\Definition;
 
 use Hat\Environment\Definition;
 use Hat\Environment\State\State;
+use Hat\Environment\State\DefinitionState;
 
 class StatusHandler extends DefinitionHandler
 {
@@ -19,7 +20,7 @@ class StatusHandler extends DefinitionHandler
         $options = $definition->getOptions();
 
         if (!$options->get('required') && $state->isState(State::FAIL)) {
-            return $state->setState(State::SKIP);
+            return $state->setState(DefinitionState::SKIP);
         }
 
 

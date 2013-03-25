@@ -67,7 +67,7 @@ class ProfileHandler extends Handler
 
             $this->definition_handler->handle($definition);
 
-            if ($definition->getState()->isState(State::FAIL)) {
+            if ($definition->getState()->isFail()) {
                 $profile->getState()->setState(State::FAIL);
             }
 

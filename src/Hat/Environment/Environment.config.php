@@ -63,6 +63,9 @@ return array(
         $handler->addHandler(new \Hat\Environment\Handler\Definition\OnPassHandler($kit));
         $handler->addHandler(new \Hat\Environment\Handler\Definition\OnFailHandler($kit));
 
+        // re execute if fixed
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\ReExecuteCommandHandler($kit));
+
         // makes some docs
         $handler->addHandler(new \Hat\Environment\Handler\Definition\DocHandler($kit));
 

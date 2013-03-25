@@ -63,7 +63,7 @@ class Definition extends Context
     }
 
     /**
-     * @return \Hat\Environment\Handler\Handler
+     * @return Command
      */
     public function getCommand()
     {

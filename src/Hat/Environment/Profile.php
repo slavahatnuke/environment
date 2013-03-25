@@ -112,6 +112,9 @@ class Profile extends Holder
 
     }
 
+    /**
+     * @return Definition[]
+     */
     public function getDefinitions()
     {
         $result = array();

@@ -21,16 +21,6 @@ class StatusLineOutputHandler extends DefinitionHandler
 
         $state = $definition->getState();
 
-        if ($state->isState(DefinitionState::FIXED)) {
-            //TODO [output]
-            echo "[FIXED] ";
-
-            echo $definition->getDescription();
-            echo "\n";
-
-        }
-
-
         //TODO [output]
         echo "[{$state->getState()}] ";
 

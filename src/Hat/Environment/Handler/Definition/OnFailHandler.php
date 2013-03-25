@@ -4,6 +4,8 @@ namespace Hat\Environment\Handler\Definition;
 use Hat\Environment\Definition;
 use Hat\Environment\State\State;
 
+use Hat\Environment\State\DefinitionState;
+
 use Hat\Environment\Kit\Kit;
 
 class OnFailHandler extends DefinitionHandler
@@ -35,6 +37,15 @@ class OnFailHandler extends DefinitionHandler
         $profile = $this->kit->get('profile.loader')->loadForProfile($parent_profile, $path);
 
         $this->kit->get('profile.handler')->handle($profile);
+
+        if ($profile->getState()->isFail()) {
+            $definition->getState()->setState(DefinitionState::ON_FAIL_FAIL);
+        }
+
+        if ($profile->getState()->isOk()) {
+            $definition->getState()->setState(DefinitionState::ON_FAIL_OK);
+        }
+
     }
 
 }
