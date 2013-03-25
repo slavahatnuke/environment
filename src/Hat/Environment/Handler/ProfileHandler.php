@@ -2,7 +2,9 @@
 namespace Hat\Environment\Handler;
 
 use Hat\Environment\Profile;
-use Hat\Environment\ProfileTester;
+
+use Hat\Environment\Loader\ProfileLoader;
+use Hat\Environment\Register\ProfileRegister;
 
 use Hat\Environment\State\State;
 
@@ -24,7 +26,7 @@ class ProfileHandler extends Handler
      */
     protected $register;
 
-    public function __construct(DefinitionHandler $definition_handler, $loader, $register)
+    public function __construct(ProfileLoader $loader, ProfileRegister $register, DefinitionHandler $definition_handler)
     {
         $this->loader = $loader;
         $this->definition_handler = $definition_handler;
@@ -72,7 +74,7 @@ class ProfileHandler extends Handler
             }
 
         }
-        
+
         echo "[{$profile->getState()->getState()}] tests";
         echo "\n";
         echo "\n";

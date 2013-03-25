@@ -32,9 +32,9 @@ return array(
     'profile.handler' => new Service(function (Kit $kit) {
 
         $handler = new \Hat\Environment\Handler\ProfileHandler(
-            $kit->get('definition.handler'),
             $kit->get('profile.loader'),
-            $kit->get('profile.register')
+            $kit->get('profile.register'),
+            $kit->get('definition.handler')
         );
 
         return $handler;
