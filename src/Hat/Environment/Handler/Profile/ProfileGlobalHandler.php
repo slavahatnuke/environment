@@ -4,7 +4,7 @@ namespace Hat\Environment\Handler\Profile;
 use Hat\Environment\Profile;
 use Hat\Environment\Handler\Handler;
 
-class GlobalHandler extends Handler
+class ProfileGlobalHandler extends Handler
 {
 
     public function supports($profile)

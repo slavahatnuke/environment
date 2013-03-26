@@ -88,10 +88,10 @@ return array(
 
     'profile.load.handler' => new Service(function (Kit $kit) {
 
-        $handler = new \Hat\Environment\Handler\Profile\LoadHandler();
+        $handler = new \Hat\Environment\Handler\Profile\ProfileLoadHandler();
 
-        $handler->addHandler(new \Hat\Environment\Handler\Profile\ExtendHandler($kit));
-        $handler->addHandler(new \Hat\Environment\Handler\Profile\GlobalHandler());
+        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileExtendsHandler($kit));
+        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileGlobalHandler());
 
         return $handler;
     }),

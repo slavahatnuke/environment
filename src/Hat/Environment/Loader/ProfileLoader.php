@@ -68,7 +68,10 @@ class ProfileLoader
      */
     public function loadForProfile(Profile $profile, $path)
     {
-        return $this->loadByPath($this->getProfileFile($profile, $path));
+        $loaded = $this->loadByPath($this->getProfileFile($profile, $path));
+        $loaded->setOwner($profile);
+
+        return $loaded;
     }
 
     public function loadDocForProfile(Profile $profile, $path)
@@ -85,19 +88,13 @@ class ProfileLoader
 
         if (file_exists($ownFile)) {
             return $ownFile;
-        } else if ($profile->hasParents()) {
+        } else if ($profile->hasParent()) {
 
-            $parents = $profile->getParents();
-//            $parents = array_reverse($profile->getParents());
+            $parent = $profile->getParent();
+            $parentFile = $this->getProfileFile($parent, $path);
 
-            foreach ($parents as $parent) {
-
-                $parentFile = $this->getProfileFile($parent, $path);
-
-                if (file_exists($parentFile)) {
-                    return $parentFile;
-                }
-
+            if (file_exists($parentFile)) {
+                return $parentFile;
             }
 
         }

@@ -14,9 +14,14 @@ class Profile
     protected $state;
 
     /**
-     * @var Profile[]
+     * @var Profile
      */
-    protected $parents = array();
+    protected $owner;
+
+    /**
+     * @var Profile
+     */
+    protected $parent;
 
     /**
      * @var Definition[]|Holder
@@ -54,23 +59,60 @@ class Profile
         return $this->path;
     }
 
-
-    public function addParent(Profile $parent)
+    /**
+     * @param \Hat\Environment\Profile $owner
+     */
+    public function setOwner(Profile $owner)
     {
-        $this->parents[] = $parent;
+        $this->owner = $owner;
     }
 
     /**
-     * @return Profile
+     * @return \Hat\Environment\Profile
      */
-    public function getParents()
+    public function getOwner()
     {
-        return $this->parents;
+        if (!$this->hasOwner()) {
+            throw new Exception('Owner is not defined');
+        }
+
+        return $this->owner;
     }
 
-    public function hasParents()
+    /**
+     * @return bool
+     */
+    public function hasOwner()
     {
-        return count($this->parents) ? true : false;
+        return $this->owner ? true : false;
+    }
+
+    /**
+     * @param \Hat\Environment\Profile $parent
+     */
+    public function setParent(Profile $parent)
+    {
+        $this->parent = $parent;
+    }
+
+    /**
+     * @return \Hat\Environment\Profile
+     */
+    public function getParent()
+    {
+        if (!$this->hasParent()) {
+            throw new Exception('Parent is not defined');
+        }
+
+        return $this->parent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasParent()
+    {
+        return $this->parent ? true : false;
     }
 
     /**
@@ -161,7 +203,7 @@ class Profile
 
         $this->apply($copy);
 
-        $this->addParent($parent);
+        $this->setParent($parent);
 
     }
 

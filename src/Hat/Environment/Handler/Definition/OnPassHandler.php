@@ -35,7 +35,6 @@ class OnPassHandler extends DefinitionHandler
         $parent_profile = $this->kit->get('profile');
 
         $profile = $this->kit->get('profile.loader')->loadForProfile($parent_profile, $path);
-        $profile->addParent($parent_profile);
 
         $this->kit->get('profile.handler')->handle($profile);
 

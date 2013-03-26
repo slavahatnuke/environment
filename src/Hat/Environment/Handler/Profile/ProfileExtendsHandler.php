@@ -6,7 +6,7 @@ use Hat\Environment\Handler\Handler;
 
 use Hat\Environment\Kit\Kit;
 
-class ExtendHandler extends Handler
+class ProfileExtendsHandler extends Handler
 {
 
     /**
@@ -21,7 +21,7 @@ class ExtendHandler extends Handler
 
     public function supports($profile)
     {
-        return $profile instanceof Profile && $profile->getSystemDefinitions()->has('@extend');
+        return $profile instanceof Profile && $profile->getSystemDefinitions()->has('@extends');
     }
 
     protected function doHandle($profile)
@@ -32,13 +32,12 @@ class ExtendHandler extends Handler
     protected function handleProfile(Profile $profile)
     {
 
-        $definition = $profile->getSystemDefinitions()->get('@extend');
+        $definition = $profile->getSystemDefinitions()->get('@extends');
 
-        $imports = $definition->getProperties();
+        $path = $definition->getValue();
 
-        foreach ($imports as $path) {
-            $profile->extend($this->getProfileLoader()->loadForProfile($profile, $path));
-        }
+        $parent = $this->getProfileLoader()->loadForProfile($profile, $path);
+        $profile->extend($parent);
 
     }
 
