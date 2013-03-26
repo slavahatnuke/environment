@@ -31,13 +31,10 @@ class ProfileLoader
      */
     public function load(Profile $profile)
     {
-        echo "[load] " . $profile->getPath();
-        echo "\n";
 
         $path = $this->getProfileRealPath($profile);
 
-        echo "\n";
-        echo "[real path] " . $path;
+        echo "[load] " . $path;
         echo "\n";
 
         $data = $this->read($path);
