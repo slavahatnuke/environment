@@ -34,7 +34,13 @@ class ProfileLoader
         echo "[load] " . $profile->getPath();
         echo "\n";
 
-        $data = $this->read($profile->getPath());
+        $path = $this->getProfileRealPath($profile);
+
+        echo "\n";
+        echo "[real path] " . $path;
+        echo "\n";
+
+        $data = $this->read($path);
 
         foreach ($data as $name => $value) {
 
@@ -50,6 +56,15 @@ class ProfileLoader
         $this->post_load_handler->handle($profile);
 
         return $profile;
+    }
+
+    protected function getProfileRealPath($profile)
+    {
+        if (!$profile->hasOwner()) {
+            return $profile->getPath();
+        } else {
+            return $this->getProfileFile($profile->getOwner(), $profile->getPath());
+        }
     }
 
     /**
@@ -68,10 +83,12 @@ class ProfileLoader
      */
     public function loadForProfile(Profile $profile, $path)
     {
-        $loaded = $this->loadByPath($this->getProfileFile($profile, $path));
-        $loaded->setOwner($profile);
+        $loaded_profile = new Profile($path);
+        $loaded_profile->setOwner($profile);
 
-        return $loaded;
+        $this->load($loaded_profile);
+
+        return $loaded_profile;
     }
 
     public function loadDocForProfile(Profile $profile, $path)
@@ -82,13 +99,14 @@ class ProfileLoader
 
     protected function getProfileFilePath(Profile $profile, $path)
     {
-        $base = dirname($profile->getPath());
+        $base = dirname($this->getProfileRealPath($profile));
 
         $ownFile = $base . DIRECTORY_SEPARATOR . $path;
 
         if (file_exists($ownFile)) {
             return $ownFile;
         } else if ($profile->hasParent()) {
+
 
             $parent = $profile->getParent();
             $parentFile = $this->getProfileFilePath($parent, $path);
