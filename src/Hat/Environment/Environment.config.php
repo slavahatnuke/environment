@@ -66,11 +66,11 @@ return array(
         // re execute if fixed
         $handler->addHandler(new \Hat\Environment\Handler\Definition\ReExecuteCommandHandler($kit));
 
-        // makes some docs
-        $handler->addHandler(new \Hat\Environment\Handler\Definition\DocHandler($kit));
-
         // makes result output
         $handler->addHandler(new \Hat\Environment\Handler\Definition\ResultOutputHandler());
+
+        // makes some docs
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\DocHandler($kit));
 
         return $handler;
     }),
