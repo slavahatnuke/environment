@@ -27,9 +27,9 @@ class ResultOutputHandler extends DefinitionHandler
 
         }
 
-        if ($definition->getState()->isState(DefinitionState::NOT_FIXED)) {
+        if ($definition->getState()->isFail()) {
             //TODO [output]
-            echo "[NOT FIXED] ";
+            echo "[FAIL] ";
 
             echo $definition->getDescription();
             echo "\n";

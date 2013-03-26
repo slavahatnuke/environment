@@ -73,53 +73,6 @@ class Profile
         return count($this->parents) ? true : false;
     }
 
-    public function getBasePath()
-    {
-        return dirname($this->getPath());
-    }
-
-    public function hasFile($path)
-    {
-        $has = $this->hasOwnFile($path);
-
-        if (!$has && $this->hasParents()) {
-
-            $parents = array_reverse($this->getParents());
-
-            foreach ($parents as $parent) {
-                if ($parent->hasFile($path)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        return $has;
-    }
-
-    public function getFile($path)
-    {
-        if ($this->hasOwnFile($path)) {
-            return $this->getOwnFile($path);
-        } else {
-            if ($this->hasParents()) {
-
-                $parents = array_reverse($this->getParents());
-
-                foreach ($parents as $parent) {
-                    if ($parent->hasFile($path)) {
-                        return $parent->getFile($path);
-                    }
-                }
-
-            }
-        }
-
-        throw new Exception('No file: ' . $this->getOwnFile($path));
-
-    }
-
     /**
      * @param Definition $definition
      */

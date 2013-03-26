@@ -24,7 +24,8 @@ class DocHandler extends Handler
     {
         return $definition instanceof Definition
             && $definition->getOptions()->has('doc')
-            && $definition->getState()->isState(State::FAIL);
+//            && $definition->getState()->isState(State::FAIL);
+            && $definition->getState()->isFail();
     }
 
     protected function doHandle($definition)

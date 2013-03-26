@@ -68,13 +68,41 @@ class ProfileLoader
      */
     public function loadForProfile(Profile $profile, $path)
     {
-        return $this->loadByPath($profile->getFile($path));
+        return $this->loadByPath($this->getProfileFile($profile, $path));
     }
 
     public function loadDocForProfile(Profile $profile, $path)
     {
-        $path = $profile->getFile($path);
+        $path = $this->getProfileFile($profile, $path);
         return file_get_contents($path);
+    }
+
+    protected function getProfileFile(Profile $profile, $path)
+    {
+        $base = dirname($profile->getPath());
+
+        $ownFile = $base . DIRECTORY_SEPARATOR . $path;
+
+        if (file_exists($ownFile)) {
+            return $ownFile;
+        } else if ($profile->hasParents()) {
+
+            $parents = $profile->getParents();
+//            $parents = array_reverse($profile->getParents());
+
+            foreach ($parents as $parent) {
+
+                $parentFile = $this->getProfileFile($parent, $path);
+
+                if (file_exists($parentFile)) {
+                    return $parentFile;
+                }
+
+            }
+
+        }
+
+        throw new LoaderException('File is not found: ' . $ownFile);
     }
 
 
