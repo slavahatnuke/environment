@@ -65,6 +65,8 @@ class ProfileHandler extends Handler
 
         $profile->getState()->setState(State::OK);
 
+        $failed = 0;
+        $passed = 0;
         foreach ($profile->getDefinitions() as $definition) {
 
             $definition->recompile();
@@ -72,11 +74,14 @@ class ProfileHandler extends Handler
 
             if ($definition->getState()->isFail()) {
                 $profile->getState()->setState(State::FAIL);
+                $failed++;
+            } else if($definition->getState()->isOk()){
+                $passed++;
             }
 
         }
 
-        echo "[{$profile->getState()->getState()}] tests";
+        echo "[{$profile->getState()->getState()}] total: failed {$failed}, passed {$passed}";
         echo "\n";
         echo "\n";
 
