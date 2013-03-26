@@ -75,10 +75,6 @@ return array(
         return $handler;
     }),
 
-    'profile' => new Factory(function (Kit $kit) {
-        return $kit->get('profile.register')->getProfile();
-    }),
-
     'profile.loader' => new Service(function (Kit $kit) {
 
         $loader = new \Hat\Environment\Loader\ProfileLoader($kit->get('profile.load.handler'));

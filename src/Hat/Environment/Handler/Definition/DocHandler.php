@@ -38,7 +38,7 @@ class DocHandler extends Handler
 
         $path = $definition->getOptions()->get('doc');
 
-        $profile = $this->kit->get('profile');
+        $profile = $this->kit->get('profile.register')->getProfile();
 
         echo "\n";
         echo $this->kit->get('profile.loader')->loadDocForProfile($profile, $path);

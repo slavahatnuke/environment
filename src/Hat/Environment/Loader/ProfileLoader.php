@@ -80,7 +80,7 @@ class ProfileLoader
         return file_get_contents($path);
     }
 
-    protected function getProfileFile(Profile $profile, $path)
+    protected function getProfileFilePath(Profile $profile, $path)
     {
         $base = dirname($profile->getPath());
 
@@ -91,15 +91,27 @@ class ProfileLoader
         } else if ($profile->hasParent()) {
 
             $parent = $profile->getParent();
-            $parentFile = $this->getProfileFile($parent, $path);
+            $parentFile = $this->getProfileFilePath($parent, $path);
 
-            if (file_exists($parentFile)) {
+            if (!is_null($parentFile) && file_exists($parentFile)) {
                 return $parentFile;
             }
 
         }
 
-        throw new LoaderException('File is not found: ' . $ownFile);
+        return null;
+    }
+
+    protected function getProfileFile(Profile $profile, $path)
+    {
+        $file = $this->getProfileFilePath($profile, $path);
+
+        if (is_null($file)) {
+            throw new LoaderException('File is not found: ' . $path);
+        }
+
+        return $file;
+
     }
 
 
