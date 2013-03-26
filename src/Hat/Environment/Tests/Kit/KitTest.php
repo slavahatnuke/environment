@@ -2,11 +2,10 @@
 namespace Hat\Environment\Tests\Kit;
 
 use Hat\Environment\Kit\Kit;
-use Hat\Environment\Kit\Service;
 
 use Mockery as M;
 
-class KitTest extends \PHPUnit_Framework_TestCase
+class ServiceTest extends \PHPUnit_Framework_TestCase
 {
 
     protected function tearDown()
@@ -15,24 +14,57 @@ class KitTest extends \PHPUnit_Framework_TestCase
         parent::tearDown();
     }
 
+    /**
+     * @test
+     */
+    public function shouldExtendsHolder()
+    {
+        $this->assertTrue(new Kit() instanceof \Hat\Environment\Holder);
+    }
 
     /**
      * @test
      */
-    public function shouldUnwrapResult()
+    public function shouldUnwrapService()
     {
+        $service = M::mock('Hat\Environment\Kit\Service');
+        $kit = new Kit(array('service' => $service));
 
-        $expected = 'result';
+        $expected = 'xxx';
 
-        $service = new Service(function(Kit $kit) use ($expected){
-            return $expected;
-        });
+        $service->shouldReceive('__invoke')->once()->with($kit)->andReturn($expected);
 
-        $kit = M::mock('Hat\Environment\Kit\Kit');
-        $result = $service($kit);
-
+        $result = $kit->get('service');
 
         $this->assertSame($expected, $result);
 
+        $result = $kit->get('service');
+        $this->assertSame($expected, $result);
+
     }
+
+
+    /**
+     * @test
+     */
+    public function shouldCallFactory()
+    {
+        $factory = M::mock('Hat\Environment\Kit\Factory');
+        $kit = new Kit(array('factory' => $factory));
+
+        $expected = 'xxx';
+
+        $factory->shouldReceive('__invoke')->twice()->with($kit)->andReturn($expected);
+
+        $result = $kit->get('factory');
+
+        $this->assertSame($expected, $result);
+
+        $result = $kit->get('factory');
+        $this->assertSame($expected, $result);
+
+    }
+
+
 }
+

@@ -2,10 +2,13 @@
 namespace Hat\Environment\Tests\Kit;
 
 use Hat\Environment\Kit\Kit;
+use Hat\Environment\Kit\Service;
+use Hat\Environment\Kit\Factory;
+
 
 use Mockery as M;
 
-class ServiceTest extends \PHPUnit_Framework_TestCase
+class KitTest extends \PHPUnit_Framework_TestCase
 {
 
     protected function tearDown()
@@ -14,34 +17,32 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
-    public function shouldExtendsHolder()
-    {
-        $this->assertTrue(new Kit() instanceof \Hat\Environment\Holder);
-    }
 
     /**
      * @test
      */
-    public function shouldUnwrapService()
+    public function shouldUnwrapResult()
     {
-        $service = M::mock('Hat\Environment\Kit\Service');
-        $kit = new Kit(array('service' => $service));
 
-        $expected = 'xxx';
+        $expected = 'result';
 
-        $service->shouldReceive('__invoke')->once()->with($kit)->andReturn($expected);
+        $service = new Service(function(Kit $kit) use ($expected){
+            return $expected;
+        });
 
-        $result = $kit->get('service');
+        $kit = M::mock('Hat\Environment\Kit\Kit');
+        $result = $service($kit);
 
-        $this->assertSame($expected, $result);
 
-        $result = $kit->get('service');
         $this->assertSame($expected, $result);
 
     }
 
-
+    /**
+     * @test
+     */
+    public function factoryIsSubInstanceOfService()
+    {
+        $this->assertTrue(new Factory(function(){}) instanceof Service);
+    }
 }

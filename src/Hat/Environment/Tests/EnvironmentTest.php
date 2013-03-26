@@ -26,7 +26,6 @@ class EnvironmentTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->kit = M::mock('Hat\Environment\Kit\Kit');
-        $this->request = M::mock('Hat\Environment\Kit\Kit');
         $this->env = new Environment($this->kit);
 
         parent::setUp();
@@ -47,8 +46,8 @@ class EnvironmentTest extends \PHPUnit_Framework_TestCase
 
         $expected = 'result';
 
-        $handler = M::mock('Hat\Environment\Request\Request;Handler');
-        $request = M::mock('Hat\Environment\Request\Request;');
+        $handler = M::mock('Hat\Environment\Handler\Handler');
+        $request = M::mock('Hat\Environment\Request\Request');
 
         $this->kit->shouldReceive('get')->once()->with('request.handler')->andReturn($handler);
         $this->kit->shouldReceive('get')->once()->with('request')->andReturn($request);
