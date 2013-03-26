@@ -6,8 +6,21 @@ use Hat\Environment\Definition;
 use Hat\Environment\State\DefinitionState;
 use Hat\Environment\TesterOutput;
 
+use Hat\Environment\Output\Output;
+use Hat\Environment\Output\Message\StatusLineMessage;
+
 class ResultOutputHandler extends DefinitionHandler
 {
+
+    /**
+     * @var Output
+     */
+    protected $output;
+
+    public function __construct(Output $output)
+    {
+        $this->output = $output;
+    }
 
 
     public function supports($definition)
@@ -20,43 +33,34 @@ class ResultOutputHandler extends DefinitionHandler
 
 
         if ($definition->getState()->isState(DefinitionState::FIXED)) {
-            //TODO [output]
-            echo "[FIXED] ";
-
-            echo $definition->getDescription();
-            echo "\n";
-
+            $this->output->write(new StatusLineMessage($definition->getState()->getState(), $definition->getDescription()));
         }
 
         if ($definition->getState()->isFail()) {
 
-            echo "[FAIL]  ";
-            echo $definition->getDescription();
+            $this->output->write(new StatusLineMessage(DefinitionState::FAIL, $definition->getDescription()));
+
             echo "\n";
-            echo "\n";
-            echo "        ";
+            echo "          ";
             echo "definition : ";
             echo $definition->getName();
             echo "\n";
 
             echo "\n";
-            echo "        options : ";
+            echo "          options : ";
             $this->printHolder($definition->getOptions());
             echo "\n";
 
-            echo "        properties : ";
+            echo "          properties : ";
             $this->printHolder($definition->getProperties());
             echo "\n";
 
-            echo "        command : ";
+            echo "          command : ";
             $this->printHolder($definition->getCommand());
             echo "\n";
 
 
-
-
         }
-
 
 
 //

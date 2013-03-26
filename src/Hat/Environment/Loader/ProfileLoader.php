@@ -6,6 +6,9 @@ use Hat\Environment\Definition;
 
 use Hat\Environment\Handler\Handler;
 
+use Hat\Environment\Output\Output;
+use Hat\Environment\Output\Message\StatusLineMessage;
+
 class ProfileLoader
 {
 
@@ -18,9 +21,16 @@ class ProfileLoader
      */
     protected $post_load_handler;
 
-    public function __construct(Handler $post_load_handler)
+
+    /**
+     * @var Output
+     */
+    protected $output;
+
+    public function __construct(Handler $post_load_handler, Output $output)
     {
         $this->post_load_handler = $post_load_handler;
+        $this->output = $output;
     }
 
 
@@ -34,8 +44,7 @@ class ProfileLoader
 
         $path = $this->getProfileRealPath($profile);
 
-        echo "[load] " . $path;
-        echo "\n";
+        $this->output->write(new StatusLineMessage('load', $path));
 
         $data = $this->read($path);
 
@@ -91,6 +100,9 @@ class ProfileLoader
     public function loadDocForProfile(Profile $profile, $path)
     {
         $path = $this->getProfileFile($profile, $path);
+
+        $this->output->write(new StatusLineMessage('doc', $path));
+
         return file_get_contents($path);
     }
 

@@ -8,6 +8,9 @@ use Hat\Environment\Register\ProfileRegister;
 
 use Hat\Environment\State\State;
 
+use Hat\Environment\Output\Output;
+use Hat\Environment\Output\Message\StatusLineMessage;
+
 class ProfileHandler extends Handler
 {
 
@@ -26,11 +29,17 @@ class ProfileHandler extends Handler
      */
     protected $register;
 
-    public function __construct(ProfileLoader $loader, ProfileRegister $register, DefinitionHandler $definition_handler)
+    /**
+     * @var Output
+     */
+    protected $output;
+
+    public function __construct(ProfileLoader $loader, ProfileRegister $register, DefinitionHandler $definition_handler, Output $output)
     {
         $this->loader = $loader;
         $this->definition_handler = $definition_handler;
         $this->register = $register;
+        $this->output = $output;
     }
 
 
@@ -57,11 +66,7 @@ class ProfileHandler extends Handler
 
     protected function handleDefinitions(Profile $profile)
     {
-        echo "\n";
-        echo "[handle] ";
-        echo $profile->getPath();
-        echo "\n";
-        echo "\n";
+        $this->output->write(new StatusLineMessage('handle', $profile->getPath()));
 
         $profile->getState()->setState(State::OK);
 
@@ -75,15 +80,13 @@ class ProfileHandler extends Handler
             if ($definition->getState()->isFail()) {
                 $profile->getState()->setState(State::FAIL);
                 $failed++;
-            } else if($definition->getState()->isOk()){
+            } else if ($definition->getState()->isOk()) {
                 $passed++;
             }
 
         }
 
-        echo "[{$profile->getState()->getState()}] total: failed {$failed}, passed {$passed}";
-        echo "\n";
-        echo "\n";
+        $this->output->write(new StatusLineMessage($profile->getState()->getState(), "passed {$passed}, failed {$failed}"));
 
     }
 

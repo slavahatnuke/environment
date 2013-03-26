@@ -34,7 +34,8 @@ return array(
         $handler = new \Hat\Environment\Handler\ProfileHandler(
             $kit->get('profile.loader'),
             $kit->get('profile.register'),
-            $kit->get('definition.handler')
+            $kit->get('definition.handler'),
+            $kit->get('output')
         );
 
         return $handler;
@@ -57,7 +58,7 @@ return array(
         $handler->addHandler(new \Hat\Environment\Handler\Definition\StatusHandler());
 
         // makes some output
-        $handler->addHandler(new \Hat\Environment\Handler\Definition\StatusLineOutputHandler());
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\StatusLineOutputHandler($kit->get('output')));
 
         // handle on status
         $handler->addHandler(new \Hat\Environment\Handler\Definition\OnPassHandler($kit));
@@ -67,7 +68,7 @@ return array(
         $handler->addHandler(new \Hat\Environment\Handler\Definition\ReExecuteCommandHandler($kit));
 
         // makes result output
-        $handler->addHandler(new \Hat\Environment\Handler\Definition\ResultOutputHandler());
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\ResultOutputHandler($kit->get('output')));
 
         // makes some docs
         $handler->addHandler(new \Hat\Environment\Handler\Definition\DocHandler($kit));
@@ -77,7 +78,10 @@ return array(
 
     'profile.loader' => new Service(function (Kit $kit) {
 
-        $loader = new \Hat\Environment\Loader\ProfileLoader($kit->get('profile.load.handler'));
+        $loader = new \Hat\Environment\Loader\ProfileLoader(
+            $kit->get('profile.load.handler'),
+            $kit->get('output')
+        );
 
         return $loader;
     }),
@@ -95,6 +99,11 @@ return array(
 
     'profile.register' => new Service(function (Kit $kit) {
         return new \Hat\Environment\Register\ProfileRegister();
+    }),
+
+    'output' => new Service(function (Kit $kit) {
+        $output = new \Hat\Environment\Output\EnvironmentOutput($kit->get('request'));
+        return $output;
     }),
 
     'request' => new Service(function (Kit $kit) {

@@ -7,8 +7,22 @@ use Hat\Environment\State\State;
 
 use Hat\Environment\State\DefinitionState;
 
+use Hat\Environment\Output\Output;
+use Hat\Environment\Output\Message\StatusLineMessage;
+
 class StatusLineOutputHandler extends DefinitionHandler
 {
+
+
+    /**
+     * @var Output
+     */
+    protected $output;
+
+    public function __construct(Output $output)
+    {
+        $this->output = $output;
+    }
 
 
     public function supports($definition)
@@ -18,15 +32,7 @@ class StatusLineOutputHandler extends DefinitionHandler
 
     protected function handleDefinition(Definition $definition)
     {
-
-        $state = $definition->getState();
-
-        echo "[{$state->getState()}] ";
-
-        echo $definition->getDescription();
-        echo "\n";
-
-
+        $this->output->write(new StatusLineMessage($definition->getState()->getState(), $definition->getDescription()));
     }
 
 }
