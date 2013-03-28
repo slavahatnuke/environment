@@ -48,7 +48,8 @@ return array(
 
         // validation and checks
         $handler->addHandler(new \Hat\Environment\Handler\Definition\ValidateHandler());
-        $handler->addHandler(new \Hat\Environment\Handler\Definition\DependsHandler());
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\DependsHandler($kit));
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\RecompileHandler());
 
         // execute command
         $handler->addHandler(new \Hat\Environment\Handler\Definition\ExecuteCommandHandler($kit));
@@ -90,9 +91,11 @@ return array(
 
         $handler = new \Hat\Environment\Handler\Profile\ProfileLoadHandler();
 
-        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileParentFinderHandler($kit));
         $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileExtendsHandler($kit));
-        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileGlobalHandler());
+        $handler->addHandler(new \Hat\Environment\Handler\Profile\DefinitionExtendsHandler());
+
+//        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileParentFinderHandler($kit));
+//        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileGlobalHandler());
 
         return $handler;
     }),
