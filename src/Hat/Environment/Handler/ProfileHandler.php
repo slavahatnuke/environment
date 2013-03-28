@@ -8,6 +8,8 @@ use Hat\Environment\Register\ProfileRegister;
 
 use Hat\Environment\State\State;
 
+use Hat\Environment\State\ProfileState;
+
 use Hat\Environment\Output\Output;
 use Hat\Environment\Output\Message\StatusLineMessage;
 
@@ -71,7 +73,7 @@ class ProfileHandler extends Handler {
             $this->definition_handler->handle($definition);
 
             if ($definition->getState()->isFail()) {
-                $profile->getState()->setState(State::FAIL);
+                $profile->getState()->setState(ProfileState::FAIL);
                 $failed++;
             } else if ($definition->getState()->isOk()) {
                 $passed++;
