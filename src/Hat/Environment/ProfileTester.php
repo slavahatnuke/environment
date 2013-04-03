@@ -1,6 +1,8 @@
 <?php
 namespace Hat\Environment;
 
+use Hat\Environment\State\State;
+
 class ProfileTester extends Tester
 {
 
@@ -16,22 +18,20 @@ class ProfileTester extends Tester
     protected $definitions;
 
 
-    public function __construct($path)
+    /**
+     * @var \Hat\Environment\Loader\ProfileLoader
+     */
+    protected $loader;
+
+
+    public function __construct($profile, $loader)
     {
-        $this->setPath($path);
+        $this->loader = $loader;
+
+        $this->profile = $profile;
+
         $this->definitions = new Holder();
     }
-
-    public function setPath($path)
-    {
-        $this->path = $path;
-    }
-
-    public function getPath()
-    {
-        return $this->path;
-    }
-
 
     public function setProfile(Profile $profile)
     {
@@ -40,16 +40,13 @@ class ProfileTester extends Tester
 
     public function getProfile()
     {
-        if (!$this->profile) {
-            $this->profile = $this->load($this->path);
-        }
-
         return $this->profile;
     }
 
     public function testChild($path)
     {
-        $tester = new ProfileTester($this->getProfile()->getFile($path));
+        $profile = $this->loader->loadByPath($this->getProfile()->getFile($path));
+        $tester = new ProfileTester($profile, $this->loader);
 
         return $tester->test();
     }
@@ -60,11 +57,14 @@ class ProfileTester extends Tester
         // TODO [extract][output] remove 'echo "\n"' and extract output to suitable class
         echo "\n";
         echo "[TEST]  ";
-        echo $this->getPath();
+        echo $this->getProfile()->getPath();
         echo "\n";
         echo "\n";
 
         $definitions = $this->getProfile()->getDefinitions();
+
+        $state = $this->getProfile()->getState();
+        $state->setState(State::OK);
 
         $status = true;
         ;
@@ -74,6 +74,7 @@ class ProfileTester extends Tester
             $this->definitions->set($definition->getName(), $definition);
 
             if (!$this->testDefinition($definition) && $status) {
+                $state->setState(State::FAIL);
                 $status = false;
             }
 
@@ -98,7 +99,7 @@ class ProfileTester extends Tester
             if (class_exists($class)) {
 
                 $tester = new $class;
-                $tester->apply($definition->getProperties());
+                $tester->setupProperties($definition->getProperties());
 
                 // depends
 
@@ -108,11 +109,12 @@ class ProfileTester extends Tester
                     $depends = explode(',', trim($depends));
 
                     foreach ($depends as $depend_definition_name) {
-                        if($this->definitions->has($depend_definition_name)) {
-                            if(!$this->definitions->get($depend_definition_name)->get('@passed')) {
+                        if ($this->definitions->has($depend_definition_name)) {
+                            if (!$this->definitions->get($depend_definition_name)->get('@passed')) {
                                 $skipped = true;
                                 break;
-                            };
+                            }
+                            ;
                         }
                     }
 
@@ -121,17 +123,17 @@ class ProfileTester extends Tester
                 if ($skipped) {
                     $passed = false;
                 } else {
-                    $passed = $tester->test();
+                    $passed = $tester->execute();
 
                     if ($options->get('negative')) {
-                      $passed = !$passed;
+                        $passed = !$passed;
                     }
                 }
 
 
                 //TODO [output][test][status][state] move to definition state
 
-                $skipped = $skipped || ( !$passed && !$options->get('required') );
+                $skipped = $skipped || (!$passed && !$options->get('required'));
 
                 $failed = !$passed && !$skipped;
 
@@ -140,7 +142,7 @@ class ProfileTester extends Tester
 
                 $fixed = $passed && $definition->get('@built');
 
-                if($fixed) {
+                if ($fixed) {
                     //TODO [output]
                     echo "[FIXED] ";
 
@@ -148,7 +150,6 @@ class ProfileTester extends Tester
                     echo "\n";
 
                 }
-
 
 
                 //TODO [output]
@@ -159,7 +160,7 @@ class ProfileTester extends Tester
 
                 // builders
                 if ($failed && $options->get('builder') && !$definition->get('@built')) {
-                    if(!$this->build($definition)) {
+                    if (!$this->build($definition)) {
                         echo "[FAIL]  ";
                         echo $definition->getDescription();
                         echo "\n";
@@ -179,7 +180,7 @@ class ProfileTester extends Tester
 
                     $failed = !$this->build($definition);
 
-                    if($failed) {
+                    if ($failed) {
                         echo "[FAIL]  ";
                         echo $definition->getDescription();
                         echo "\n";
@@ -233,10 +234,10 @@ class ProfileTester extends Tester
                 return !$failed;
 
             } else {
-                throw new \Exception('no class:' . $class);
+                throw new Exception('no class:' . $class);
             }
         } else {
-            throw new \Exception('no class for definition: ' . $definition->getName());
+            throw new Exception('no class for definition: ' . $definition->getName());
         }
 
         return true;
@@ -280,44 +281,9 @@ class ProfileTester extends Tester
      */
     protected function load($path)
     {
-
-        $profile = new Profile($path);
-        $profile->setData($this->read($profile->getPath()));
-
-        if ($profile->has('@import')) {
-
-            if (!is_array($profile->get('@import'))) {
-                throw new \Exception('invalid import: ' . $path);
-            }
-
-            $import_pathes = $profile->get('@import');
-
-            foreach ($import_pathes as $import_path) {
-                $parent = $this->load($profile->getFile($import_path));
-                $profile->extend($parent);
-                $profile->addParent($parent);
-                $profile->set('@import', $import_pathes);
-            }
-
-        }
-
-
-        return $profile;
+        return $this->loader->loadByPath($path);
     }
 
-    protected function read($path)
-    {
-        // TODO add readers
-        if (file_exists($path)) {
-            return parse_ini_file($path, true);
-        } else {
-            throw new \Exception('No file: ' . getcwd() . '/' . $path);
-            // TODO [exception]
-        }
-
-        return array();
-
-    }
 
     protected function build(Definition $testDefinition)
     {
@@ -364,7 +330,7 @@ class ProfileTester extends Tester
                 echo $definition->getDescription();
                 echo "\n";
 
-                $passed = $builder->build();
+                $passed = $builder->execute();
 
                 $failed = !$passed;
 
@@ -402,10 +368,10 @@ class ProfileTester extends Tester
                 return $passed;
 
             } else {
-                throw new \Exception('no class:' . $class);
+                throw new Exception('no class:' . $class);
             }
         } else {
-            throw new \Exception('no class for definition: ' . $definition->getName());
+            throw new Exception('no class for definition: ' . $definition->getName());
         }
 
         return true;

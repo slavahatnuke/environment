@@ -1,112 +1,151 @@
 <?php
 namespace Hat\Environment;
 
-class Definition extends Context
-{
-    protected $name;
+use Hat\Environment\State\DefinitionState;
 
-    protected $optionPrefix = '@';
+class Definition {
 
     protected $placeHolderSeparator = '%%';
 
-    protected $defaults = array(
-        '@class' => null,
-        '@negative' => false,
-        '@required' => true,
-        '@test.on.pass' => null,
-        '@doc' => null,
-        '@description' => null,
-        '@built' => null,
-        '@passed' => false,
-        '@recompile' => true,
-    );
+    protected $options; // system variables
 
-    public function __construct($name, $data = array())
-    {
+    protected $properties; // command variables
+
+    /**
+     * @var \Hat\Environment\State\DefinitionState
+     */
+    protected $state;
+
+    /**
+     * @var Command
+     */
+    protected $command;
+
+
+    public function __construct($name) {
         $this->setName($name);
-        parent::__construct($data);
-        $this->recompile();
     }
 
-    public function setName($name)
-    {
-        $this->name = $name;
+    public function setName($name) {
+        $this->getOptions()->set('name', $name);
     }
 
-    public function getName()
-    {
-        return $this->name;
+    public function getName() {
+        return $this->getOptions()->get('name');
+    }
+
+    public function setValue($value) {
+        $this->getOptions()->set('value', $value);
+    }
+
+    public function getValue() {
+        return $this->getOptions()->get('value');
+    }
+
+    /**
+     * @param Command $command
+     */
+    public function setCommand(Command $command) {
+        $this->command = $command;
+        $this->command->setupProperties($this->getProperties());
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasCommand() {
+        return $this->command ? true : false;
+    }
+
+    /**
+     * @return Command
+     */
+    public function getCommand() {
+
+        if (!$this->hasCommand()) {
+            throw new Exception('Command is not defined');
+        }
+
+        return $this->command;
+    }
+
+    /**
+     * @var \Hat\Environment\State\DefinitionState
+     */
+    public function getState() {
+        if (!$this->state) {
+            $this->state = new DefinitionState();
+        }
+        return $this->state;
     }
 
     /**
      * @return Holder
      */
-    public function getProperties()
-    {
-        $result = array();
-
-        foreach ($this as $name => $value) {
-            if (!$this->isOption($name)) {
-                $result[$name] = $value;
-            }
+    public function getProperties() {
+        if (!$this->properties) {
+            $this->properties = new Holder();
         }
-
-        return new Holder($result);
+        return $this->properties;
     }
 
     /**
      * @return Holder
      */
-    public function getOptions()
-    {
-        $result = array();
-
-        foreach ($this as $name => $value) {
-            if ($this->isOption($name)) {
-                $result[$this->extractOption($name)] = $value;
-            }
+    public function getOptions() {
+        if (!$this->options) {
+            $this->options = new Holder();
         }
 
-        return new Holder($result);
+        return $this->options;
+
     }
 
-    protected function isOption($name)
-    {
-        return substr($name, 0, 1) == $this->optionPrefix;
-    }
+    public function recompile() {
+        foreach ($this->getOptions() as $key => $value) {
+            $this->getOptions()->set($key, $this->compileText($value, $this->getProperties()));
+        }
 
-    protected function extractOption($name)
-    {
-        return $this->isOption($name) ? substr($name, 1) : $name;
-    }
-
-
-    protected function recompile()
-    {
-        if($this->getOptions()->get('recompile'))
-        {
-            foreach($this as $key => $value)
-            {
-                 $this->set($key, $this->compileText($value));
-            }
+        foreach ($this->getProperties() as $key => $value) {
+            $this->getProperties()->set($key, $this->compileText($value, $this->getProperties()));
         }
     }
-    protected function compileText($text)
-    {
+
+    public function getDescription() {
+        if ($this->getOptions()->has('description')) {
+            return $this->compileText($this->getOptions()->get('description'));
+        }
+        return $this->getName();
+    }
+
+    public function apply(Definition $definition) {
+        $this->getOptions()->apply($definition->getOptions());
+        $this->getProperties()->apply($definition->getProperties());
+    }
+
+    public function extend(Definition $definition) {
+        $copy = clone $definition;
+        $copy->apply($this);
+        $this->apply($copy);
+    }
+
+    public function __clone() {
+        $this->options = clone $this->options;
+        $this->properties = clone $this->options;
+    }
+
+    protected function compileText($text, $hash = null) {
+
+        $hash = $hash ? $hash : $this->getProperties();
+
         $replace = array();
-        foreach ($this as $key => $val) {
+
+        foreach ($hash as $key => $val) {
             $key = strtoupper($key);
             $key = "{$this->placeHolderSeparator}{$key}{$this->placeHolderSeparator}";
             $replace[$key] = $val;
         }
-        return strtr($text, $replace);
-    }
 
-    public function getDescription()
-    {
-        if ($description = $this->getOptions()->get('description')) {
-            return $this->compileText($description);
-        }
-        return $this->getName();
+        return strtr($text, $replace);
     }
 }

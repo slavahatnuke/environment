@@ -15,7 +15,7 @@ class TesterOutput
             $text = join('', $text);
         }
 
-        $this->text = $text;
+        $this->text = (string)$text;
         $this->max_length = $max_length;
     }
 
