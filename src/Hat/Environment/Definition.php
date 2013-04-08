@@ -3,9 +3,7 @@ namespace Hat\Environment;
 
 use Hat\Environment\State\DefinitionState;
 
-class Definition
-{
-    protected $name;
+class Definition {
 
     protected $placeHolderSeparator = '%%';
 
@@ -24,36 +22,30 @@ class Definition
     protected $command;
 
 
-    public function __construct($name)
-    {
+    public function __construct($name) {
         $this->setName($name);
     }
 
-    public function setName($name)
-    {
+    public function setName($name) {
         $this->getOptions()->set('name', $name);
     }
 
-    public function getName()
-    {
+    public function getName() {
         return $this->getOptions()->get('name');
     }
 
-    public function setValue($value)
-    {
+    public function setValue($value) {
         $this->getOptions()->set('value', $value);
     }
 
-    public function getValue()
-    {
+    public function getValue() {
         return $this->getOptions()->get('value');
     }
 
     /**
      * @param Command $command
      */
-    public function setCommand(Command $command)
-    {
+    public function setCommand(Command $command) {
         $this->command = $command;
         $this->command->setupProperties($this->getProperties());
     }
@@ -61,16 +53,14 @@ class Definition
     /**
      * @return bool
      */
-    public function hasCommand()
-    {
+    public function hasCommand() {
         return $this->command ? true : false;
     }
 
     /**
      * @return Command
      */
-    public function getCommand()
-    {
+    public function getCommand() {
 
         if (!$this->hasCommand()) {
             throw new Exception('Command is not defined');
@@ -82,8 +72,7 @@ class Definition
     /**
      * @var \Hat\Environment\State\DefinitionState
      */
-    public function getState()
-    {
+    public function getState() {
         if (!$this->state) {
             $this->state = new DefinitionState();
         }
@@ -93,8 +82,7 @@ class Definition
     /**
      * @return Holder
      */
-    public function getProperties()
-    {
+    public function getProperties() {
         if (!$this->properties) {
             $this->properties = new Holder();
         }
@@ -104,8 +92,7 @@ class Definition
     /**
      * @return Holder
      */
-    public function getOptions()
-    {
+    public function getOptions() {
         if (!$this->options) {
             $this->options = new Holder();
         }
@@ -114,8 +101,7 @@ class Definition
 
     }
 
-    public function recompile()
-    {
+    public function recompile() {
         foreach ($this->getOptions() as $key => $value) {
             $this->getOptions()->set($key, $this->compileText($value, $this->getProperties()));
         }
@@ -125,23 +111,32 @@ class Definition
         }
     }
 
-    public function getDescription()
-    {
-        if ($description = $this->getOptions()->get('description')) {
-            return $this->compileText($description);
+    public function getDescription() {
+        if ($this->getOptions()->has('description')) {
+            return $this->compileText($this->getOptions()->get('description'));
         }
         return $this->getName();
     }
 
-    public function apply(Definition $definition)
-    {
+    public function apply(Definition $definition) {
         $this->getOptions()->apply($definition->getOptions());
         $this->getProperties()->apply($definition->getProperties());
     }
 
-    protected function compileText($text, $hash = null)
-    {
-        $hash = $hash ? $hash : $this;
+    public function extend(Definition $definition) {
+        $copy = clone $definition;
+        $copy->apply($this);
+        $this->apply($copy);
+    }
+
+    public function __clone() {
+        $this->options = clone $this->options;
+        $this->properties = clone $this->options;
+    }
+
+    protected function compileText($text, $hash = null) {
+
+        $hash = $hash ? $hash : $this->getProperties();
 
         $replace = array();
 

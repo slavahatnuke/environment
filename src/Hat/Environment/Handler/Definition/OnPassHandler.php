@@ -32,9 +32,9 @@ class OnPassHandler extends DefinitionHandler
     {
         $path = $definition->getOptions()->get('on.pass');
 
-        $parent_profile = $this->kit->get('profile.register')->getProfile();
+        $current_profile = $this->kit->get('profile.register')->getProfile();
 
-        $profile = $this->kit->get('profile.loader')->loadForProfile($parent_profile, $path);
+        $profile = $this->kit->get('profile.loader')->loadForProfile($current_profile, $path);
 
         $this->kit->get('profile.handler')->handle($profile);
 
@@ -46,7 +46,7 @@ class OnPassHandler extends DefinitionHandler
             $definition->getState()->setState(DefinitionState::ON_PASS_OK);
         }
 
-        $this->kit->get('profile.register')->register($parent_profile);
+        $this->kit->get('profile.register')->register($current_profile);
 
     }
 

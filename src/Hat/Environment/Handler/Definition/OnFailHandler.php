@@ -33,9 +33,9 @@ class OnFailHandler extends DefinitionHandler
     {
         $path = $definition->getOptions()->get('on.fail');
 
-        $parent_profile = $this->kit->get('profile.register')->getProfile();
+        $current_profile = $this->kit->get('profile.register')->getProfile();
 
-        $profile = $this->kit->get('profile.loader')->loadForProfile($parent_profile, $path);
+        $profile = $this->kit->get('profile.loader')->loadForProfile($current_profile, $path);
 
         $this->kit->get('profile.handler')->handle($profile);
 
@@ -48,7 +48,7 @@ class OnFailHandler extends DefinitionHandler
         }
 
 
-        $this->kit->get('profile.register')->register($parent_profile);
+        $this->kit->get('profile.register')->register($current_profile);
 
 
     }

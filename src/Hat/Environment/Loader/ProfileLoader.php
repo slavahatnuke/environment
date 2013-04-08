@@ -11,7 +11,6 @@ use Hat\Environment\Output\Message\StatusLineMessage;
 
 class ProfileLoader
 {
-
     protected $definitionOptionPrefix = '@';
 
     protected $systemDefinitionPrefix = '@';
@@ -19,17 +18,16 @@ class ProfileLoader
     /**
      * @var \Hat\Environment\Handler\Handler
      */
-    protected $post_load_handler;
-
+    protected $postLoadHandler;
 
     /**
      * @var Output
      */
     protected $output;
 
-    public function __construct(Handler $post_load_handler, Output $output)
+    public function __construct(Handler $postLoadHandler, Output $output)
     {
-        $this->post_load_handler = $post_load_handler;
+        $this->postLoadHandler = $postLoadHandler;
         $this->output = $output;
     }
 
@@ -59,7 +57,7 @@ class ProfileLoader
             }
         }
 
-        $this->post_load_handler->handle($profile);
+        $this->postLoadHandler->handle($profile);
 
         return $profile;
     }
@@ -89,12 +87,12 @@ class ProfileLoader
      */
     public function loadForProfile(Profile $profile, $path)
     {
-        $loaded_profile = new Profile($path);
-        $loaded_profile->setOwner($profile);
+        $loadedProfile = new Profile($path);
+        $loadedProfile->setOwner($profile);
 
-        $this->load($loaded_profile);
+        $this->load($loadedProfile);
 
-        return $loaded_profile;
+        return $loadedProfile;
     }
 
     public function loadDocForProfile(Profile $profile, $path)
