@@ -19,8 +19,7 @@ class DefinitionState extends State
 
     public function isFail()
     {
-        return $this->isState(array(
-            self::FAIL,
+        return parent::isFail() || $this->isState(array(
             self::ON_PASS_FAIL,
             self::ON_FAIL_FAIL,
             self::NOT_FIXED
@@ -29,8 +28,7 @@ class DefinitionState extends State
 
     public function isOk()
     {
-        return $this->isState(array(
-            self::OK,
+        return parent::isOk() || $this->isState(array(
             self::ON_PASS_OK,
             self::ON_FAIL_OK,
             self::FIXED

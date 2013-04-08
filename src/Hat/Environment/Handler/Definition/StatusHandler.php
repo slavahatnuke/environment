@@ -23,16 +23,6 @@ class StatusHandler extends DefinitionHandler
             return $state->setState(DefinitionState::SKIP);
         }
 
-
-//        $skipped = $skipped || (!$passed && !$options->get('required'));
-//
-//        $failed = !$passed && !$skipped;
-//
-//        $status = $passed ? "[OK]    " : "[FAIL]  ";
-//        $status = $skipped ? "[SKIP]  " : $status;
-//
-//        $fixed = $passed && $definition->get('@built');
-
     }
 
 }

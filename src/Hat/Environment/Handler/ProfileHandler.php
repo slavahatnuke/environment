@@ -8,6 +8,8 @@ use Hat\Environment\Register\ProfileRegister;
 
 use Hat\Environment\State\State;
 
+use Hat\Environment\State\ProfileState;
+
 use Hat\Environment\Output\Output;
 use Hat\Environment\Output\Message\StatusLineMessage;
 
@@ -61,24 +63,25 @@ class ProfileHandler extends Handler
     protected function handleProfile(Profile $profile)
     {
         $this->register->register($profile);
-        $this->handleDefinitions($profile);
+        return $this->handleDefinitions($profile);
     }
 
     protected function handleDefinitions(Profile $profile)
     {
-        $this->output->write(new StatusLineMessage('handle', $profile->getPath()));
+        $this->output->write(new StatusLineMessage(ProfileState::HANDLE, $profile->getPath()));
 
         $profile->getState()->setState(State::OK);
 
         $failed = 0;
         $passed = 0;
+
         foreach ($profile->getDefinitions() as $definition) {
 
             $definition->recompile();
             $this->definition_handler->handle($definition);
 
             if ($definition->getState()->isFail()) {
-                $profile->getState()->setState(State::FAIL);
+                $profile->getState()->setState(ProfileState::FAIL);
                 $failed++;
             } else if ($definition->getState()->isOk()) {
                 $passed++;
@@ -86,7 +89,10 @@ class ProfileHandler extends Handler
 
         }
 
-        $this->output->write(new StatusLineMessage($profile->getState()->getState(), "passed {$passed}, failed {$failed}"));
+        $status = $profile->getState()->isOk() ? ProfileState::OK : ProfileState::FAIL;
+        $this->output->write(new StatusLineMessage($status, "failed {$failed}, passed {$passed} | {$profile->getPath()}"));
+
+        return $profile->getState()->isOk();
 
     }
 

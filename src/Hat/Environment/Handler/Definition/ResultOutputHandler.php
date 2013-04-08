@@ -31,12 +31,25 @@ class ResultOutputHandler extends DefinitionHandler
     protected function handleDefinition(Definition $definition)
     {
 
-
-        if ($definition->getState()->isState(DefinitionState::FIXED)) {
-            $this->output->write(new StatusLineMessage($definition->getState()->getState(), $definition->getDescription()));
+        if ($definition->getState()->isOk()) {
+            $this->handleOk($definition);
         }
 
         if ($definition->getState()->isFail()) {
+            $this->handleFail($definition);
+        }
+
+    }
+
+    protected function handleFail(Definition $definition)
+    {
+
+        $print_statuses = array(
+            DefinitionState::FAIL,
+            DefinitionState::NOT_FIXED
+        );
+
+        if ($definition->getState()->isState($print_statuses)) {
 
             $this->output->write(new StatusLineMessage(DefinitionState::FAIL, $definition->getDescription()));
 
@@ -60,22 +73,18 @@ class ResultOutputHandler extends DefinitionHandler
             echo "\n";
 
 
+        } else {
+            $this->output->write(new StatusLineMessage(DefinitionState::FAIL, $definition->getDescription()));
         }
 
 
-//
-//        //TODO [extract][decompose][handler][definition] decompose to definition handlers
-//        if ($failed) {
-//            $this->printHolder($tester);
-//
-//            echo "        ";
-//            echo "class : ";
-//            echo $class;
-//            echo "\n";
-//            echo "\n";
-//
-//        }
+    }
 
+    protected function handleOk(Definition $definition)
+    {
+        if ($definition->getState()->isState(DefinitionState::FIXED)) {
+            $this->output->write(new StatusLineMessage(DefinitionState::OK, $definition->getDescription()));
+        }
     }
 
 
