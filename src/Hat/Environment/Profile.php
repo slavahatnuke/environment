@@ -194,6 +194,11 @@ class Profile
 
     }
 
+    public function imports(Profile $profile)
+    {
+        return $this->apply($profile);
+    }
+
     public function extend(Profile $parent)
     {
 

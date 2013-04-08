@@ -8,6 +8,7 @@ use Hat\Environment\Handler\Handler;
 
 use Hat\Environment\Output\Output;
 use Hat\Environment\Output\Message\StatusLineMessage;
+use Hat\Environment\State\ProfileState;
 
 class ProfileLoader
 {
@@ -42,7 +43,7 @@ class ProfileLoader
 
         $path = $this->getProfileRealPath($profile);
 
-        $this->output->write(new StatusLineMessage('load', $path));
+        $this->output->write(new StatusLineMessage(ProfileState::LOAD, $path));
 
         $data = $this->read($path);
 
@@ -90,9 +91,7 @@ class ProfileLoader
         $loadedProfile = new Profile($path);
         $loadedProfile->setOwner($profile);
 
-        $this->load($loadedProfile);
-
-        return $loadedProfile;
+        return $this->load($loadedProfile);
     }
 
     public function loadDocForProfile(Profile $profile, $path)

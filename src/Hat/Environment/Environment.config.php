@@ -91,6 +91,7 @@ return array(
 
         $handler = new \Hat\Environment\Handler\Profile\ProfileLoadHandler();
 
+        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileImportsHandler($kit));
         $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileExtendsHandler($kit));
         $handler->addHandler(new \Hat\Environment\Handler\Profile\DefinitionExtendsHandler());
 
