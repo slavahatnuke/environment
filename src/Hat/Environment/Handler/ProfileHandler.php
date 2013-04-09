@@ -13,7 +13,8 @@ use Hat\Environment\State\ProfileState;
 use Hat\Environment\Output\Output;
 use Hat\Environment\Output\Message\StatusLineMessage;
 
-class ProfileHandler extends Handler {
+class ProfileHandler extends Handler
+{
 
     /**
      * @var DefinitionHandler
@@ -35,7 +36,8 @@ class ProfileHandler extends Handler {
      */
     protected $output;
 
-    public function __construct(ProfileLoader $loader, ProfileRegister $register, DefinitionHandler $definition_handler, Output $output) {
+    public function __construct(ProfileLoader $loader, ProfileRegister $register, DefinitionHandler $definition_handler, Output $output)
+    {
         $this->loader = $loader;
         $this->definition_handler = $definition_handler;
         $this->register = $register;
@@ -43,25 +45,30 @@ class ProfileHandler extends Handler {
     }
 
 
-    public function handlePath($path) {
+    public function handlePath($path)
+    {
         return $this->handle($this->loader->loadByPath($path));
     }
 
-    public function supports($profile) {
+    public function supports($profile)
+    {
         return $profile instanceof Profile;
     }
 
-    protected function doHandle($profile) {
+    protected function doHandle($profile)
+    {
         return $this->handleProfile($profile);
     }
 
-    protected function handleProfile(Profile $profile) {
+    protected function handleProfile(Profile $profile)
+    {
         $this->register->register($profile);
-        $this->handleDefinitions($profile);
+        return $this->handleDefinitions($profile);
     }
 
-    protected function handleDefinitions(Profile $profile) {
-        $this->output->write(new StatusLineMessage('handle', $profile->getPath()));
+    protected function handleDefinitions(Profile $profile)
+    {
+        $this->output->write(new StatusLineMessage(ProfileState::HANDLE, $profile->getPath()));
 
         $profile->getState()->setState(State::OK);
 
@@ -70,6 +77,7 @@ class ProfileHandler extends Handler {
 
         foreach ($profile->getDefinitions() as $definition) {
 
+            $definition->recompile();
             $this->definition_handler->handle($definition);
 
             if ($definition->getState()->isFail()) {
@@ -81,7 +89,10 @@ class ProfileHandler extends Handler {
 
         }
 
-        $this->output->write(new StatusLineMessage($profile->getState()->getState(), "passed {$passed}, failed {$failed}"));
+        $status = $profile->getState()->isOk() ? ProfileState::OK : ProfileState::FAIL;
+        $this->output->write(new StatusLineMessage($status, "failed {$failed}, passed {$passed} | {$profile->getPath()}"));
+
+        return $profile->getState()->isOk();
 
     }
 

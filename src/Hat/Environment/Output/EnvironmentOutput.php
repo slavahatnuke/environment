@@ -2,6 +2,7 @@
 namespace Hat\Environment\Output;
 
 use Hat\Environment\State\DefinitionState;
+use Hat\Environment\State\ProfileState;
 
 use Hat\Environment\Output\Message\StatusLineMessage;
 use Hat\Environment\Request\Request;
@@ -28,7 +29,7 @@ class EnvironmentOutput extends Output
         $states = array(
             DefinitionState::OK,
             DefinitionState::FAIL,
-            DefinitionState::SKIP,
+            DefinitionState::SKIP
         );
 
         if ($message instanceof StatusLineMessage) {

@@ -15,7 +15,15 @@ class RequestHandler extends CompositeHandler
     protected function doHandle($request)
     {
         try {
-            parent::doHandle($request);
+            $result = parent::doHandle($request);
+
+            if ($result) {
+                exit(0);
+            } else {
+                exit(1);
+            }
+
+
         } catch (HandlerException $e) {
             echo "\n";
 
@@ -32,23 +40,6 @@ class RequestHandler extends CompositeHandler
 
             exit(2);
         }
-
-//
-//        echo "\n";
-//
-//        echo $result ? "[OK]    " : "[FAIL]  ";
-//
-//        if ($result) {
-//            echo "Test(s) passed";
-//            echo "\n";
-//            echo "\n";
-//            exit(0);
-//        } else {
-//            echo "Test(s) failed";
-//            echo "\n";
-//            echo "\n";
-//            exit(1);
-//        }
 
     }
 

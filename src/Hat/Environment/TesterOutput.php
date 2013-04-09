@@ -5,7 +5,7 @@ class TesterOutput
 {
 
     protected $text = '';
-    protected $max_length = 100;
+    protected $max_length = 80;
 
     public function __construct($text, $max_length = 80)
     {
