@@ -35,10 +35,7 @@ class ProfileImportsHandler extends Handler
         $definition = $profile->getSystemDefinitions()->get('@imports');
 
         foreach ($definition->getProperties() as $path) {
-
             $imported = $this->getProfileLoader()->loadForProfile($profile, $path);
-            $imported->setOwner($profile);
-
             $profile->imports($imported);
         }
 

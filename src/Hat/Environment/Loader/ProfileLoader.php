@@ -41,7 +41,7 @@ class ProfileLoader
     public function load(Profile $profile)
     {
 
-        $path = $this->getProfileRealPath($profile);
+        $path = $this->getRealPathForProfile($profile);
 
         $this->output->write(new StatusLineMessage(ProfileState::LOAD, $path));
 
@@ -61,15 +61,6 @@ class ProfileLoader
         $this->postLoadHandler->handle($profile);
 
         return $profile;
-    }
-
-    protected function getProfileRealPath($profile)
-    {
-        if (!$profile->hasOwner()) {
-            return $profile->getPath();
-        } else {
-            return $this->getProfileFile($profile->getOwner(), $profile->getPath());
-        }
     }
 
     /**
@@ -103,16 +94,26 @@ class ProfileLoader
         return file_get_contents($path);
     }
 
+    protected function getRealPathForProfile($profile)
+    {
+        if (!$profile->hasOwner()) {
+            return $profile->getPath();
+        } else {
+            return $this->getProfileFile($profile->getOwner(), $profile->getPath());
+        }
+    }
+
     protected function getProfileFilePath(Profile $profile, $path)
     {
-        $base = dirname($this->getProfileRealPath($profile));
+        $base = dirname($this->getRealPathForProfile($profile));
 
         $ownFile = $base . DIRECTORY_SEPARATOR . $path;
 
         if (file_exists($ownFile)) {
             return $ownFile;
+        } else if ($profile->hasOwner()) {
+            $owner = $profile->getOwner();
         } else if ($profile->hasParent()) {
-
 
             $parent = $profile->getParent();
             $parentFile = $this->getProfileFilePath($parent, $path);
@@ -122,8 +123,6 @@ class ProfileLoader
             }
 
         }
-
-        return null;
     }
 
     protected function getProfileFile(Profile $profile, $path)

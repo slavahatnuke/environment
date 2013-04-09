@@ -202,11 +202,15 @@ class Profile
     public function extend(Profile $parent)
     {
 
-        $copy = clone $parent;
+        $result = new self('.');
+        
+        $result->apply($parent);
+        $result->apply($this);
+        
+        $this->definitions = null;
+        $this->system_definitions = null;
 
-        $copy->apply($this);
-
-        $this->apply($copy);
+        $this->apply($result);
 
         $this->setParent($parent);
 
