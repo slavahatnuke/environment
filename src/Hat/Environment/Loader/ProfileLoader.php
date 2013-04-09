@@ -47,10 +47,6 @@ class ProfileLoader
 
         $this->output->write(new StatusLineMessage(ProfileState::LOAD, $path));
 
-        if (!file_exists($path)) {
-            throw new LoaderException('File is not found: ' . $path);
-        }
-
         $this->builder->build($profile, $this->read($path));
         $this->postLoadHandler->handle($profile);
 
@@ -96,24 +92,15 @@ class ProfileLoader
             return $path;
         }
 
-        if ($profile->hasParent()) {
-            return $this->findPathForProfile($profile->getParent(), $profile->getPath());
-        }
-
         if ($profile->hasOwner()) {
             return $this->findPathForProfile($profile->getOwner(), $profile->getPath());
         }
 
+        if ($profile->hasParent()) {
+            return $this->findPathForProfile($profile->getParent(), $profile->getPath());
+        }
+
         throw new LoaderException('Path is not found: ' . $profile->getPath());
-    }
-
-    protected function hasPathForProfile(Profile $profile, $path)
-    {
-        $file = $this->getBasePath($profile) . DIRECTORY_SEPARATOR . $path;
-
-        return file_exists($file)
-            || ( $profile->hasParent() && $this->hasPathForProfile($profile->getParent(), $path) )
-            || ( $profile->hasOwner() && $this->hasPathForProfile($profile->getOwner(), $path) );
     }
 
     protected function findPathForProfile(Profile $profile, $path)
@@ -123,6 +110,16 @@ class ProfileLoader
 
         if (file_exists($file)) {
             return $file;
+        }
+
+        if ($profile->hasOwner()) {
+
+            $file = $this->findPathForProfile($profile->getOwner(), $path);
+
+            if (!is_null($file)) {
+                return $file;
+            }
+
         }
 
         if ($profile->hasParent()) {
@@ -135,15 +132,6 @@ class ProfileLoader
 
         }
 
-        if ($profile->hasOwner()) {
-
-            $file = $this->findPathForProfile($profile->getOwner(), $path);
-
-            if (!is_null($file)) {
-                return $file;
-            }
-
-        }
 
     }
 
