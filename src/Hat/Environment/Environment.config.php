@@ -94,7 +94,7 @@ return array(
 
         $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileExtendsHandler($kit));
         $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileImportsHandler($kit));
-        $handler->addHandler(new \Hat\Environment\Handler\Profile\DefinitionExtendsHandler());
+        $handler->addHandler(new \Hat\Environment\Handler\Profile\DefinitionImportsHandler());
 
 //        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileParentFinderHandler($kit));
 //        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileGlobalHandler());
