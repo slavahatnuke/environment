@@ -9,7 +9,7 @@ class ProfileGlobalHandler extends Handler
 
     public function supports($profile)
     {
-        return $profile instanceof Profile && $profile->getSystemDefinitions()->has('@global');
+        return $profile instanceof Profile && $profile->getSystemDefinitions()->has('global');
     }
 
     protected function doHandle($profile)
@@ -19,7 +19,7 @@ class ProfileGlobalHandler extends Handler
 
     protected function handleProfile(Profile $profile)
     {
-        $definition = $profile->getSystemDefinitions()->get('@global');
+        $definition = $profile->getSystemDefinitions()->get('global');
         //TODO setup globals
 
     }

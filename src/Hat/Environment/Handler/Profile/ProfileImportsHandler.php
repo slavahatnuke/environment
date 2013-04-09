@@ -21,7 +21,7 @@ class ProfileImportsHandler extends Handler
 
     public function supports($profile)
     {
-        return $profile instanceof Profile && $profile->getSystemDefinitions()->has('@imports');
+        return $profile instanceof Profile && $profile->getSystemDefinitions()->has('imports');
     }
 
     protected function doHandle($profile)
@@ -32,7 +32,7 @@ class ProfileImportsHandler extends Handler
     protected function handleProfile(Profile $profile)
     {
 
-        $definition = $profile->getSystemDefinitions()->get('@imports');
+        $definition = $profile->getSystemDefinitions()->get('imports');
 
         foreach ($definition->getProperties() as $path) {
             $imported = $this->getProfileLoader()->loadForProfile($profile, $path);

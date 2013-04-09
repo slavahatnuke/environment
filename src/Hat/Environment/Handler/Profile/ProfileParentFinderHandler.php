@@ -22,7 +22,7 @@ class ProfileParentFinderHandler extends Handler
     public function supports($profile)
     {
         return $profile instanceof Profile
-            && !$profile->getSystemDefinitions()->has('@extends')
+            && !$profile->getSystemDefinitions()->has('extends')
             && $profile->hasOwner();
     }
 

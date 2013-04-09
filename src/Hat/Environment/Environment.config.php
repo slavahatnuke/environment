@@ -81,7 +81,8 @@ return array(
 
         $loader = new \Hat\Environment\Loader\ProfileLoader(
             $kit->get('profile.load.handler'),
-            $kit->get('output')
+            $kit->get('output'),
+            $kit->get('profile.builder')
         );
 
         return $loader;
@@ -99,6 +100,13 @@ return array(
 //        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileGlobalHandler());
 
         return $handler;
+    }),
+
+    'profile.builder' => new Service(function (Kit $kit) {
+
+        $builder = new \Hat\Environment\Loader\ProfileBuilder($kit->get('profile.load.handler'), $kit->get('output'));
+
+        return $builder;
     }),
 
     'profile.register' => new Service(function (Kit $kit) {
