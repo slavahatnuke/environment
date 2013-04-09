@@ -2,8 +2,6 @@
 namespace Hat\Environment\Loader;
 
 use Hat\Environment\Profile;
-use Hat\Environment\Definition;
-
 use Hat\Environment\Handler\Handler;
 
 use Hat\Environment\Output\Output;
@@ -53,6 +51,16 @@ class ProfileLoader
         return $profile;
     }
 
+    public function has(Profile $profile)
+    {
+        return !is_null($this->findPath($profile));
+    }
+
+    public function hasForProfile(Profile $profile, $path)
+    {
+        return !is_null($this->findPathForProfile($profile, $path));
+    }
+
     /**
      * @param $path
      * @return \Hat\Environment\Profile
@@ -71,6 +79,8 @@ class ProfileLoader
     {
         $loaded = new Profile($path);
         $loaded->setOwner($profile);
+
+        $this->load($loaded);
 
         return $this->load($loaded);
     }
@@ -92,15 +102,7 @@ class ProfileLoader
             return $path;
         }
 
-        if ($profile->hasOwner()) {
-            return $this->findPathForProfile($profile->getOwner(), $profile->getPath());
-        }
-
-        if ($profile->hasParent()) {
-            return $this->findPathForProfile($profile->getParent(), $profile->getPath());
-        }
-
-        throw new LoaderException('Path is not found: ' . $profile->getPath());
+        return $this->findPathForProfileByParents($profile, $profile->getPath());
     }
 
     protected function findPathForProfile(Profile $profile, $path)
@@ -112,6 +114,12 @@ class ProfileLoader
             return $file;
         }
 
+        return $this->findPathForProfileByParents($profile, $path);
+
+    }
+
+    protected function findPathForProfileByParents(Profile $profile, $path)
+    {
         if ($profile->hasOwner()) {
 
             $file = $this->findPathForProfile($profile->getOwner(), $path);
@@ -131,8 +139,6 @@ class ProfileLoader
             }
 
         }
-
-
     }
 
     protected function getPath(Profile $profile)
