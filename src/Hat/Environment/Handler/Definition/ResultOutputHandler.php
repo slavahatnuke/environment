@@ -58,10 +58,6 @@ class ResultOutputHandler extends DefinitionHandler
             echo "definition : ";
             echo $definition->getName();
             echo "\n";
-
-            echo "\n";
-            echo "          options : ";
-            $this->printHolder($definition->getOptions());
             echo "\n";
 
             echo "          properties : ";
@@ -70,6 +66,10 @@ class ResultOutputHandler extends DefinitionHandler
 
             echo "          command : ";
             $this->printHolder($definition->getCommand());
+            echo "\n";
+
+            echo "          options : ";
+            $this->printHolder($definition->getOptions());
             echo "\n";
 
 

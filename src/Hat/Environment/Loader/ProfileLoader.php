@@ -8,13 +8,10 @@ use Hat\Environment\Handler\Handler;
 
 use Hat\Environment\Output\Output;
 use Hat\Environment\Output\Message\StatusLineMessage;
+use Hat\Environment\State\ProfileState;
 
 class ProfileLoader
 {
-    protected $definitionOptionPrefix = '@';
-
-    protected $systemDefinitionPrefix = '@';
-
     /**
      * @var \Hat\Environment\Handler\Handler
      */
@@ -25,10 +22,16 @@ class ProfileLoader
      */
     protected $output;
 
-    public function __construct(Handler $postLoadHandler, Output $output)
+    /**
+     * @var ProfileBuilder
+     */
+    protected $builder;
+
+    public function __construct(Handler $postLoadHandler, Output $output, ProfileBuilder $builder)
     {
         $this->postLoadHandler = $postLoadHandler;
         $this->output = $output;
+        $this->builder = $builder;
     }
 
 
@@ -40,35 +43,14 @@ class ProfileLoader
     public function load(Profile $profile)
     {
 
-        $path = $this->getProfileRealPath($profile);
+        $path = $this->findPath($profile);
 
-        $this->output->write(new StatusLineMessage('load', $path));
+        $this->output->write(new StatusLineMessage(ProfileState::LOAD, $path));
 
-        $data = $this->read($path);
-
-        foreach ($data as $name => $value) {
-
-            $definition = $this->createDefinition($name, $value);
-
-            if ($this->isSystemDefinition($name)) {
-                $profile->addSystemDefinition($definition);
-            } else {
-                $profile->addDefinition($definition);
-            }
-        }
-
+        $this->builder->build($profile, $this->read($path));
         $this->postLoadHandler->handle($profile);
 
         return $profile;
-    }
-
-    protected function getProfileRealPath($profile)
-    {
-        if (!$profile->hasOwner()) {
-            return $profile->getPath();
-        } else {
-            return $this->getProfileFile($profile->getOwner(), $profile->getPath());
-        }
     }
 
     /**
@@ -87,126 +69,98 @@ class ProfileLoader
      */
     public function loadForProfile(Profile $profile, $path)
     {
-        $loadedProfile = new Profile($path);
-        $loadedProfile->setOwner($profile);
+        $loaded = new Profile($path);
+        $loaded->setOwner($profile);
 
-        $this->load($loadedProfile);
-
-        return $loadedProfile;
+        return $this->load($loaded);
     }
 
     public function loadDocForProfile(Profile $profile, $path)
     {
-        $path = $this->getProfileFile($profile, $path);
+        $path = $this->findPathForProfile($profile, $path);
 
         $this->output->write(new StatusLineMessage('doc', $path));
 
         return file_get_contents($path);
     }
 
-    protected function getProfileFilePath(Profile $profile, $path)
+    protected function findPath(Profile $profile)
     {
-        $base = dirname($this->getProfileRealPath($profile));
+        $path = $this->getPath($profile);
 
-        $ownFile = $base . DIRECTORY_SEPARATOR . $path;
+        if (file_exists($path)) {
+            return $path;
+        }
 
-        if (file_exists($ownFile)) {
-            return $ownFile;
-        } else if ($profile->hasParent()) {
+        if ($profile->hasOwner()) {
+            return $this->findPathForProfile($profile->getOwner(), $profile->getPath());
+        }
 
+        if ($profile->hasParent()) {
+            return $this->findPathForProfile($profile->getParent(), $profile->getPath());
+        }
 
-            $parent = $profile->getParent();
-            $parentFile = $this->getProfileFilePath($parent, $path);
+        throw new LoaderException('Path is not found: ' . $profile->getPath());
+    }
 
-            if (!is_null($parentFile) && file_exists($parentFile)) {
-                return $parentFile;
+    protected function findPathForProfile(Profile $profile, $path)
+    {
+
+        $file = $this->getBasePath($profile) . DIRECTORY_SEPARATOR . $path;
+
+        if (file_exists($file)) {
+            return $file;
+        }
+
+        if ($profile->hasOwner()) {
+
+            $file = $this->findPathForProfile($profile->getOwner(), $path);
+
+            if (!is_null($file)) {
+                return $file;
             }
 
         }
 
-        return null;
-    }
+        if ($profile->hasParent()) {
 
-    protected function getProfileFile(Profile $profile, $path)
-    {
-        $file = $this->getProfileFilePath($profile, $path);
+            $file = $this->findPathForProfile($profile->getParent(), $path);
 
-        if (is_null($file)) {
-            throw new LoaderException('File is not found: ' . $path);
+            if (!is_null($file)) {
+                return $file;
+            }
+
         }
 
-        return $file;
 
     }
 
-
-    /**
-     * @param $name
-     * @param $data
-     * @return \Hat\Environment\Definition
-     */
-    protected function createDefinition($name, $data)
+    protected function getPath(Profile $profile)
     {
-        $definition = new Definition($name);
-
-        if (is_array($data)) {
-            $this->defineOptions($definition, $data);
-            $this->defineProperties($definition, $data);
-        } else {
-            $definition->setValue($data);
+        if ($profile->hasOwner()) {
+            return $this->getBasePath($profile->getOwner()) . DIRECTORY_SEPARATOR . $profile->getPath();
         }
 
-        return $definition;
+        return $profile->getPath();
     }
+
+    protected function getBasePath($profile)
+    {
+        return dirname($this->getPath($profile));
+    }
+
 
     protected function read($path)
     {
-        // TODO add readers
+        //TODO add readers
         if (file_exists($path)) {
             return parse_ini_file($path, true);
         } else {
-            throw new LoaderException('File is not found: ' . getcwd() . '/' . $path);
+            throw new LoaderException('File is not found: ' . getcwd() . DIRECTORY_SEPARATOR . $path);
         }
 
         return array();
 
-    }
-
-
-    protected function isSystemDefinition($name)
-    {
-        return substr($name, 0, 1) == $this->systemDefinitionPrefix;
-    }
-
-    protected function isOption($name)
-    {
-        return substr($name, 0, 1) == $this->definitionOptionPrefix;
-    }
-
-    protected function extractOption($name)
-    {
-        return $this->isOption($name) ? substr($name, 1) : $name;
-    }
-
-
-    protected function defineOptions(Definition $definition, $definition_data)
-    {
-
-        foreach ($definition_data as $name => $value) {
-            if ($this->isOption($name)) {
-                $definition->getOptions()->set($this->extractOption($name), $value);
-            }
-        }
-
-    }
-
-    protected function defineProperties(Definition $definition, $definition_data)
-    {
-        foreach ($definition_data as $name => $value) {
-            if (!$this->isOption($name)) {
-                $definition->getProperties()->set($this->extractOption($name), $value);
-            }
-        }
     }
 
 
