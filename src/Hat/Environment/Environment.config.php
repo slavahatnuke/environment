@@ -82,7 +82,8 @@ return array(
         $loader = new \Hat\Environment\Loader\ProfileLoader(
             $kit->get('profile.load.handler'),
             $kit->get('output'),
-            $kit->get('profile.builder')
+            $kit->get('profile.builder'),
+            $kit->get('reader')
         );
 
         return $loader;
@@ -112,6 +113,10 @@ return array(
 
     'profile.register' => new Service(function (Kit $kit) {
         return new \Hat\Environment\Register\ProfileRegister();
+    }),
+
+    'reader' => new Service(function (Kit $kit) {
+        return new \Hat\Environment\Reader\IniReader();
     }),
 
     'output' => new Service(function (Kit $kit) {

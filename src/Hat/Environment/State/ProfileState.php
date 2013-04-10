@@ -6,4 +6,6 @@ class ProfileState extends State
     const HANDLE = 'handle';
 
     const LOAD = 'load';
+
+    const LOADED = 'loaded';
 }

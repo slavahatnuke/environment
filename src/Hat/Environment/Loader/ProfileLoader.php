@@ -7,6 +7,7 @@ use Hat\Environment\Handler\Handler;
 use Hat\Environment\Output\Output;
 use Hat\Environment\Output\Message\StatusLineMessage;
 use Hat\Environment\State\ProfileState;
+use Hat\Environment\Reader\Reader;
 
 class ProfileLoader
 {
@@ -25,13 +26,31 @@ class ProfileLoader
      */
     protected $builder;
 
-    public function __construct(Handler $postLoadHandler, Output $output, ProfileBuilder $builder)
+
+    /**
+     * @var \Hat\Environment\Reader\Reader
+     */
+    protected $reader;
+
+    public function __construct(Handler $postLoadHandler, Output $output, ProfileBuilder $builder, Reader $reader)
     {
         $this->postLoadHandler = $postLoadHandler;
         $this->output = $output;
         $this->builder = $builder;
+        $this->reader = $reader;
     }
 
+    public function has(Profile $profile)
+    {
+        $file = $this->getPath($profile);
+        return $this->reader->has($file) || ($profile->hasParent() && $this->has($profile->getParent()));
+    }
+
+    public function hasForProfile(Profile $profile, $path)
+    {
+        $file = $this->getBasePath($profile) . DIRECTORY_SEPARATOR . $path;
+        return $this->reader->has($file) || ($profile->hasParent() && $this->hasForProfile($profile->getParent(), $path));
+    }
 
     /**
      * @param \Hat\Environment\Profile $profile
@@ -41,25 +60,37 @@ class ProfileLoader
     public function load(Profile $profile)
     {
 
-        $path = $this->findPath($profile);
+        $profile->getState()->setState(ProfileState::LOAD);
 
-        $this->output->write(new StatusLineMessage(ProfileState::LOAD, $path));
+        $path = $this->getPath($profile);
+        $this->output->write(new StatusLineMessage($profile->getState()->getState(), $path));
 
-        $this->builder->build($profile, $this->read($path));
+        if ($this->reader->has($path)) {
+
+            $data = $this->reader->read($path);
+            $this->builder->build($profile, $data);
+
+        } else {
+
+            if ($profile->hasOwner() && $profile->getOwner()->hasParent()) {
+                $parent = $this->loadForProfile($profile->getOwner()->getParent(), $profile->getPath());
+                $profile->extend($parent);
+            }
+
+            if ($profile->hasParent()) {
+                $parent = $this->loadForProfile($profile->getParent(), $profile->getPath());
+                $profile->extend($parent);
+            }
+
+        }
+
         $this->postLoadHandler->handle($profile);
+
+        $profile->getState()->setState(ProfileState::LOADED);
 
         return $profile;
     }
 
-    public function has(Profile $profile)
-    {
-        return !is_null($this->findPath($profile));
-    }
-
-    public function hasForProfile(Profile $profile, $path)
-    {
-        return !is_null($this->findPathForProfile($profile, $path));
-    }
 
     /**
      * @param $path
@@ -80,65 +111,24 @@ class ProfileLoader
         $loaded = new Profile($path);
         $loaded->setOwner($profile);
 
-        $this->load($loaded);
-
         return $this->load($loaded);
     }
 
     public function loadDocForProfile(Profile $profile, $path)
     {
-        $path = $this->findPathForProfile($profile, $path);
+        $docProfile = $this->loadForProfile($profile, $path);
 
-        $this->output->write(new StatusLineMessage('doc', $path));
+        $docPath = $this->getPath($docProfile);
 
-        return file_get_contents($path);
-    }
+        if ($this->reader->has($docPath)) {
 
-    protected function findPath(Profile $profile)
-    {
-        $path = $this->getPath($profile);
+            $this->output->write(new StatusLineMessage('doc', $path));
 
-        if (file_exists($path)) {
-            return $path;
-        }
-
-        return $this->findPathForProfileByParents($profile, $profile->getPath());
-    }
-
-    protected function findPathForProfile(Profile $profile, $path)
-    {
-
-        $file = $this->getBasePath($profile) . DIRECTORY_SEPARATOR . $path;
-
-        if (file_exists($file)) {
-            return $file;
-        }
-
-        return $this->findPathForProfileByParents($profile, $path);
-
-    }
-
-    protected function findPathForProfileByParents(Profile $profile, $path)
-    {
-        if ($profile->hasOwner()) {
-
-            $file = $this->findPathForProfile($profile->getOwner(), $path);
-
-            if (!is_null($file)) {
-                return $file;
-            }
+            //TODO move to reader too
+            return file_get_contents($path);
 
         }
 
-        if ($profile->hasParent()) {
-
-            $file = $this->findPathForProfile($profile->getParent(), $path);
-
-            if (!is_null($file)) {
-                return $file;
-            }
-
-        }
     }
 
     protected function getPath(Profile $profile)
@@ -150,23 +140,9 @@ class ProfileLoader
         return $profile->getPath();
     }
 
-    protected function getBasePath($profile)
+    protected function getBasePath(Profile $profile)
     {
         return dirname($this->getPath($profile));
-    }
-
-
-    protected function read($path)
-    {
-        //TODO add readers
-        if (file_exists($path)) {
-            return parse_ini_file($path, true);
-        } else {
-            throw new LoaderException('File is not found: ' . getcwd() . DIRECTORY_SEPARATOR . $path);
-        }
-
-        return array();
-
     }
 
 

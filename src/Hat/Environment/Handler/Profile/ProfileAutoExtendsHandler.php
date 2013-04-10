@@ -46,8 +46,8 @@ class ProfileAutoExtendsHandler extends Handler
 
 
         if ($this->getProfileLoader()->hasForProfile($profile->getOwner()->getParent(), $profile->getPath())) {
-//            $loaded = $this->getProfileLoader()->loadForProfile($profile->getOwner()->getParent(), $profile->getPath());
-//            $profile->extend($loaded);
+            $loaded = $this->getProfileLoader()->loadForProfile($profile->getOwner()->getParent(), $profile->getPath());
+            $profile->extend($loaded);
         }
 
 
