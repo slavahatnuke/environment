@@ -40,7 +40,9 @@ class EnvironmentOutput extends Output
             }
         }
 
-        return parent::write($message);
+        if (is_string($message) && trim($message) !== '') {
+            parent::write($message);
+        }
 
     }
 }

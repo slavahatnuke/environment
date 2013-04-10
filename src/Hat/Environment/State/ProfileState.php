@@ -7,5 +7,5 @@ class ProfileState extends State
 
     const LOAD = 'load';
 
-    const LOADED = 'loaded';
+    const FIND = 'find';
 }

@@ -62,33 +62,66 @@ class ProfileLoader
 
         $profile->getState()->setState(ProfileState::LOAD);
 
-        $path = $this->getPath($profile);
-        $this->output->write(new StatusLineMessage($profile->getState()->getState(), $path));
+        $this->loadRealProfile($profile);
 
-        if ($this->reader->has($path)) {
+        $this->postLoadHandler->handle($profile);
 
-            $data = $this->reader->read($path);
-            $this->builder->build($profile, $data);
+        $this->loadVirtualProfile($profile);
 
-        } else {
+        if (!$this->has($profile)) {
+            throw new LoaderException('Profile is not found: ' . $profile->getPath());
+        }
 
-            if ($profile->hasOwner() && $profile->getOwner()->hasParent()) {
+        return $profile;
+    }
+
+
+    protected function loadVirtualProfile(Profile $profile)
+    {
+        if (!$this->has($profile)) {
+
+            // find profile
+            $this->output->write(new StatusLineMessage('find', $this->getPath($profile)));
+            $this->output->write(new StatusLineMessage('find profile', $profile->getPath()));
+
+            // find profile by owner parent
+            if ($profile->hasOwner() && $profile->getOwner()->hasParent() && $this->hasForProfile($profile->getOwner()->getParent(), $profile->getPath())) {
+
                 $parent = $this->loadForProfile($profile->getOwner()->getParent(), $profile->getPath());
+                $this->output->write(new StatusLineMessage('create profile', $this->getPath($profile)));
+
                 $profile->extend($parent);
+
+                return $profile;
             }
 
-            if ($profile->hasParent()) {
-                $parent = $this->loadForProfile($profile->getParent(), $profile->getPath());
+            // find profile by owner
+            if ($profile->hasOwner() && $profile->getOwner()->hasOwner() && $this->hasForProfile($profile->getOwner()->getOwner(), $profile->getPath())) {
+
+                $parent = $this->loadForProfile($profile->getOwner()->getOwner(), $profile->getPath());
+                $this->output->write(new StatusLineMessage('create profile', $this->getPath($profile)));
+
                 $profile->extend($parent);
+
+                return $profile;
             }
 
         }
 
-        $this->postLoadHandler->handle($profile);
+    }
 
-        $profile->getState()->setState(ProfileState::LOADED);
+    protected function loadRealProfile($profile)
+    {
+        $path = $this->getPath($profile);
 
-        return $profile;
+        if ($this->reader->has($path)) {
+
+            $this->output->write(new StatusLineMessage(ProfileState::LOAD, $path));
+
+            $data = $this->reader->read($path);
+            $this->builder->build($profile, $data);
+
+        }
     }
 
 
@@ -116,28 +149,43 @@ class ProfileLoader
 
     public function loadDocForProfile(Profile $profile, $path)
     {
-        $docProfile = $this->loadForProfile($profile, $path);
 
-        $docPath = $this->getPath($docProfile);
-
-        if ($this->reader->has($docPath)) {
-
-            $this->output->write(new StatusLineMessage('doc', $path));
-
-            //TODO move to reader too
-            return file_get_contents($path);
-
-        }
+        return 'DOC...';
+//        $docProfile = $this->loadForProfile($profile, $path);
+//
+//        if ($docProfile = $this->findReal($docProfile)) {
+//
+//            $docPath = $this->getPath($docProfile);
+//
+//            $this->output->write(new StatusLineMessage('doc', $docPath));
+//
+//            //TODO move to reader too
+//            return file_get_contents($docPath);
+//        }
 
     }
 
     protected function getPath(Profile $profile)
     {
         if ($profile->hasOwner()) {
-            return $this->getBasePath($profile->getOwner()) . DIRECTORY_SEPARATOR . $profile->getPath();
+            return $this->getPathForProfile($profile->getOwner(), $profile->getPath());
         }
 
         return $profile->getPath();
+    }
+
+    protected function getPathForProfile(Profile $profile, $path)
+    {
+        return $this->fixPath($this->getBasePath($profile) . DIRECTORY_SEPARATOR . $path);
+    }
+
+    protected function fixPath($path)
+    {
+        $s = '\\' . preg_quote(DIRECTORY_SEPARATOR);
+        $path = preg_replace("/[^{$s}]+{$s}\.\.{$s}/", '', $path);
+        $path = trim($path, '.' . DIRECTORY_SEPARATOR);
+
+        return $path;
     }
 
     protected function getBasePath(Profile $profile)

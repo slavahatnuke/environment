@@ -54,21 +54,21 @@ class ResultOutputHandler extends DefinitionHandler
             $this->output->write(new StatusLineMessage(DefinitionState::FAIL, $definition->getDescription()));
 
             echo "\n";
-            echo "          ";
+            echo "                ";
             echo "definition : ";
             echo $definition->getName();
             echo "\n";
             echo "\n";
 
-            echo "          properties : ";
+            echo "                properties : ";
             $this->printHolder($definition->getProperties());
             echo "\n";
 
-            echo "          command : ";
+            echo "                command : ";
             $this->printHolder($definition->getCommand());
             echo "\n";
 
-            echo "          options : ";
+            echo "                options : ";
             $this->printHolder($definition->getOptions());
             echo "\n";
 
@@ -94,7 +94,7 @@ class ResultOutputHandler extends DefinitionHandler
 
         foreach ($holder as $name => $value) {
             if (!is_null($value)) {
-                echo "            ";
+                echo "                  ";
                 echo (string)$name;
                 echo " : ";
                 echo (string)new TesterOutput($value);

@@ -13,7 +13,7 @@ class Output
     public function writeln($message = '')
     {
         $this->write($message);
-        echo "\n";
+        $this->write("\n");
     }
 
     public function flush()

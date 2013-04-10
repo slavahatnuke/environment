@@ -203,10 +203,10 @@ class Profile
     {
 
         $result = new self('.');
-        
+
         $result->apply($parent);
         $result->apply($this);
-        
+
         $this->definitions = null;
         $this->system_definitions = null;
 

@@ -7,6 +7,7 @@ use Hat\Environment\State\State;
 use Hat\Environment\Kit\Kit;
 
 use Hat\Environment\State\DefinitionState;
+use Hat\Environment\Output\Message\StatusLineMessage;
 
 class OnPassHandler extends DefinitionHandler
 {
@@ -32,6 +33,10 @@ class OnPassHandler extends DefinitionHandler
     {
         $path = $definition->getOptions()->get('on.pass');
 
+        $this->kit->get('output')->writeln();
+        $this->kit->get('output')->write(new StatusLineMessage('on.pass', $path));
+        $this->kit->get('output')->writeln();
+
         $current_profile = $this->kit->get('profile.register')->getProfile();
 
         $profile = $this->kit->get('profile.loader')->loadForProfile($current_profile, $path);
@@ -47,6 +52,8 @@ class OnPassHandler extends DefinitionHandler
         }
 
         $this->kit->get('profile.register')->register($current_profile);
+
+        $this->kit->get('output')->writeln();
 
     }
 
