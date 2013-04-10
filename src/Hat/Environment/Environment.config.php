@@ -92,11 +92,12 @@ return array(
 
         $handler = new \Hat\Environment\Handler\Profile\ProfileLoadHandler();
 
+        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileAutoExtendsHandler($kit));
+
         $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileExtendsHandler($kit));
         $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileImportsHandler($kit));
         $handler->addHandler(new \Hat\Environment\Handler\Profile\DefinitionImportsHandler());
 
-//        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileParentFinderHandler($kit));
 //        $handler->addHandler(new \Hat\Environment\Handler\Profile\ProfileGlobalHandler());
 
         return $handler;

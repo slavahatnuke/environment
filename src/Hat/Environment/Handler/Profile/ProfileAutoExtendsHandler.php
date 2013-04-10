@@ -5,8 +5,10 @@ use Hat\Environment\Profile;
 use Hat\Environment\Handler\Handler;
 
 use Hat\Environment\Kit\Kit;
+use Hat\Environment\Definition;
 
-class ProfileParentFinderHandler extends Handler
+
+class ProfileAutoExtendsHandler extends Handler
 {
 
     /**
@@ -23,7 +25,8 @@ class ProfileParentFinderHandler extends Handler
     {
         return $profile instanceof Profile
             && !$profile->getSystemDefinitions()->has('extends')
-            && $profile->hasOwner();
+            && $profile->hasOwner()
+            && $profile->getOwner()->hasParent();
     }
 
     protected function doHandle($profile)
@@ -33,6 +36,21 @@ class ProfileParentFinderHandler extends Handler
 
     protected function handleProfile(Profile $profile)
     {
+
+        if ($profile->getSystemDefinitions()->has('settings')
+            && $profile->getSystemDefinitions()->get('settings')->getProperties()->has('auto_extends')
+            && !$profile->getSystemDefinitions()->get('settings')->getProperties()->get('auto_extends')
+        ) {
+            return false;
+        }
+
+
+        if ($this->getProfileLoader()->hasForProfile($profile->getOwner()->getParent(), $profile->getPath())) {
+//            $loaded = $this->getProfileLoader()->loadForProfile($profile->getOwner()->getParent(), $profile->getPath());
+//            $profile->extend($loaded);
+        }
+
+
     }
 
     /**
