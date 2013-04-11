@@ -24,6 +24,8 @@ class ProfileAutoExtendsHandler extends Handler
     public function supports($profile)
     {
         return $profile instanceof Profile
+            && $profile->hasOwner()
+            && $profile->getOwner()->hasParent()
             && (
                 !$profile->getSystemDefinitions()->has('extends') ||
                     $profile->getSystemDefinitions()->get('extends')->getValue() == false
@@ -39,11 +41,10 @@ class ProfileAutoExtendsHandler extends Handler
     {
 
 
-//        $profile->getPath();
-//        if ($this->getProfileLoader()->hasForProfile($profile->getOwner()->getParent(), $profile->getPath())) {
-//            $loaded = $this->getProfileLoader()->loadForProfile($profile->getOwner()->getParent(), $profile->getPath());
-//            $profile->extend($loaded);
-//        }
+        if ($this->getProfileLoader()->hasForProfile($profile->getOwner()->getParent(), $profile->getPath())) {
+            $loaded = $this->getProfileLoader()->loadForProfile($profile->getOwner()->getParent(), $profile->getPath());
+            $profile->extend($loaded);
+        }
 
 
     }

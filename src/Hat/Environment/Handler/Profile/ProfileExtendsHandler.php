@@ -21,7 +21,9 @@ class ProfileExtendsHandler extends Handler
 
     public function supports($profile)
     {
-        return $profile instanceof Profile && $profile->getSystemDefinitions()->has('extends');
+        return $profile instanceof Profile
+            && $profile->getSystemDefinitions()->has('extends')
+            && $profile->getSystemDefinitions()->get('extends')->getValue() != false;
     }
 
     protected function doHandle($profile)

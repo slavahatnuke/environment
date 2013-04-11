@@ -120,6 +120,7 @@ class Profile
      */
     public function addDefinition(Definition $definition)
     {
+        $definition->setOwner($this);
         $this->getDefinitions()->set($definition->getName(), $definition);
     }
 
@@ -156,6 +157,7 @@ class Profile
      */
     public function addSystemDefinition(Definition $definition)
     {
+        $definition->setOwner($this);
         $this->getSystemDefinitions()->set($definition->getName(), $definition);
     }
 
