@@ -1,8 +1,9 @@
 <?php
 namespace Hat\Environment\Tester;
 
-use Hat\Environment\Tester;
-use Hat\Environment\TesterOutput;
+
+use Hat\Environment\LimitedString;
+use Hat\Environment\Exception;
 
 class Socket extends Tester
 {
@@ -27,7 +28,7 @@ class Socket extends Tester
         }
 
         if (!function_exists('socket_create')) {
-            throw new \Exception('no function: socket_create');
+            throw new Exception('no function: socket_create');
         }
 
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -58,7 +59,7 @@ class Socket extends Tester
                 $response .= $out;
             }
 
-            $this->set('output', new TesterOutput($response));
+            $this->set('output', new LimitedString($response));
 
             socket_close($socket);
 

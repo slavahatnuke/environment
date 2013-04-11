@@ -1,15 +1,10 @@
 <?php
 require_once 'autoload.php';
 
-use Hat\Environment\Request\CliRequest;
-use Hat\Environment\Environment;
+$environment = new Hat\Environment\Environment();
 
-$env = new Environment();
+$environment->getKit()->apply(array(
+//    'default.profile.name' => 'xxx.ini'
+));
 
-$env->handle(
-    new CliRequest(
-        array(
-            'profile' => 'environment.ini'
-        )
-    )
-);
+$environment();

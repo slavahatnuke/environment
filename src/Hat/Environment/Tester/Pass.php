@@ -1,8 +1,8 @@
 <?php
 namespace Hat\Environment\Tester;
 
-use Hat\Environment\Tester;
-use Hat\Environment\TesterOutput;
+
+use Hat\Environment\LimitedString;
 
 class Pass extends Tester
 {

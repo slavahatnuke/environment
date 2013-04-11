@@ -1,21 +1,52 @@
 <?php
 namespace Hat\Environment;
 
-class Profile extends Holder
+use Hat\Environment\State\ProfileState;
+
+class Profile
 {
 
     protected $path;
 
     /**
+     * @var \Hat\Environment\State\ProfileState
+     */
+    protected $state;
+
+    /**
      * @var Profile
      */
-    protected $parents = array();
+    protected $owner;
 
-    protected $systemDefinitions = array('@import');
+    /**
+     * @var Profile
+     */
+    protected $parent;
+
+    /**
+     * @var Definition[]|Holder
+     */
+    protected $definitions;
+
+    /**
+     * @var Definition[]|Holder
+     */
+    protected $system_definitions;
 
     public function __construct($path)
     {
         $this->setPath($path);
+    }
+
+    /**
+     * @var \Hat\Environment\State\DefinitionState
+     */
+    public function getState()
+    {
+        if (!$this->state) {
+            $this->state = new ProfileState();
+        }
+        return $this->state;
     }
 
     public function setPath($path)
@@ -28,93 +59,151 @@ class Profile extends Holder
         return $this->path;
     }
 
-
-    public function addParent(Profile $parent)
+    /**
+     * @param \Hat\Environment\Profile $owner
+     */
+    public function setOwner(Profile $owner)
     {
-        $this->parents[] = $parent;
+        $this->owner = $owner;
     }
 
     /**
-     * @return Profile
+     * @return \Hat\Environment\Profile
      */
-    public function getParents()
+    public function getOwner()
     {
-        return $this->parents;
-    }
-
-    public function hasParents()
-    {
-        return count($this->parents) ? true : false;
-    }
-
-    public function getBasePath()
-    {
-        return dirname($this->getPath());
-    }
-
-    public function hasFile($path)
-    {
-        $has = $this->hasOwnFile($path);
-
-        if (!$has && $this->hasParents()) {
-
-            $parents = array_reverse($this->getParents());
-
-            foreach ($parents as $parent) {
-                if ($parent->hasFile($path)) {
-                    return true;
-                }
-            }
-
-            return false;
+        if (!$this->hasOwner()) {
+            throw new Exception('Owner is not defined');
         }
 
-        return $has;
+        return $this->owner;
     }
 
-    public function getFile($path)
+    /**
+     * @return bool
+     */
+    public function hasOwner()
     {
-        if ($this->hasOwnFile($path)) {
-            return $this->getOwnFile($path);
-        } else {
-            if ($this->hasParents()) {
+        return $this->owner ? true : false;
+    }
 
-                $parents = array_reverse($this->getParents());
+    /**
+     * @param \Hat\Environment\Profile $parent
+     */
+    public function setParent(Profile $parent)
+    {
+        $this->parent = $parent;
+    }
 
-                foreach ($parents as $parent) {
-                    if ($parent->hasFile($path)) {
-                        return $parent->getFile($path);
-                    }
-                }
-
-            }
+    /**
+     * @return \Hat\Environment\Profile
+     */
+    public function getParent()
+    {
+        if (!$this->hasParent()) {
+            throw new Exception('Parent is not defined');
         }
 
-        throw new \Exception('No file: ' . $this->getOwnFile($path));
-
+        return $this->parent;
     }
 
+    /**
+     * @return bool
+     */
+    public function hasParent()
+    {
+        return $this->parent ? true : false;
+    }
+
+    /**
+     * @param Definition $definition
+     */
+    public function addDefinition(Definition $definition)
+    {
+        $this->getDefinitions()->set($definition->getName(), $definition);
+    }
+
+    /**
+     * @return Definition[]|Holder
+     */
     public function getDefinitions()
     {
-        $result = array();
 
-        foreach ($this->getData() as $name => $value) {
-            if (!in_array($name, $this->systemDefinitions)) {
-                $result[$name] = new Definition($name, $value);
-            }
+        if (!$this->definitions) {
+            $this->definitions = new Holder();
         }
 
-        return $result;
+        return $this->definitions;
+
+
     }
 
-    protected function getOwnFile($path)
+    /**
+     * @return Definition[]|Holder
+     */
+    public function getSystemDefinitions()
     {
-        return $this->getBasePath() . DIRECTORY_SEPARATOR . $path;
+
+        if (!$this->system_definitions) {
+            $this->system_definitions = new Holder();
+        }
+
+        return $this->system_definitions;
     }
 
-    protected function hasOwnFile($path)
+    /**
+     * @param Definition $definition
+     */
+    public function addSystemDefinition(Definition $definition)
     {
-        return file_exists($this->getOwnFile($path));
+        $this->getSystemDefinitions()->set($definition->getName(), $definition);
+    }
+
+    public function apply(Profile $profile)
+    {
+
+        foreach ($profile->getDefinitions() as $definition) {
+
+            if ($this->getDefinitions()->has($definition->getName())) {
+                $this->getDefinitions()->get($definition->getName())->apply($definition);
+            } else {
+                $this->addDefinition($definition);
+            }
+
+        }
+
+        foreach ($profile->getSystemDefinitions() as $definition) {
+
+            if ($this->getSystemDefinitions()->has($definition->getName())) {
+                $this->getSystemDefinitions()->get($definition->getName())->apply($definition);
+            } else {
+                $this->addSystemDefinition($definition);
+            }
+
+        }
+
+    }
+
+    public function imports(Profile $profile)
+    {
+        return $this->apply($profile);
+    }
+
+    public function extend(Profile $parent)
+    {
+
+        $result = new self('.');
+
+        $result->apply($parent);
+        $result->apply($this);
+
+        $this->definitions = null;
+        $this->system_definitions = null;
+
+        $this->apply($result);
+
+        $this->setParent($parent);
+
     }
 
 

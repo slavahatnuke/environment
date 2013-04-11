@@ -1,8 +1,8 @@
 <?php
 namespace Hat\Environment\Tester;
 
-use Hat\Environment\Tester;
-use Hat\Environment\TesterOutput;
+
+use Hat\Environment\LimitedString;
 
 
 class CommandOutput extends Tester
@@ -18,7 +18,7 @@ class CommandOutput extends Tester
         $command = $this->get('command');
         $output = array();
         exec($command, $output, $return);
-        $this->set('output', new TesterOutput($output));
+        $this->set('output', new LimitedString($output));
 
         $output = join("", $output);
 

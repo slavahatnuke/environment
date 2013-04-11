@@ -1,77 +1,54 @@
 <?php
 namespace Hat\Environment;
 
+use Hat\Environment\Kit\Kit;
+
 class Environment
 {
 
-    public function __invoke(Request $request)
+    /**
+     * @var Kit
+     */
+    protected $kit;
+
+    public function __construct(Kit $kit = null)
+    {
+        $this->kit = $kit;
+    }
+
+    public function __invoke(Request $request = null)
     {
         return $this->handle($request);
     }
 
-    public function handle(Request $request)
+    public function handle(Request $request = null)
     {
-        $result = false;
 
-        try {
-            $result = $this->handleRequest($request);
-        } catch (\Exception $e) {
-            echo "\n";
-
-            echo "[FAIL]  ";
-            echo "Exception: ";
-            echo $e->getMessage();
-            echo "\n";
-            echo $e->getFile();
-            echo ":";
-            echo $e->getLine();
-
-            echo "\n";
-            echo "\n";
-
-            exit(2);
+        if ($request) {
+            $this->getKit()->set('request', $request);
         }
 
-        echo "\n";
-
-        echo $result ? "[OK]    " : "[FAIL]  ";
-
-        if ($result) {
-            echo "Test(s) passed";
-            echo "\n";
-            echo "\n";
-            exit(0);
-        } else {
-            echo "Test(s) failed";
-            echo "\n";
-            echo "\n";
-            exit(1);
-        }
-
+        return $this->getKit()->get('request.handler')->handle($this->getKit()->get('request'));
     }
 
-    protected function handleRequest(Request $request)
+
+    /**
+     * @return Kit
+     */
+    public function getKit()
     {
-        if (!count($request) || $request->get('help')) {
-            echo file_get_contents(__DIR__ . '/HELP'), "\n";
-            exit(0);
+        if (!$this->kit) {
+            $this->kit = $this->createKit();
         }
-
-        if (!$request->has('profile')) {
-            throw new \Exception('--profile option is required');
-        }
-
-        if (!file_exists($request->get('profile'))) {
-            throw new \Exception('No file: ' . $request->get('profile'));
-        }
-
-        return $this->test($request->get('profile'));
+        return $this->kit;
     }
 
-    public function test($path)
+    /**
+     * @return Kit
+     */
+    protected function createKit()
     {
-        $tester = new ProfileTester($path);
-
-        return $tester->test();
+        return new Kit(require 'Environment.config.php');
     }
+
 }

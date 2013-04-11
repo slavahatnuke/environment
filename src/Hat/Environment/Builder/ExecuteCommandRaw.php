@@ -1,8 +1,8 @@
 <?php
 namespace Hat\Environment\Builder;
 
-use Hat\Environment\Builder;
-use Hat\Environment\TesterOutput;
+
+use Hat\Environment\LimitedString;
 
 class ExecuteCommandRaw extends Builder
 {

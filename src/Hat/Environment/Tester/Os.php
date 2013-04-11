@@ -1,8 +1,8 @@
 <?php
 namespace Hat\Environment\Tester;
 
-use Hat\Environment\Tester;
-use Hat\Environment\TesterOutput;
+
+use Hat\Environment\LimitedString;
 
 class Os extends Tester
 {
@@ -15,7 +15,7 @@ class Os extends Tester
         $this_os = strtolower(php_uname());
         $os = strtolower($this->get('name'));
 
-        $this->set('output', new TesterOutput($this_os));
+        $this->set('output', new LimitedString($this_os));
 
         return strpos($this_os, $os) !== false;
     }

@@ -1,8 +1,8 @@
 <?php
 namespace Hat\Environment\Builder;
 
-use Hat\Environment\Builder;
-use Hat\Environment\TesterOutput;
+
+use Hat\Environment\LimitedString;
 
 class ChangeDir extends Builder
 {
@@ -26,7 +26,7 @@ class ChangeDir extends Builder
             return true;
         }
 
-        $this->set('output', new TesterOutput('dir: ' . $dir));
+        $this->set('output', new LimitedString('dir: ' . $dir));
 
         return false;
     }

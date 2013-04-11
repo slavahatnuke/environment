@@ -1,8 +1,8 @@
 <?php
 namespace Hat\Environment\Tester;
 
-use Hat\Environment\Tester;
-use Hat\Environment\TesterOutput;
+
+use Hat\Environment\LimitedString;
 
 
 class CommandVersion extends Tester
@@ -19,13 +19,16 @@ class CommandVersion extends Tester
 
         //TODO [extract][cli][component]
         $command = $this->get('command');
+
         $output = array();
         exec($command, $output, $return);
-        $this->set('output', new TesterOutput($output));
+
+        $this->set('output', new LimitedString($output));
 
         $output = join("", $output);
 
         if ($return == 0) {
+
             $version = $this->extractVersion($output);
 
             return $this->testMinVersion($version) && $this->testMaxVersion($version);

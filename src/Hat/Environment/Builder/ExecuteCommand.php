@@ -1,8 +1,8 @@
 <?php
 namespace Hat\Environment\Builder;
 
-use Hat\Environment\Builder;
-use Hat\Environment\TesterOutput;
+
+use Hat\Environment\LimitedString;
 
 class ExecuteCommand extends Builder
 {
@@ -21,7 +21,7 @@ class ExecuteCommand extends Builder
 
         exec($command, $output, $return);
 
-        $this->set('output', new TesterOutput($output));
+        $this->set('output', new LimitedString($output));
 
         return $return == 0;
     }

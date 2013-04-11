@@ -1,8 +1,8 @@
 <?php
 namespace Hat\Environment\Tester;
 
-use Hat\Environment\Tester;
-use Hat\Environment\TesterOutput;
+
+use Hat\Environment\LimitedString;
 
 class FileContains extends Tester
 {
@@ -18,14 +18,14 @@ class FileContains extends Tester
         $file = $this->get('file');
 
         if (!(is_readable($file) && file_exists($file))) {
-            $this->set('output', new TesterOutput('can not read file: ' . $file));
+            $this->set('output', new LimitedString('can not read file: ' . $file));
 
             return false;
         }
 
         $text = file_get_contents($file);
 
-        $this->set('output', new TesterOutput($text));
+        $this->set('output', new LimitedString($text));
 
         return $this->testExpected($text) || $this->testRegex($text);
     }
