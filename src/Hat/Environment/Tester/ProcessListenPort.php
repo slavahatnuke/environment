@@ -2,7 +2,7 @@
 namespace Hat\Environment\Tester;
 
 
-use Hat\Environment\TesterOutput;
+use Hat\Environment\LimitedString;
 
 class ProcessListenPort extends Tester
 {
@@ -20,7 +20,7 @@ class ProcessListenPort extends Tester
         $output = array();
         exec($command, $output, $return);
 
-        $this->set('output', new TesterOutput($output));
+        $this->set('output', new LimitedString($output));
 
         if ($return == 0) {
             foreach ($output as $line) {

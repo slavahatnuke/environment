@@ -90,7 +90,7 @@ class ProfileHandler extends Handler
         }
 
         $status = $profile->getState()->isOk() ? ProfileState::OK : ProfileState::FAIL;
-        $this->output->write(new StatusLineMessage($status, "failed {$failed}, passed {$passed} | {$profile->getPath()}"));
+        $this->output->write(new StatusLineMessage($status, "passed {$passed}, failed {$failed} | {$profile->getPath()}"));
 
         return $profile->getState()->isOk();
 

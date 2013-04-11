@@ -3,8 +3,15 @@ namespace Hat\Environment;
 
 use Hat\Environment\Kit\Kit;
 
-class Command extends Context
+class Command extends Holder
 {
+    protected $defaults = array();
+
+    public function __construct($data = array())
+    {
+        $this->apply($this->defaults);
+        parent::__construct(array_merge($this->getData(), $data));
+    }
 
     public function setupServices(Kit $kit)
     {

@@ -2,7 +2,7 @@
 namespace Hat\Environment\Tester;
 
 
-use Hat\Environment\TesterOutput;
+use Hat\Environment\LimitedString;
 
 class PhpIni extends Tester
 {
@@ -15,7 +15,7 @@ class PhpIni extends Tester
     public function test()
     {
         $value = ini_get($this->get('option'));
-        $this->set('output', new TesterOutput($value));
+        $this->set('output', new LimitedString($value));
 
         return $this->testExpected($value) || $this->testRegex($value);
     }

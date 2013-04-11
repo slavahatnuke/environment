@@ -1,7 +1,7 @@
 <?php
 namespace Hat\Environment;
 
-class TesterOutput
+class LimitedString
 {
 
     protected $text = '';

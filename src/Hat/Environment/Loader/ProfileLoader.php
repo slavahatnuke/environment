@@ -54,7 +54,8 @@ class ProfileLoader
 
     public function hasForProfile(Profile $profile, $path)
     {
-        return $this->hasForProfileReal($profile, $path) || ($profile->hasParent() && $this->hasForProfile($profile->getParent(), $path));
+        return $this->hasForProfileReal($profile, $path)
+            || ($profile->hasParent() && $this->hasForProfile($profile->getParent(), $path));
     }
 
     /**
@@ -100,7 +101,7 @@ class ProfileLoader
     public function loadForProfile(Profile $profile, $path)
     {
 
-        $this->output->write(new StatusLineMessage('load for', $this->getPath($profile) . ' : ' . $path));
+        $this->output->write(new StatusLineMessage(ProfileState::FIND, $this->getPathForProfile($profile, $path)));
 
         if ($this->hasForProfileReal($profile, $path)) {
 
@@ -109,43 +110,8 @@ class ProfileLoader
 
             return $this->load($loaded);
 
-        } else {
-
-            if ($profile->hasParent() && $this->hasForProfileReal($profile->getParent(), $path)) {
-
-                $parent = $this->loadForProfile($profile->getParent(), $path);
-
-                $this->output->write(new StatusLineMessage('load parent', $this->getPath($parent)));
-
-                $loaded = new Profile($path);
-                $loaded->setOwner($profile);
-                $loaded->extend($parent);
-
-                $this->output->write(new StatusLineMessage('created', $this->getPath($loaded)));
-
-                $this->handler->handle($loaded);
-
-                return $loaded;
-            }
-
-            if ($profile->hasParent() && $this->hasForProfile($profile->getParent(), $path)) {
-
-                $parent = $this->loadForProfile($profile->getParent(), $path);
-
-                $this->output->write(new StatusLineMessage('load parent', $this->getPath($parent)));
-
-                $loaded = new Profile($path);
-                $loaded->setOwner($profile);
-                $loaded->extend($parent);
-
-                $this->output->write(new StatusLineMessage('created', $this->getPath($loaded)));
-
-                $this->handler->handle($loaded);
-
-                return $loaded;
-            }
-
-
+        } else if ($profile->hasParent() && $this->hasForProfile($profile->getParent(), $path)) {
+            return $this->loadForProfile($profile->getParent(), $path);
         }
 
         throw new LoaderException('Profile is not found: ' . $this->getPathForProfile($profile, $path));
@@ -156,7 +122,7 @@ class ProfileLoader
     public function loadDocForProfile(Profile $profile, $path)
     {
 
-        return 'DOC...';
+        return 'doc...';
 
     }
 

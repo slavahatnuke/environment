@@ -4,7 +4,7 @@ namespace Hat\Environment\Handler\Definition;
 use Hat\Environment\Definition;
 
 use Hat\Environment\State\DefinitionState;
-use Hat\Environment\TesterOutput;
+use Hat\Environment\LimitedString;
 
 use Hat\Environment\Output\Output;
 use Hat\Environment\Output\Message\StatusLineMessage;
@@ -51,7 +51,9 @@ class ResultOutputHandler extends DefinitionHandler
 
         if ($definition->getState()->isState($print_statuses)) {
 
-            $this->output->write(new StatusLineMessage(DefinitionState::FAIL, $definition->getDescription()));
+            if ($definition->getState()->isState(DefinitionState::NOT_FIXED)) {
+                $this->output->write(new StatusLineMessage(DefinitionState::FAIL, $definition->getDescription()));
+            }
 
             echo "\n";
             echo "                ";
@@ -97,7 +99,7 @@ class ResultOutputHandler extends DefinitionHandler
                 echo "                  ";
                 echo (string)$name;
                 echo " : ";
-                echo (string)new TesterOutput($value);
+                echo (string)new LimitedString($value);
                 echo "\n";
             }
         }

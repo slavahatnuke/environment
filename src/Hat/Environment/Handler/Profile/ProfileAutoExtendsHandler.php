@@ -5,7 +5,6 @@ use Hat\Environment\Profile;
 use Hat\Environment\Handler\Handler;
 
 use Hat\Environment\Kit\Kit;
-use Hat\Environment\Definition;
 
 
 class ProfileAutoExtendsHandler extends Handler

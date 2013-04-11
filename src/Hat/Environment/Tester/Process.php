@@ -2,7 +2,7 @@
 namespace Hat\Environment\Tester;
 
 
-use Hat\Environment\TesterOutput;
+use Hat\Environment\LimitedString;
 
 class Process extends Tester
 {
@@ -19,7 +19,7 @@ class Process extends Tester
         $output = array();
         exec($command, $output, $return);
 
-        $this->set('output', new TesterOutput($output));
+        $this->set('output', new LimitedString($output));
 
         if ($return == 0) {
 

@@ -2,7 +2,7 @@
 namespace Hat\Environment\Tester;
 
 
-use Hat\Environment\TesterOutput;
+use Hat\Environment\LimitedString;
 
 class FileExists extends Tester
 {
@@ -17,7 +17,7 @@ class FileExists extends Tester
         if (file_exists($file)) {
             return true;
         }
-        $this->set('output', new TesterOutput('file does not exist: ' . $file));
+        $this->set('output', new LimitedString('file does not exist: ' . $file));
         return false;
     }
 }

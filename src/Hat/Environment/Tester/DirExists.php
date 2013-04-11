@@ -2,7 +2,7 @@
 namespace Hat\Environment\Tester;
 
 
-use Hat\Environment\TesterOutput;
+use Hat\Environment\LimitedString;
 
 class DirExists extends Tester
 {
@@ -17,7 +17,7 @@ class DirExists extends Tester
         if (is_dir($file)) {
             return true;
         }
-        $this->set('output', new TesterOutput('dir does not exist: ' . $file));
+        $this->set('output', new LimitedString('dir does not exist: ' . $file));
         return false;
     }
 }

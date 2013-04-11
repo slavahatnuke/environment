@@ -2,7 +2,7 @@
 namespace Hat\Environment\Tester;
 
 
-use Hat\Environment\TesterOutput;
+use Hat\Environment\LimitedString;
 
 class CommandExists extends Tester
 {
@@ -18,7 +18,7 @@ class CommandExists extends Tester
         $output = '';
         exec($cmd, $output, $return);
 
-        $this->set('output', new TesterOutput($output));
+        $this->set('output', new LimitedString($output));
 
         return $return == 0;
     }
