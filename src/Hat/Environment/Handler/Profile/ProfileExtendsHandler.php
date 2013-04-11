@@ -38,8 +38,14 @@ class ProfileExtendsHandler extends Handler
 
         $path = $definition->getValue();
 
+        if ($profile->hasOwner() && $this->getProfileLoader()->hasForProfileReal($profile->getOwner(), $path)) {
+            $parent = $this->getProfileLoader()->loadForProfile($profile->getOwner(), $path);
+            $profile->extend($parent);
+        }
+
         $parent = $this->getProfileLoader()->loadForProfile($profile, $path);
         $profile->extend($parent);
+
 
     }
 

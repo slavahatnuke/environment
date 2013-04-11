@@ -113,7 +113,16 @@ class ProfileLoader
             return $this->load($loaded);
 
         } else if ($profile->hasParent() && $this->hasForProfile($profile->getParent(), $path)) {
-            return $this->loadForProfile($profile->getParent(), $path);
+
+            $parent = $this->loadForProfile($profile->getParent(), $path);
+
+            $loaded = new Profile($path);
+            $loaded->setOwner($profile);
+            $loaded->extend($parent);
+
+            $path = $this->getPath($loaded);
+
+            return $loaded;
         }
 
         throw new LoaderException('Profile is not found: ' . $this->getPathForProfile($profile, $path));
@@ -165,6 +174,10 @@ class ProfileLoader
         $s = '\\' . preg_quote(DIRECTORY_SEPARATOR);
         $path = preg_replace("/[^{$s}]+{$s}\.\.{$s}/", '', $path);
         $path = trim($path, '.' . DIRECTORY_SEPARATOR);
+
+        if (strpos($path, '..') !== false) {
+            return $this->fixPath($path);
+        }
 
         return $path;
     }
