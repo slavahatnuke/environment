@@ -15,10 +15,10 @@ class RequestHandler extends CompositeHandler
      * @var \Hat\Environment\Output\Output
      */
     protected $output;
-    
+
     public function __construct(Output $output)
     {
-        $this->output = $output;    
+        $this->output = $output;
     }
 
 
@@ -33,8 +33,10 @@ class RequestHandler extends CompositeHandler
             $result = parent::doHandle($request);
 
             if ($result) {
+                $this->output->write(new StatusLineMessage(State::OK, $request->get('profile')));
                 exit(0);
             } else {
+                $this->output->write(new StatusLineMessage(State::FAIL, $request->get('profile')));
                 exit(1);
             }
 

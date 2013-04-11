@@ -8,7 +8,8 @@ class ValidateHandler extends DefinitionHandler
 {
     public function supports($definition)
     {
-        return $definition instanceof Definition;
+        return $definition instanceof Definition
+            && !$definition->getOptions()->has('run');
     }
 
     protected function handleDefinition(Definition $definition)

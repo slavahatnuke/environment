@@ -51,6 +51,9 @@ return array(
         $handler->addHandler(new \Hat\Environment\Handler\Definition\DependsHandler($kit));
         $handler->addHandler(new \Hat\Environment\Handler\Definition\RecompileHandler());
 
+        // run sub profile
+        $handler->addHandler(new \Hat\Environment\Handler\Definition\RunHandler($kit));
+
         // execute command
         $handler->addHandler(new \Hat\Environment\Handler\Definition\ExecuteCommandHandler($kit));
 

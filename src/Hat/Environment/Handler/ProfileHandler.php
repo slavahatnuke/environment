@@ -68,7 +68,6 @@ class ProfileHandler extends Handler
 
     protected function handleDefinitions(Profile $profile)
     {
-        $this->output->writeln();
         $this->output->write(new StatusLineMessage(ProfileState::HANDLE, $profile->getPath()));
         $this->output->writeln();
 
@@ -91,8 +90,13 @@ class ProfileHandler extends Handler
 
         }
 
-        $status = $profile->getState()->isOk() ? ProfileState::OK : ProfileState::FAIL;
-        $this->output->write(new StatusLineMessage($status, "passed {$passed}, failed {$failed} | {$profile->getPath()}"));
+        $status = $profile->getState()->isOk() ? 'profile ok' : 'profile fail';
+
+        $this->output->write(new StatusLineMessage($status, $profile->getPath()));
+
+        $this->output->write(new StatusLineMessage('total', "passed {$passed}, failed {$failed}"));
+
+        $this->output->writeln();
 
         return $profile->getState()->isOk();
 

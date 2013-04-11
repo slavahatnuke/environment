@@ -32,7 +32,7 @@ class EnvironmentOutput extends Output
             DefinitionState::SKIP,
             DefinitionState::DOC,
             ProfileState::EXCEPTION,
-            ProfileState::HANDLE,
+//            ProfileState::HANDLE,
         );
 
         if ($message instanceof StatusLineMessage) {
