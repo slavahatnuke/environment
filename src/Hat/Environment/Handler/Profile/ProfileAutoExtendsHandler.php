@@ -25,10 +25,7 @@ class ProfileAutoExtendsHandler extends Handler
         return $profile instanceof Profile
             && $profile->hasOwner()
             && $profile->getOwner()->hasParent()
-            && (
-                !$profile->getSystemDefinitions()->has('extends') ||
-                    $profile->getSystemDefinitions()->get('extends')->getValue() == false
-            );
+            && !$profile->getSystemDefinitions()->has('extends');
     }
 
     protected function doHandle($profile)
@@ -39,7 +36,7 @@ class ProfileAutoExtendsHandler extends Handler
     protected function handleProfile(Profile $profile)
     {
 
-//
+
 //        if ($this->getProfileLoader()->hasForProfile($profile->getOwner()->getParent(), $profile->getPath())) {
 //            $loaded = $this->getProfileLoader()->loadForProfile($profile->getOwner()->getParent(), $profile->getPath());
 //            $profile->extend($loaded);

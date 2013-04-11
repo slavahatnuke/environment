@@ -62,6 +62,12 @@ class ResultOutputHandler extends DefinitionHandler
             echo "\n";
             echo "\n";
 
+            if ($definition->hasCommand()) {
+                echo "                report : ";
+                $this->printHolder($definition->getCommand());
+                echo "\n";
+            }
+
             echo "                properties : ";
             $this->printHolder($definition->getProperties());
             echo "\n";
@@ -70,11 +76,6 @@ class ResultOutputHandler extends DefinitionHandler
             $this->printHolder($definition->getOptions());
             echo "\n";
 
-            if ($definition->hasCommand()) {
-                echo "                result : ";
-                $this->printHolder($definition->getCommand());
-                echo "\n";
-            }
 
 
         } else {
