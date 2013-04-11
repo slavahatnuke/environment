@@ -2,10 +2,25 @@
 namespace Hat\Environment\Handler;
 
 use Hat\Environment\Request\Request;
-use Hat\Environment\Handler\HandlerException;
+
+use Hat\Environment\Output\Output;
+use Hat\Environment\Output\Message\StatusLineMessage;
+
+use Hat\Environment\Exception;
+use Hat\Environment\State\State;
 
 class RequestHandler extends CompositeHandler
 {
+    /**
+     * @var \Hat\Environment\Output\Output
+     */
+    protected $output;
+    
+    public function __construct(Output $output)
+    {
+        $this->output = $output;    
+    }
+
 
     public function supports($data)
     {
@@ -24,19 +39,16 @@ class RequestHandler extends CompositeHandler
             }
 
 
-        } catch (HandlerException $e) {
-            echo "\n";
+        } catch (Exception $e) {
 
-            echo "[FAIL]  ";
-            echo "HandlerException: ";
-            echo $e->getMessage();
-            echo "\n";
-            echo $e->getFile();
-            echo ":";
-            echo $e->getLine();
+            $message = $e->getMessage();
+            $message .= "\n";
 
-            echo "\n";
-            echo "\n";
+            $message .= $e->getFile();
+            $message .= ":";
+            $message .= $e->getLine();
+
+            $this->output->write(new StatusLineMessage(State::EXCEPTION, $message));
 
             exit(2);
         }

@@ -29,7 +29,8 @@ class EnvironmentOutput extends Output
         $states = array(
             DefinitionState::OK,
             DefinitionState::FAIL,
-            DefinitionState::SKIP
+            DefinitionState::SKIP,
+            DefinitionState::EXCEPTION
         );
 
         if ($message instanceof StatusLineMessage) {

@@ -9,6 +9,8 @@ class State
 
     const FAIL = 'fail';
 
+    const EXCEPTION = 'exception';
+
     protected $state = self::INIT;
 
     public function setState($state)

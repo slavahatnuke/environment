@@ -2,6 +2,7 @@
 namespace Hat\Environment\Output\Message;
 
 use Hat\Environment\State\DefinitionState;
+use Hat\Environment\State\State;
 
 class StatusLineMessage extends Message
 {

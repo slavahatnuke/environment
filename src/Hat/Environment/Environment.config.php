@@ -16,7 +16,7 @@ return array(
 
     'request.handler' => new Service(function (Kit $kit) {
 
-        $handler = new \Hat\Environment\Handler\RequestHandler();
+        $handler = new \Hat\Environment\Handler\RequestHandler($kit->get('output'));
 
         $handler->addHandler(new \Hat\Environment\Handler\Request\HelpHandler());
         $handler->addHandler(new \Hat\Environment\Handler\Request\RequireProfileHandler());
