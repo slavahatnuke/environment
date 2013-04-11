@@ -66,13 +66,14 @@ class ResultOutputHandler extends DefinitionHandler
             $this->printHolder($definition->getProperties());
             echo "\n";
 
-            echo "                command : ";
-            $this->printHolder($definition->getCommand());
-            echo "\n";
-
             echo "                options : ";
             $this->printHolder($definition->getOptions());
             echo "\n";
+
+            echo "                result : ";
+            $this->printHolder($definition->getCommand());
+            echo "\n";
+
 
 
         } else {

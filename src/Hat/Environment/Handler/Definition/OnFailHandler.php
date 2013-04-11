@@ -36,9 +36,7 @@ class OnFailHandler extends DefinitionHandler
 
         $path = $definition->getOptions()->get('on.fail');
 
-        $this->kit->get('output')->writeln();
         $this->kit->get('output')->write(new StatusLineMessage('on.fail', $path));
-        $this->kit->get('output')->writeln();
 
         $current_profile = $this->kit->get('profile.register')->getProfile();
 
@@ -56,8 +54,6 @@ class OnFailHandler extends DefinitionHandler
 
 
         $this->kit->get('profile.register')->register($current_profile);
-
-        $this->kit->get('output')->writeln();
 
     }
 

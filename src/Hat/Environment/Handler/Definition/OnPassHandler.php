@@ -33,9 +33,7 @@ class OnPassHandler extends DefinitionHandler
     {
         $path = $definition->getOptions()->get('on.pass');
 
-        $this->kit->get('output')->writeln();
         $this->kit->get('output')->write(new StatusLineMessage('on.pass', $path));
-        $this->kit->get('output')->writeln();
 
         $current_profile = $this->kit->get('profile.register')->getProfile();
 
@@ -52,8 +50,6 @@ class OnPassHandler extends DefinitionHandler
         }
 
         $this->kit->get('profile.register')->register($current_profile);
-
-        $this->kit->get('output')->writeln();
 
     }
 

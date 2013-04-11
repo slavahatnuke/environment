@@ -87,6 +87,8 @@ class ProfileLoader
 
             $this->handler->handle($profile);
 
+        } else {
+            throw new LoaderException('Profile is not found: ' . $this->getPath($profile));
         }
 
         return $profile;
@@ -116,14 +118,27 @@ class ProfileLoader
 
         throw new LoaderException('Profile is not found: ' . $this->getPathForProfile($profile, $path));
 
+    }
+
+    public function findFileForProfile(Profile $profile, $path)
+    {
+        if ($this->hasForProfileReal($profile, $path)) {
+            return $this->getPathForProfile($profile, $path);
+        } else if ($profile->hasParent() && $this->hasForProfile($profile->getParent(), $path)) {
+            return $this->findFileForProfile($profile->getParent(), $path);
+        }
 
     }
+
 
     public function loadDocForProfile(Profile $profile, $path)
     {
 
-        return 'doc...';
+        if (!$this->hasForProfile($profile, $path)) {
+            throw new LoaderException('Doc is not found: ' . $this->getPathForProfile($profile, $path));
+        }
 
+        return file_get_contents($this->findFileForProfile($profile, $path));
     }
 
     protected function getPath(Profile $profile)

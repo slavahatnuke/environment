@@ -7,6 +7,9 @@ use Hat\Environment\Handler\Handler;
 use Hat\Environment\State\State;
 use Hat\Environment\Kit\Kit;
 
+use Hat\Environment\Output\Message\StatusLineMessage;
+use Hat\Environment\State\DefinitionState;
+
 class DocHandler extends Handler
 {
 
@@ -40,9 +43,9 @@ class DocHandler extends Handler
 
         $doc = $this->kit->get('profile.loader')->loadDocForProfile($profile, $path);
 
+        $this->kit->get('output')->write(new StatusLineMessage(DefinitionState::DOC, $definition->getDescription()));
         $this->kit->get('output')->writeln();
         $this->kit->get('output')->writeln($doc);
-        $this->kit->get('output')->writeln();
 
     }
 

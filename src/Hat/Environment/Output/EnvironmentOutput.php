@@ -30,7 +30,9 @@ class EnvironmentOutput extends Output
             DefinitionState::OK,
             DefinitionState::FAIL,
             DefinitionState::SKIP,
-            DefinitionState::EXCEPTION
+            DefinitionState::DOC,
+            ProfileState::EXCEPTION,
+            ProfileState::HANDLE,
         );
 
         if ($message instanceof StatusLineMessage) {
@@ -41,7 +43,7 @@ class EnvironmentOutput extends Output
             }
         }
 
-        if (is_string($message) && trim($message) !== '') {
+        if (is_string($message)) {
             parent::write($message);
         }
 

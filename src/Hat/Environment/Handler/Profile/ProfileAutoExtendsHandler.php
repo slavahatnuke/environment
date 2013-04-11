@@ -39,11 +39,11 @@ class ProfileAutoExtendsHandler extends Handler
     protected function handleProfile(Profile $profile)
     {
 
-
-        if ($this->getProfileLoader()->hasForProfile($profile->getOwner()->getParent(), $profile->getPath())) {
-            $loaded = $this->getProfileLoader()->loadForProfile($profile->getOwner()->getParent(), $profile->getPath());
-            $profile->extend($loaded);
-        }
+//
+//        if ($this->getProfileLoader()->hasForProfile($profile->getOwner()->getParent(), $profile->getPath())) {
+//            $loaded = $this->getProfileLoader()->loadForProfile($profile->getOwner()->getParent(), $profile->getPath());
+//            $profile->extend($loaded);
+//        }
 
 
     }

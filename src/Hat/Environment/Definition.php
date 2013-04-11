@@ -18,11 +18,6 @@ class Definition
     protected $state;
 
     /**
-     * @var Profile
-     */
-    protected $owner;
-
-    /**
      * @var Command
      */
     protected $command;
@@ -60,31 +55,6 @@ class Definition
     {
         $this->command = $command;
         $this->command->setupProperties($this->getProperties());
-    }
-
-    /**
-     * @param \Hat\Environment\Profile $owner
-     */
-    public function setOwner(Profile $owner)
-    {
-        $this->owner = $owner;
-    }
-
-    /**
-     * @return \Hat\Environment\Profile
-     */
-    public function getOwner()
-    {
-        if (!$this->hasOwner()) {
-            throw new Exception('Owner is not defined for definition: ' . $this->getName());
-        }
-
-        return $this->owner;
-    }
-
-    public function hasOwner()
-    {
-        return $this->owner ? true : false;
     }
 
     /**

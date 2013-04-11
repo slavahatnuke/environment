@@ -120,7 +120,6 @@ class Profile
      */
     public function addDefinition(Definition $definition)
     {
-        $definition->setOwner($this);
         $this->getDefinitions()->set($definition->getName(), $definition);
     }
 
@@ -157,18 +156,7 @@ class Profile
      */
     public function addSystemDefinition(Definition $definition)
     {
-        $definition->setOwner($this);
         $this->getSystemDefinitions()->set($definition->getName(), $definition);
-    }
-
-    protected function getOwnFile($path)
-    {
-        return $this->getBasePath() . DIRECTORY_SEPARATOR . $path;
-    }
-
-    protected function hasOwnFile($path)
-    {
-        return file_exists($this->getOwnFile($path));
     }
 
     public function apply(Profile $profile)

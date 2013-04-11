@@ -17,6 +17,8 @@ class DefinitionState extends State
 
     const ON_FAIL_OK = 'on_fail_ok';
 
+    const DOC = 'doc';
+
     public function isFail()
     {
         return parent::isFail() || $this->isState(array(

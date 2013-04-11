@@ -68,7 +68,9 @@ class ProfileHandler extends Handler
 
     protected function handleDefinitions(Profile $profile)
     {
+        $this->output->writeln();
         $this->output->write(new StatusLineMessage(ProfileState::HANDLE, $profile->getPath()));
+        $this->output->writeln();
 
         $profile->getState()->setState(State::OK);
 

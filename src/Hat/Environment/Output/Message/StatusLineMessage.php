@@ -10,7 +10,7 @@ class StatusLineMessage extends Message
 
     protected $message;
 
-    protected $status_length = 16;
+    protected $status_length = 12;
 
     public function __construct($status, $message)
     {
