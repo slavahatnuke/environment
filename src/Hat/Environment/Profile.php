@@ -23,6 +23,8 @@ class Profile
      */
     protected $parent;
 
+    protected $parents = array();
+
     /**
      * @var Definition[]|Holder
      */
@@ -93,6 +95,7 @@ class Profile
     public function setParent(Profile $parent)
     {
         $this->parent = $parent;
+        $this->parents[] = $parent;
     }
 
     /**
@@ -113,6 +116,14 @@ class Profile
     public function hasParent()
     {
         return $this->parent ? true : false;
+    }
+
+    /**
+     * @return array|\Hat\Environment\Profile[]
+     */
+    public function getParents()
+    {
+        return $this->parents;
     }
 
     /**

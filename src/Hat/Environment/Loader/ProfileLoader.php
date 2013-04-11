@@ -112,17 +112,23 @@ class ProfileLoader
 
             return $this->load($loaded);
 
-        } else if ($profile->hasParent() && $this->hasForProfile($profile->getParent(), $path)) {
+        } else if ($profile->hasParent()) {
 
-            $parent = $this->loadForProfile($profile->getParent(), $path);
+            foreach ($profile->getParents() as $parent) {
 
-            $loaded = new Profile($path);
-            $loaded->setOwner($profile);
-            $loaded->extend($parent);
+                if ($this->hasForProfile($parent, $path)) {
 
-            $path = $this->getPath($loaded);
+                    $realParent = $this->loadForProfile($parent, $path);
 
-            return $loaded;
+                    $loaded = new Profile($path);
+                    $loaded->setOwner($profile);
+                    $loaded->extend($realParent);
+
+                    return $loaded;
+                }
+
+            }
+
         }
 
         throw new LoaderException('Profile is not found: ' . $this->getPathForProfile($profile, $path));
