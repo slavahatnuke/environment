@@ -46,6 +46,7 @@ class DocHandler extends Handler
         $this->kit->get('output')->write(new StatusLineMessage(DefinitionState::DOC, $definition->getDescription()));
         $this->kit->get('output')->writeln();
         $this->kit->get('output')->writeln($doc);
+        $this->kit->get('output')->writeln();
 
     }
 
