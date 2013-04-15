@@ -54,8 +54,23 @@ class ProfileLoader
 
     public function hasForProfile(Profile $profile, $path)
     {
-        return $this->hasForProfileReal($profile, $path)
-            || ($profile->hasParent() && $this->hasForProfile($profile->getParent(), $path));
+        if ($this->hasForProfileReal($profile, $path)) {
+            return true;
+        }
+
+        if ($profile->hasParent()) {
+
+            foreach ($profile->getParents() as $parent) {
+
+                if ($this->hasForProfile($parent, $path)) {
+                    return true;
+                }
+
+            }
+
+        }
+
+        return false;
     }
 
     /**
@@ -103,7 +118,7 @@ class ProfileLoader
     public function loadForProfile(Profile $profile, $path)
     {
 
-        $this->output->write(new StatusLineMessage(ProfileState::FIND, $this->getPathForProfile($profile, $path)));
+        $this->output->write(new StatusLineMessage(ProfileState::FIND, $this->getBasePath($profile) . ' : ' . $path));
 
         if ($this->hasForProfileReal($profile, $path)) {
 
@@ -112,23 +127,25 @@ class ProfileLoader
 
             return $this->load($loaded);
 
-        } else if ($profile->hasParent()) {
+        } else {
+            if ($profile->hasParent()) {
 
-            foreach ($profile->getParents() as $parent) {
+                foreach ($profile->getParents() as $parent) {
 
-                if ($this->hasForProfile($parent, $path)) {
+                    if ($this->hasForProfile($parent, $path)) {
 
-                    $realParent = $this->loadForProfile($parent, $path);
+                        $realParent = $this->loadForProfile($parent, $path);
 
-                    $loaded = new Profile($path);
-                    $loaded->setOwner($profile);
-                    $loaded->extend($realParent);
+                        $loaded = new Profile($path);
+                        $loaded->setOwner($profile);
+                        $loaded->extend($realParent);
 
-                    return $loaded;
+                        return $loaded;
+                    }
+
                 }
 
             }
-
         }
 
         throw new LoaderException('Profile is not found: ' . $this->getPathForProfile($profile, $path));
@@ -139,8 +156,10 @@ class ProfileLoader
     {
         if ($this->hasForProfileReal($profile, $path)) {
             return $this->getPathForProfile($profile, $path);
-        } else if ($profile->hasParent() && $this->hasForProfile($profile->getParent(), $path)) {
-            return $this->findFileForProfile($profile->getParent(), $path);
+        } else {
+            if ($profile->hasParent() && $this->hasForProfile($profile->getParent(), $path)) {
+                return $this->findFileForProfile($profile->getParent(), $path);
+            }
         }
 
     }
@@ -177,9 +196,8 @@ class ProfileLoader
 
     protected function fixPath($path)
     {
-        $s = '\\' . preg_quote(DIRECTORY_SEPARATOR);
-        $path = preg_replace("/[^{$s}]+{$s}\.\.{$s}/", '', $path);
-        $path = trim($path, '.' . DIRECTORY_SEPARATOR);
+        $path = str_replace('\\', '/', $path);
+        $path =  preg_replace('/\w+\/\.\.\//', '', $path);
 
         if (strpos($path, '..') !== false) {
             return $this->fixPath($path);
