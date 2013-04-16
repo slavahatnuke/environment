@@ -9,8 +9,7 @@ use Hat\Environment\Output\Message\StatusLineMessage;
 use Hat\Environment\State\ProfileState;
 use Hat\Environment\Reader\Reader;
 
-class ProfileLoader
-{
+class ProfileLoader {
     /**
      * @var \Hat\Environment\Handler\Handler
      */
@@ -32,28 +31,24 @@ class ProfileLoader
      */
     protected $reader;
 
-    public function __construct(Handler $handler, Output $output, ProfileBuilder $builder, Reader $reader)
-    {
+    public function __construct(Handler $handler, Output $output, ProfileBuilder $builder, Reader $reader) {
         $this->handler = $handler;
         $this->output = $output;
         $this->builder = $builder;
         $this->reader = $reader;
     }
 
-    public function hasReal(Profile $profile)
-    {
+    public function hasReal(Profile $profile) {
         return $this->reader->has($this->getPath($profile));
     }
 
 
-    public function hasForProfileReal(Profile $profile, $path)
-    {
+    public function hasForProfileReal(Profile $profile, $path) {
         $file = $this->fixPath($this->getBasePath($profile) . DIRECTORY_SEPARATOR . $path);
         return $this->reader->has($file);
     }
 
-    public function hasForProfile(Profile $profile, $path)
-    {
+    public function hasForProfile(Profile $profile, $path) {
         if ($this->hasForProfileReal($profile, $path)) {
             return true;
         }
@@ -77,8 +72,7 @@ class ProfileLoader
      * @param $path
      * @return \Hat\Environment\Profile
      */
-    public function loadByPath($path)
-    {
+    public function loadByPath($path) {
         return $this->load(new Profile($path));
     }
 
@@ -87,8 +81,7 @@ class ProfileLoader
      * @return \Hat\Environment\Profile
      * @throws LoaderException
      */
-    public function load(Profile $profile)
-    {
+    public function load(Profile $profile) {
 
         $profile->getState()->setState(ProfileState::LOAD);
 
@@ -115,8 +108,7 @@ class ProfileLoader
      * @param $path
      * @return \Hat\Environment\Profile
      */
-    public function loadForProfile(Profile $profile, $path)
-    {
+    public function loadForProfile(Profile $profile, $path) {
 
         $this->output->write(new StatusLineMessage(ProfileState::FIND, $this->getBasePath($profile) . ' : ' . $path));
 
@@ -152,8 +144,7 @@ class ProfileLoader
 
     }
 
-    public function findFileForProfile(Profile $profile, $path)
-    {
+    public function findFileForProfile(Profile $profile, $path) {
         if ($this->hasForProfileReal($profile, $path)) {
             return $this->getPathForProfile($profile, $path);
         } else {
@@ -165,8 +156,7 @@ class ProfileLoader
     }
 
 
-    public function loadDocForProfile(Profile $profile, $path)
-    {
+    public function loadDocForProfile(Profile $profile, $path) {
 
         if (!$this->hasForProfile($profile, $path)) {
             throw new LoaderException('Doc is not found: ' . $this->getPathForProfile($profile, $path));
@@ -175,8 +165,7 @@ class ProfileLoader
         return file_get_contents($this->findFileForProfile($profile, $path));
     }
 
-    protected function getPath(Profile $profile)
-    {
+    protected function getPath(Profile $profile) {
         if ($profile->hasOwner()) {
             return $this->getPathForProfile($profile->getOwner(), $profile->getPath());
         }
@@ -184,22 +173,20 @@ class ProfileLoader
         return $profile->getPath();
     }
 
-    protected function getPathForProfile(Profile $profile, $path)
-    {
+    protected function getPathForProfile(Profile $profile, $path) {
         return $this->fixPath($this->getBasePath($profile) . DIRECTORY_SEPARATOR . $path);
     }
 
-    protected function getBasePath(Profile $profile)
-    {
+    protected function getBasePath(Profile $profile) {
         return dirname($this->getPath($profile));
     }
 
-    protected function fixPath($path)
-    {
-        $path = str_replace('\\', '/', $path);
-        $path =  preg_replace('/\w+\/\.\.\//', '', $path);
+    protected function fixPath($path) {
 
-        if (strpos($path, '..') !== false) {
+        $path = str_replace('\\', '/', $path);
+        $path = preg_replace('/\w+\/\.\.\//', '', $path);
+
+        if (preg_match('/\w+\/\.\.\//', $path)) {
             return $this->fixPath($path);
         }
 
