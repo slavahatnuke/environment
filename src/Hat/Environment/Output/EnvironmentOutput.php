@@ -32,6 +32,7 @@ class EnvironmentOutput extends Output
             DefinitionState::SKIP,
             DefinitionState::DOC,
             ProfileState::EXCEPTION,
+            'execute',
 //            ProfileState::HANDLE,
         );
 
