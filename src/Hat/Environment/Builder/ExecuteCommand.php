@@ -14,8 +14,9 @@ class ExecuteCommand extends Builder
     {
         //TODO [extract][cli][component] extract to CLI component
         echo "\n";
-        echo "        ";
+        echo "            ";
         echo $command = $this->get('command');
+        echo "\n";
         echo "\n";
         $output = '';
 
